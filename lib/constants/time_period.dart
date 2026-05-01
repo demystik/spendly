@@ -2,5 +2,4 @@
     "Today",
     "This Week",
     "This Month",
-    "Last Month",
 ];
