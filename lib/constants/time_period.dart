@@ -3,6 +3,5 @@
     "This Week",
     "This Month",
     "Last Month",
-    "This Year",
     "Custom",
 ];
