@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:spendly/models/category_model.dart';
 import 'package:spendly/providers/budget_provider.dart';
+import 'package:spendly/providers/category_budget_provider.dart';
 import 'package:spendly/providers/expense_provider.dart';
 import 'package:spendly/services/date_calculator.dart';
 import 'package:spendly/services/finance_calculator.dart';
@@ -16,6 +18,7 @@ import 'package:spendly/widgets/app_button.dart';
 import 'package:spendly/widgets/app_card.dart';
 import 'package:spendly/widgets/app_chip.dart';
 import 'package:spendly/widgets/app_text_field.dart';
+import 'package:spendly/widgets/category_budget_bottom_sheet.dart';
 
 class BudgetScreen extends StatefulWidget {
   const BudgetScreen({super.key});
@@ -349,35 +352,106 @@ class CategoryBudgetCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final categoryBudgetProvider = context.watch<CategoryBudgetProvider>();
+
+    final expenseProvider = context.watch<ExpenseProvider>();
+
+    final now = DateTime.now();
+
+    final month = DateFormat("MMMM").format(now);
+
+    final year = DateFormat("y").format(now);
+
+    final allocatedBudget = categoryBudgetProvider.getCategoryBudget(
+      cat.id,
+      month,
+      year,
+    );
+
+    final spent = categorySpent(
+      expenses: expenseProvider.expense,
+      categoryId: cat.id,
+    );
+
+    final progress = allocatedBudget <= 0
+        ? 0.0
+        : (spent / allocatedBudget).clamp(0.0, 1.0);
+
     return AppCard(
       border: Border.all(color: appColorScheme.surfaceContainerHighest),
       boxshadow: [BoxShadow()],
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(AppRadius.md),
-                    ),
-                    padding: EdgeInsets.all(AppSpacing.md),
-                    child: Icon(cat.icon, color: cat.color),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        onTap: () {
+          // open bottom sheet
+        },
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(AppRadius.md),
                   ),
-                  Column(children: [Text(cat.name), Text("YY% used")]),
-                ],
-              ),
-              Column(children: [Text("DDD"), Text("of RRR")]),
-            ],
-          ),
-          LinearProgressIndicator(
-            borderRadius: BorderRadius.circular(AppRadius.md),
-            value: 0.5,
-            color: cat.color,
-          ),
-        ],
+                  child: Icon(cat.icon, color: cat.color),
+                ),
+
+                const SizedBox(width: AppSpacing.md),
+
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(cat.name, style: AppTextStyles.titleMedium),
+
+                      Text(
+                        allocatedBudget == 0
+                            ? "No budget set"
+                            : "${formatCurrency(spent)} of ${formatCurrency(allocatedBudget)} spent",
+                        style: AppTextStyles.bodySmall,
+                      ),
+                    ],
+                  ),
+                ),
+
+                TextButton(
+                  onPressed: () {
+                    showCategoryBudgetBottomSheet(context: context, category: cat);
+                  },
+                  child: Text(allocatedBudget == 0 ? "Set" : "Edit"),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: AppSpacing.sm),
+
+            LinearProgressIndicator(
+              value: progress,
+              borderRadius: BorderRadius.circular(AppRadius.md),
+              color: cat.color,
+              minHeight: 7,
+              backgroundColor: appColorScheme.surfaceContainerHigh,
+            ),
+
+            const SizedBox(height: AppSpacing.sm),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "${(progress * 100).toStringAsFixed(0)}% used",
+                  style: AppTextStyles.bodySmall,
+                ),
+
+                Text(
+                  formatCurrency(allocatedBudget),
+                  style: AppTextStyles.bodyMedium,
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

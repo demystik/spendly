@@ -99,3 +99,28 @@ String translatePercentage(double percent) {
     return "Dangerous";
   }
 }
+
+
+//CalcuateAmountSpent on this category________________
+double categorySpent({
+  required List<Expense> expenses,
+  required String categoryId,
+}) {
+  final now = DateTime.now();
+
+  return expenses
+      .where(
+        (expense) =>
+            expense.category.id ==
+                categoryId &&
+            expense.date.month ==
+                now.month &&
+            expense.date.year ==
+                now.year,
+      )
+      .fold(
+        0,
+        (prev, item) =>
+            prev + item.amount,
+      );
+}

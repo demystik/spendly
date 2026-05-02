@@ -3,8 +3,8 @@ import 'package:spendly/models/category_budget_model.dart';
 import 'package:spendly/models/category_model.dart';
 
 class CategoryBudgetProvider with ChangeNotifier {
-  final List<CategoryBudget> _categoryBudget = [];
-  List<CategoryBudget> get categoryBudget => _categoryBudget;
+  final List<CategoryBudget> _categoryBudgets = [];
+  List<CategoryBudget> get categoryBudgets => _categoryBudgets;
 
   bool setCategoryBudget({
     required Category category,
@@ -13,6 +13,11 @@ class CategoryBudgetProvider with ChangeNotifier {
     required String month,
     required String year,
   }) {
+
+    if(totalBudget <= 0){
+      return false;
+    }
+
     //get current budget for all categories
     final currentAllocated = allocatedBudget(month: month, year: year);
 
@@ -29,7 +34,7 @@ class CategoryBudgetProvider with ChangeNotifier {
 
     //Update Budget for this category
     //find the category i want to update
-    final index = _categoryBudget.indexWhere(
+    final index = _categoryBudgets.indexWhere(
       (cat) =>
           cat.categoryId == category.id &&
           cat.month == month &&
@@ -38,7 +43,7 @@ class CategoryBudgetProvider with ChangeNotifier {
 
     if (index != -1) {
       //if found, update it
-      _categoryBudget[index] = CategoryBudget(
+      _categoryBudgets[index] = CategoryBudget(
         month: month,
         year: year,
         budgetAmount: amount,
@@ -46,7 +51,7 @@ class CategoryBudgetProvider with ChangeNotifier {
       );
     } else {
       //create new category budget
-      _categoryBudget.add(
+      _categoryBudgets.add(
         CategoryBudget(
           month: month,
           year: year,
@@ -63,7 +68,7 @@ class CategoryBudgetProvider with ChangeNotifier {
 
   //Total Amount allocated
   double allocatedBudget({required String month, required String year}) {
-    return _categoryBudget
+    return _categoryBudgets
         .where((cat) => cat.month == month && cat.year == year)
         .fold(0, (previous, element) => previous + element.budgetAmount);
   }
@@ -75,7 +80,7 @@ class CategoryBudgetProvider with ChangeNotifier {
 
   //Category budget lookup
   double getCategoryBudget(String categoryId, String month, String year) {
-    return _categoryBudget
+    return _categoryBudgets
         .firstWhere(
           (cat) =>
               cat.categoryId == categoryId &&
