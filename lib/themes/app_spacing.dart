@@ -9,7 +9,7 @@ abstract class AppSpacing {
 }
 abstract class AppNewSpacing {
   static const double xs  = 4;
-  static const double sm  = 8;
+
 }
 
 abstract class AppRadius {
