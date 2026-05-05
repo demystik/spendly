@@ -8,7 +8,6 @@ abstract class AppSpacing {
   static const double xxxl = 56;
 }
 abstract class AppSpacing {
-  static const double xs  = 4;
 }
 
 
