@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:spendly/screens/home_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.dark
       ),
       themeMode: ThemeMode.system,
-      home: Scaffold(),
+      home: const HomeScreen(),
     );
   }
 }
