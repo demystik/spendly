@@ -4,10 +4,11 @@ import 'app_colors.dart';
 import 'app_spacing.dart';
 import 'app_text_styles.dart';
 
-abstract class AppTheme {
+final class AppTheme {
   // ── Light Theme ───────────────────────────────────────────────────────────
 
   static ThemeData get lightTheme => ThemeData(
+    scaffoldBackgroundColor: AppColors.grey100,
     useMaterial3: true,
     colorScheme: const ColorScheme(
       brightness: Brightness.light,
@@ -110,11 +111,18 @@ abstract class AppTheme {
         borderRadius: BorderRadius.circular(AppRadius.md),
       ),
     ),
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      backgroundColor: AppColors.white,
+      selectedItemColor: AppColors.primary,
+      unselectedItemColor: AppColors.grey400,
+      type: BottomNavigationBarType.fixed,
+    ),
   );
 
   // ── Dark Theme ────────────────────────────────────────────────────────────
 
   static ThemeData get darkTheme => ThemeData(
+    scaffoldBackgroundColor: AppColors.black,
     useMaterial3: true,
     colorScheme: const ColorScheme(
       brightness: Brightness.dark,
@@ -201,7 +209,7 @@ abstract class AppTheme {
     ),
     cardTheme: CardThemeData(
       elevation: 0,
-      color: AppColors.grey900,
+      color: AppColors.grey700,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppRadius.lg),
       ),
@@ -216,6 +224,12 @@ abstract class AppTheme {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppRadius.md),
       ),
+    ),
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      backgroundColor: AppColors.black,
+      selectedItemColor: AppColors.primary,
+      unselectedItemColor: AppColors.grey400,
+      type: BottomNavigationBarType.fixed,
     ),
   );
 }
