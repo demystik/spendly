@@ -6,6 +6,9 @@ abstract class AppTextStyles {
   static const TextStyle displayLarge = TextStyle(
     fontFamily: _baseFont, fontSize: 32, fontWeight: FontWeight.w700, height: 1.2,
   );
+  // static const TextStyle displayMedium = TextStyle(
+  //   fontFamily: _baseFont, fontSize: 26, fontWeight: FontWeight.w700, height: 1.2,
+  // );
   static const TextStyle displayMedium = TextStyle(
     fontFamily: _baseFont, fontSize: 26, fontWeight: FontWeight.w700, height: 1.2,
   );
@@ -25,6 +28,6 @@ abstract class AppTextStyles {
     fontFamily: _baseFont, fontSize: 12, fontWeight: FontWeight.w400, height: 1.5,
   );
   static const TextStyle labelMedium = TextStyle(
-    fontFamily: _baseFont, fontSize: 12, fontWeight: FontWeight.w500, height: 1.4, letterSpacing: 0.5,
+    fontFamily: _baseFont, fontSize: 10, fontWeight: FontWeight.w500, height: 1.4, letterSpacing: 0.5,
   );
 }
