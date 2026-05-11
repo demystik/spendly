@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:spendly/bottom_navbar.dart';
+import 'package:spendly/routes/app_router.dart';
 
 void main() {
   runApp(const MyApp());
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -11,7 +12,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
 
       theme: ThemeData(
        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
@@ -20,7 +21,8 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.dark
       ),
       themeMode: ThemeMode.light,
-      home: const MainScreen(),
+
+      routerConfig: appRouter,
     );
   }
 }

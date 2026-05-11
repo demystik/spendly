@@ -1,53 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:spendly/screens/analytics_screen.dart';
-import 'package:spendly/screens/budget_screen.dart';
-import 'package:spendly/screens/home_screen.dart';
-import 'package:spendly/screens/profile_screen.dart';
+import 'package:go_router/src/route.dart';
 
-class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
-
-  @override
-  State<MainScreen> createState() => _MainScreenState();
-}
-
-class _MainScreenState extends State<MainScreen> {
-  int _selectedIndex = 0;
-
-  void _navigatorBottomBar(int index) {
-    setState(() => _selectedIndex = index);
-  }
-
-  final List<Widget> _screens = const [
-    HomeScreen(),
-    AnalyticsScreen(),
-    BudgetScreen(),
-    ProfileScreen(),
-  ];
+class MainScreen extends StatelessWidget {
+  final StatefulNavigationShell navigationShell;
+  const MainScreen({super.key, required this.navigationShell});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(index: _selectedIndex, children: _screens),
-      bottomNavigationBar: _bottomNavigationBar(
-        _selectedIndex,
-        _navigatorBottomBar,
-      ),
+      body: navigationShell,
+      bottomNavigationBar: _bottomNavigationBar(navigationShell),
     );
   }
 }
 
 BottomNavigationBar _bottomNavigationBar(
-  int selectedIndex,
-  ValueChanged<int> navigatorBottomBar,
+  StatefulNavigationShell navigationShell,
 ) {
   return BottomNavigationBar(
     selectedFontSize: 12,
     unselectedFontSize: 12,
-    
-    currentIndex: selectedIndex,
+
+    currentIndex: navigationShell.currentIndex,
     type: BottomNavigationBarType.fixed,
-    onTap:  navigatorBottomBar,
+    onTap: (index) {
+      navigationShell.goBranch(index);
+    },
     items: [
       BottomNavigationBarItem(
         icon: Icon(Icons.home_outlined),
