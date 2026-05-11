@@ -5,6 +5,12 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return const Scaffold(
+      body: SafeArea(child: Column(children: [
+        Padding(padding: EdgeInsets.all(8), child: Row(children: [
+          
+        ],),),
+      ]),),
+    );
   }
 }
