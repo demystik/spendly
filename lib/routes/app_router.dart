@@ -6,7 +6,7 @@ import 'package:spendly/screens/home_screen.dart';
 import 'package:spendly/screens/profile_screen.dart';
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: '/',
+  initialLocation: '/homescreen',
 
   routes: [
     StatefulShellRoute.indexedStack(
