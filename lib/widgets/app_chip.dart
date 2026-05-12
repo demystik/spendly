@@ -61,10 +61,15 @@ class AppChip extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (leadingIcon != null) ...[
-              leadingIcon!,
+              IconTheme(
+                data: IconThemeData(color: textColor, size: 18),
+                child: leadingIcon!
+              ),
               const SizedBox(width: AppSpacing.xs),
             ],
-            Text(label, style: labelTextStyle ?? text.labelMedium?.copyWith(color: textColor)),
+            Text(label, style: (labelTextStyle ?? text.labelMedium)?.copyWith(
+              color: textColor),
+            ),
             if (onDeleted != null) ...[
               const SizedBox(width: AppSpacing.xs),
               GestureDetector(

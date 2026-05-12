@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:spendly/constants/app_icons.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
+// import 'package:spendly/constants/app_icons.dart';
 
 class ExpenseModel {
   double id;
@@ -23,7 +24,7 @@ class Category {
   double id;
   String name;
   Color color;
-  String icon;
+  IconData icon;
 
   Category({
     required this.id,
@@ -61,30 +62,42 @@ List<Category> categoryList = [
     id: 32142342.342,
     name: "Transport",
     color: Colors.blue,
-    icon: AppIcons.ic_car,
+    icon: LucideIcons.car,
   ),
   Category(
     id: 3452342.342,
     name: "Food & Drinks",
     color: Colors.green,
-    icon: AppIcons.ic_coffee,
+    icon: LucideIcons.coffee,
   ),
   Category(
     id: 321242342.342,
     name: "Shopping",
     color: Colors.indigo,
-    icon: AppIcons.ic_shopping,
+    icon: LucideIcons.shoppingBag,
   ),
   Category(
     id: 009142342.342,
     name: "Groceries",
     color: Colors.lightBlue,
-    icon: AppIcons.ic_groceries,
+    icon: LucideIcons.utensils,
   ),
   Category(
     id: 30042342.342,
     name: "Bills",
     color: Colors.brown,
-    icon: AppIcons.ic_bills,
+    icon: LucideIcons.wallet,
+  ),
+  Category(
+    id: 300442,
+    name: "Health",
+    color: Colors.amber,
+    icon: LucideIcons.heartPulse,
+  ),
+  Category(
+    id: 300232442,
+    name: "Entertainment",
+    color: Colors.redAccent,
+    icon: LucideIcons.gamepad2,
   ),
 ];

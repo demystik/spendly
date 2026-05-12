@@ -14,6 +14,7 @@ class AppTextField extends StatelessWidget {
     this.prefixIcon,
     this.onChanged,
     this.maxLines = 1,
+    this.minLines,
     this.enabled = true,
   });
 
@@ -27,6 +28,7 @@ class AppTextField extends StatelessWidget {
   final Widget? prefixIcon;
   final void Function(String)? onChanged;
   final int maxLines;
+  final int? minLines;
   final bool enabled;
 
   @override
@@ -41,19 +43,21 @@ class AppTextField extends StatelessWidget {
       validator: validator,
       onChanged: onChanged,
       maxLines: maxLines,
+      minLines: minLines,
+      textAlignVertical: TextAlignVertical.top,
       enabled: enabled,
       style: text.bodyLarge,
+      
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
         suffixIcon: suffixIcon,
         prefixIcon: prefixIcon,
+        floatingLabelBehavior: FloatingLabelBehavior.never,
+        alignLabelWithHint: true,
         filled: true,
         fillColor: colors.surfaceContainerHighest.withValues(alpha: 0.4),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.sm + AppSpacing.xs,
-        ),
+        contentPadding: EdgeInsets.all(AppSpacing.md),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.md),
           borderSide: BorderSide.none,

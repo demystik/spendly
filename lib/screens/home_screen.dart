@@ -166,13 +166,7 @@ class RecentTransactionListTiles extends StatelessWidget {
             shape: BoxShape.circle,
             color: Colors.grey.shade200,
           ),
-          child: SvgPicture.asset(
-            recentTrans.transactionCategory.icon,
-            colorFilter: ColorFilter.mode(
-              Colors.blue.shade500,
-              BlendMode.srcIn,
-            ),
-          ),
+          child: Icon(recentTrans.transactionCategory.icon, color: Colors.blue.shade400,)
         ),
         title: Text(
           recentTrans.transactionNote,
@@ -326,7 +320,7 @@ class HeaderPart extends StatelessWidget {
             children: [
               IconButton(
                 onPressed: () {},
-                icon: Icon(LucideIcons.bell300, size: 28),
+                icon: Icon(LucideIcons.bell400, size: 28),
               ),
               SizedBox(width: 10),
               CircleAvatar(
