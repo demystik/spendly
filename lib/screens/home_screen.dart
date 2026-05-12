@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -59,7 +58,6 @@ class HomeScreen extends StatelessWidget {
 
                     //_____Quick Insight Cards_____________________________________________________
                     Row(
-                      spacing: AppSpacing.md,
                       children: [
                         QuickInsightCard(
                           goal: "SAVINGS",
@@ -67,6 +65,7 @@ class HomeScreen extends StatelessWidget {
                           caption: "85% of monthly goal",
                           iconPath: AppIcons.ic_arrow_up,
                         ),
+                        SizedBox(width:AppSpacing.md,),
                         QuickInsightCard(
                           goal: "EXPENSES",
                           amount: "\$43.30",
@@ -118,18 +117,18 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Row middleRowHeader(
+Row middleRowHeader(
     BuildContext context,
     String leftText,
     String rightText,
-    Function onTap,
+    VoidCallback onTap,
   ) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(leftText, style: AppTextStyles.titleMedium),
         GestureDetector(
-          onTap: () => onTap,
+          onTap: onTap,
           child: Text(
             rightText,
             style: AppTextStyles.bodyMedium.copyWith(
@@ -141,7 +140,6 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
-
 class RecentTransactionListTiles extends StatelessWidget {
   const RecentTransactionListTiles({super.key, required this.recentTrans});
 
@@ -271,7 +269,7 @@ class BalanceCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text("\$1,300.00 Spent", style: AppTextStyles.bodyMedium),
-              Text("\$700.00 Spent", style: AppTextStyles.bodyMedium),
+              Text("\$700.00 Saved", style: AppTextStyles.bodyMedium),
             ],
           ),
 
