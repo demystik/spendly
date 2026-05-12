@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class MainScreen extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
@@ -28,23 +29,23 @@ BottomNavigationBar _bottomNavigationBar(
     },
     items: [
       BottomNavigationBarItem(
-        icon: Icon(Icons.home_outlined),
-        activeIcon: Icon(Icons.home_filled),
+        icon: Icon(LucideIcons.house300),
+        activeIcon: Icon(LucideIcons.house300),
         label: "Home",
       ),
       BottomNavigationBarItem(
-        icon: Icon(Icons.analytics_outlined),
-        activeIcon: Icon(Icons.analytics_rounded),
+        icon: Icon(LucideIcons.chartPie300),
+        activeIcon: Icon(LucideIcons.chartPie300),
         label: "Analytics",
       ),
       BottomNavigationBarItem(
-        icon: Icon(Icons.account_balance_wallet_outlined),
-        activeIcon: Icon(Icons.account_balance_wallet_rounded),
+        icon: Icon(LucideIcons.wallet300),
+        activeIcon: Icon(LucideIcons.wallet300),
         label: "Budget",
       ),
       BottomNavigationBarItem(
-        icon: Icon(Icons.person_3_outlined),
-        activeIcon: Icon(Icons.person_3_rounded),
+        icon: Icon(LucideIcons.user300),
+        activeIcon: Icon(LucideIcons.user300),
         label: "Profile",
       ),
     ],

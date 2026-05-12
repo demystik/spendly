@@ -1,8 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:iconsax/iconsax.dart';
-
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:spendly/constants/app_icons.dart';
 import 'package:spendly/models/expense_model.dart';
 import 'package:spendly/themes/app_spacing.dart';
@@ -104,62 +103,76 @@ class HomeScreen extends StatelessWidget {
                       itemBuilder: (context, index) {
                         RecentTransaction recentTrans =
                             recentTransactions[index];
-                        return Card(
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadiusGeometry.circular(12),
-                            side: BorderSide(width: 1, color: Colors.grey.shade300),
-                          ),
-
-                          child: ListTile(
-                            leading: Container(
-                              padding: EdgeInsets.all(AppSpacing.sm),
-                              width: 50,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.grey.shade200,
-                              ),
-                              child: SvgPicture.asset(
-                                recentTrans.transactionCategory.icon,
-                                colorFilter: ColorFilter.mode(
-                                  Colors.blue.shade500, BlendMode.srcIn),
-                              ),
-                            ),
-                            title: Text(
-                              recentTrans.transactionNote,
-                              style: AppTextStyles.titleMedium,
-                            ),
-                            subtitle: Text(
-                              "${recentTrans.transactionCategory.name} . ${recentTrans.transactionTime}",
-                              style: AppTextStyles.bodyMedium,
-                            ),
-                            trailing: Column(
-                              spacing: 5,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  "-\$${recentTrans.transactionAmount}",
-                                  style: AppTextStyles.titleMedium,
-                                ),
-                                AppChip(
-                                  label: "completed",
-                                  labelTextStyle: TextStyle(fontSize: 10),
-                                  variant: AppChipVariant.outlined,
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 2,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
+                        return RecentTransactionListTiles(recentTrans: recentTrans);
                       },
                     ),
                   ],
                 ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class RecentTransactionListTiles extends StatelessWidget {
+  const RecentTransactionListTiles({
+    super.key,
+    required this.recentTrans,
+  });
+
+  final RecentTransaction recentTrans;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadiusGeometry.circular(12),
+        side: BorderSide(width: 1, color: Colors.grey.shade300),
+      ),
+    
+      child: ListTile(
+        leading: Container(
+          padding: EdgeInsets.all(AppSpacing.sm),
+          width: 50,
+          height: 50,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.grey.shade200,
+          ),
+          child: SvgPicture.asset(
+            recentTrans.transactionCategory.icon,
+            colorFilter: ColorFilter.mode(
+              Colors.blue.shade500, BlendMode.srcIn),
+          ),
+        ),
+        title: Text(
+          recentTrans.transactionNote,
+          style: AppTextStyles.titleMedium,
+        ),
+        subtitle: Text(
+          "${recentTrans.transactionCategory.name} . ${recentTrans.transactionTime}",
+          style: AppTextStyles.bodyMedium,
+        ),
+        trailing: Column(
+          spacing: 5,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "-\$${recentTrans.transactionAmount}",
+              style: AppTextStyles.titleMedium,
+            ),
+            AppChip(
+              label: "completed",
+              labelTextStyle: TextStyle(fontSize: 10),
+              variant: AppChipVariant.outlined,
+              padding: EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 2,
               ),
             ),
           ],
@@ -291,7 +304,7 @@ class HeaderPart extends StatelessWidget {
             children: [
               IconButton(
                 onPressed: () {},
-                icon: Icon(Iconsax.notification5, size: 28),
+                icon: Icon(LucideIcons.bell300, size: 28),
               ),
               SizedBox(width: 10),
               CircleAvatar(
