@@ -77,7 +77,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     SizedBox(height: AppSpacing.xl),
 
-                    //___Recent Transactions_______________________________________________________
+                    //___Recent Transactions_________________________________________________________
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
