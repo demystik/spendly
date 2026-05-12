@@ -8,6 +8,7 @@ import 'package:spendly/models/expense_model.dart';
 import 'package:spendly/themes/app_spacing.dart';
 import 'package:spendly/themes/app_text_styles.dart';
 import 'package:spendly/widgets/app_card.dart';
+import 'package:spendly/widgets/app_chip.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -27,9 +28,10 @@ class HomeScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    SizedBox(height: AppSpacing.sm),
                     Text("Hello, Alex!", style: AppTextStyles.displayMedium),
                     Text(
-                      "Here is your financail summary for March",
+                      "Here is your financial summary for March",
                       style: AppTextStyles.bodyMedium,
                     ),
                     SizedBox(height: AppSpacing.md),
@@ -73,7 +75,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    SizedBox(height: AppSpacing.md),
+                    SizedBox(height: AppSpacing.xl),
 
                     //___Recent Transactions_______________________________________________________
                     Row(
@@ -91,6 +93,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ],
                     ),
+                    SizedBox(height: AppSpacing.md),
 
                     //___Recent Transactions List_______________________________________________________
                     ListView.builder(
@@ -99,38 +102,58 @@ class HomeScreen extends StatelessWidget {
                       shrinkWrap: true,
                       itemCount: recentTransactions.length,
                       itemBuilder: (context, index) {
-                        RecentTransaction recentTrans = recentTransactions[index];
-                        return ListTile(
-                          leading: Container(
-                            padding: EdgeInsets.all(AppSpacing.sm),
-                            width: 50,
-                            height: 50,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.grey.shade100,
+                        RecentTransaction recentTrans =
+                            recentTransactions[index];
+                        return Card(
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadiusGeometry.circular(12),
+                            side: BorderSide(width: 1, color: Colors.grey.shade300),
+                          ),
+
+                          child: ListTile(
+                            leading: Container(
+                              padding: EdgeInsets.all(AppSpacing.sm),
+                              width: 50,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.grey.shade200,
+                              ),
+                              child: SvgPicture.asset(
+                                recentTrans.transactionCategory.icon,
+                                colorFilter: ColorFilter.mode(
+                                  Colors.blue.shade500, BlendMode.srcIn),
+                              ),
                             ),
-                            child: SvgPicture.asset(recentTrans.transactionCategory.icon),
-                          ),
-                          title: Text(
-                            recentTrans.transactionNote,
-                            style: AppTextStyles.titleMedium,
-                          ),
-                          subtitle: Text(
-                            "${recentTrans.transactionCategory.name} . ${recentTrans.transactionTime}",
-                            style: AppTextStyles.bodyMedium,
-                          ),
-                          trailing: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                "-\$${recentTrans.transactionAmount}",
-                                style: AppTextStyles.titleMedium,
-                              ),
-                              Text(
-                                "completed",
-                                style: AppTextStyles.bodyMedium,
-                              ),
-                            ],
+                            title: Text(
+                              recentTrans.transactionNote,
+                              style: AppTextStyles.titleMedium,
+                            ),
+                            subtitle: Text(
+                              "${recentTrans.transactionCategory.name} . ${recentTrans.transactionTime}",
+                              style: AppTextStyles.bodyMedium,
+                            ),
+                            trailing: Column(
+                              spacing: 5,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  "-\$${recentTrans.transactionAmount}",
+                                  style: AppTextStyles.titleMedium,
+                                ),
+                                AppChip(
+                                  label: "completed",
+                                  labelTextStyle: TextStyle(fontSize: 10),
+                                  variant: AppChipVariant.outlined,
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 2,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         );
                       },

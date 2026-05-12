@@ -10,6 +10,8 @@ class AppChip extends StatelessWidget {
     this.selected = false,
     this.leadingIcon,
     this.variant = AppChipVariant.filled,
+    this.padding,
+    this.labelTextStyle,
   });
 
   final String label;
@@ -18,6 +20,8 @@ class AppChip extends StatelessWidget {
   final bool selected;
   final Widget? leadingIcon;
   final AppChipVariant variant;
+  final EdgeInsets? padding;
+  final TextStyle? labelTextStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +48,7 @@ class AppChip extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(
+        padding: padding ?? const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
           vertical: AppSpacing.xs + 2,
         ),
@@ -60,7 +64,7 @@ class AppChip extends StatelessWidget {
               leadingIcon!,
               const SizedBox(width: AppSpacing.xs),
             ],
-            Text(label, style: text.labelMedium?.copyWith(color: textColor)),
+            Text(label, style: labelTextStyle ?? text.labelMedium?.copyWith(color: textColor)),
             if (onDeleted != null) ...[
               const SizedBox(width: AppSpacing.xs),
               GestureDetector(
