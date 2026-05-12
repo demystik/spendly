@@ -6,6 +6,7 @@ import 'package:spendly/constants/app_icons.dart';
 import 'package:spendly/models/expense_model.dart';
 import 'package:spendly/themes/app_spacing.dart';
 import 'package:spendly/themes/app_text_styles.dart';
+import 'package:spendly/widgets/app_button.dart';
 import 'package:spendly/widgets/app_card.dart';
 import 'package:spendly/widgets/app_chip.dart';
 
@@ -15,10 +16,17 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        shape: const CircleBorder(),
+        onPressed: (){},
+        child: Icon(LucideIcons.plus400, color: Colors.white70, size: 30,),
+        ),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            //Header Part_____________________________________________
             HeaderPart(),
             Divider(height: 1),
             Expanded(
@@ -34,25 +42,18 @@ class HomeScreen extends StatelessWidget {
                       style: AppTextStyles.bodyMedium,
                     ),
                     SizedBox(height: AppSpacing.md),
+
+                    //Balance Card______________________________________
                     BalanceCard(),
 
                     SizedBox(height: AppSpacing.md),
 
                     //_____Quick Insights_____________________________________________________
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Quick Insights",
-                          style: AppTextStyles.titleMedium,
-                        ),
-                        Text(
-                          "view all",
-                          style: AppTextStyles.bodyMedium.copyWith(
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ),
-                      ],
+                    middleRowHeader(
+                      context,
+                      "Quick Insights",
+                      "view all",
+                      () {},
                     ),
                     SizedBox(height: AppSpacing.md),
 
@@ -77,20 +78,11 @@ class HomeScreen extends StatelessWidget {
                     SizedBox(height: AppSpacing.xl),
 
                     //___Recent Transactions_________________________________________________________
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Recent Transactions",
-                          style: AppTextStyles.titleMedium,
-                        ),
-                        Text(
-                          "Search",
-                          style: AppTextStyles.bodyMedium.copyWith(
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ),
-                      ],
+                    middleRowHeader(
+                      context,
+                      "Recent Transactions",
+                      "Search",
+                      () {},
                     ),
                     SizedBox(height: AppSpacing.md),
 
@@ -103,9 +95,19 @@ class HomeScreen extends StatelessWidget {
                       itemBuilder: (context, index) {
                         RecentTransaction recentTrans =
                             recentTransactions[index];
-                        return RecentTransactionListTiles(recentTrans: recentTrans);
+                        return RecentTransactionListTiles(
+                          recentTrans: recentTrans,
+                        );
                       },
                     ),
+
+                    SizedBox(height: AppSpacing.md),
+                    AppButton(
+                      variant: AppButtonVariant.outlined,
+                      label: "See Detailed Analytics",
+                      onPressed: () {},
+                    ),
+                    SizedBox(height: AppSpacing.xxxl),
                   ],
                 ),
               ),
@@ -115,13 +117,33 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
+
+  Row middleRowHeader(
+    BuildContext context,
+    String leftText,
+    String rightText,
+    Function onTap,
+  ) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(leftText, style: AppTextStyles.titleMedium),
+        GestureDetector(
+          onTap: () => onTap,
+          child: Text(
+            rightText,
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }
 
 class RecentTransactionListTiles extends StatelessWidget {
-  const RecentTransactionListTiles({
-    super.key,
-    required this.recentTrans,
-  });
+  const RecentTransactionListTiles({super.key, required this.recentTrans});
 
   final RecentTransaction recentTrans;
 
@@ -133,7 +155,7 @@ class RecentTransactionListTiles extends StatelessWidget {
         borderRadius: BorderRadiusGeometry.circular(12),
         side: BorderSide(width: 1, color: Colors.grey.shade300),
       ),
-    
+
       child: ListTile(
         leading: Container(
           padding: EdgeInsets.all(AppSpacing.sm),
@@ -146,7 +168,9 @@ class RecentTransactionListTiles extends StatelessWidget {
           child: SvgPicture.asset(
             recentTrans.transactionCategory.icon,
             colorFilter: ColorFilter.mode(
-              Colors.blue.shade500, BlendMode.srcIn),
+              Colors.blue.shade500,
+              BlendMode.srcIn,
+            ),
           ),
         ),
         title: Text(
@@ -170,10 +194,7 @@ class RecentTransactionListTiles extends StatelessWidget {
               label: "completed",
               labelTextStyle: TextStyle(fontSize: 10),
               variant: AppChipVariant.outlined,
-              padding: EdgeInsets.symmetric(
-                horizontal: 8,
-                vertical: 2,
-              ),
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
             ),
           ],
         ),

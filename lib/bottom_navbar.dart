@@ -29,23 +29,23 @@ BottomNavigationBar _bottomNavigationBar(
     },
     items: [
       BottomNavigationBarItem(
-        icon: Icon(LucideIcons.house300),
-        activeIcon: Icon(LucideIcons.house300),
+        icon: Icon(LucideIcons.house),
+        activeIcon: Icon(LucideIcons.house),
         label: "Home",
       ),
       BottomNavigationBarItem(
-        icon: Icon(LucideIcons.chartPie300),
-        activeIcon: Icon(LucideIcons.chartPie300),
+        icon: Icon(LucideIcons.chartPie),
+        activeIcon: Icon(LucideIcons.chartPie),
         label: "Analytics",
       ),
       BottomNavigationBarItem(
-        icon: Icon(LucideIcons.wallet300),
-        activeIcon: Icon(LucideIcons.wallet300),
+        icon: Icon(LucideIcons.wallet),
+        activeIcon: Icon(LucideIcons.wallet),
         label: "Budget",
       ),
       BottomNavigationBarItem(
-        icon: Icon(LucideIcons.user300),
-        activeIcon: Icon(LucideIcons.user300),
+        icon: Icon(LucideIcons.user),
+        activeIcon: Icon(LucideIcons.user),
         label: "Profile",
       ),
     ],

@@ -27,7 +27,7 @@ class AppButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: colors.primary,
+          backgroundColor: variant == AppButtonVariant.outlined ? Colors.grey.shade100 : colors.primary,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadius.md),
           ),
@@ -40,7 +40,8 @@ class AppButton extends StatelessWidget {
               )
             : Text(
                 label,
-                style: text.titleMedium?.copyWith(color: colors.onPrimary),
+                style: text.titleMedium?.copyWith(
+                  color: variant == AppButtonVariant.outlined ? Colors.black54 : colors.onPrimary),
               ),
       ),
     );
