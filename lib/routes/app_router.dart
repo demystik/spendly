@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:spendly/bottom_navbar.dart';
+import 'package:spendly/screens/add_expense_screen.dart';
 import 'package:spendly/screens/analytics_screen.dart';
 import 'package:spendly/screens/budget_screen.dart';
 import 'package:spendly/screens/home_screen.dart';
@@ -56,5 +57,11 @@ final GoRouter appRouter = GoRouter(
         ),
       ],
     ),
+  
+  
+    GoRoute(
+      path: "/add_expense_screen",
+      builder: (context, index) => const AddExpenseScreen(),
+      ),
   ],
 );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:spendly/constants/app_icons.dart';
 import 'package:spendly/models/expense_model.dart';
@@ -18,7 +19,9 @@ class HomeScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).colorScheme.primary,
         shape: const CircleBorder(),
-        onPressed: (){},
+        onPressed: (){
+          context.push("/add_expense_screen");
+        },
         child: Icon(LucideIcons.plus400, color: Colors.white70, size: 30,),
         ),
       body: SafeArea(
