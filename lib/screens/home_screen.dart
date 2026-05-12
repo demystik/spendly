@@ -1,11 +1,13 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:iconsax/iconsax.dart';
+
 import 'package:spendly/constants/app_icons.dart';
 import 'package:spendly/models/expense_model.dart';
 import 'package:spendly/themes/app_spacing.dart';
 import 'package:spendly/themes/app_text_styles.dart';
 import 'package:spendly/widgets/app_card.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -34,6 +36,8 @@ class HomeScreen extends StatelessWidget {
                     BalanceCard(),
 
                     SizedBox(height: AppSpacing.md),
+
+                    //_____Quick Insights_____________________________________________________
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -51,77 +55,27 @@ class HomeScreen extends StatelessWidget {
                     ),
                     SizedBox(height: AppSpacing.md),
 
+                    //_____Quick Insight Cards_____________________________________________________
                     Row(
                       spacing: AppSpacing.md,
                       children: [
-                        Expanded(
-                          child: AppCard(
-                            child: Column(
-                              spacing: AppSpacing.sm,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.all(AppSpacing.sm),
-                                  width: 50,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.brown.shade100,
-                                  ),
-                                  child: SvgPicture.asset(AppIcons.ic_arrow_up),
-                                ),
-                                Text(
-                                  "SAVINGS",
-                                  style: AppTextStyles.bodyMedium,
-                                ),
-                                Text("\$850", style: AppTextStyles.titleLarge),
-                                Text(
-                                  "85% of monthly goal",
-                                  style: AppTextStyles.labelMedium,
-                                ),
-                              ],
-                            ),
-                          ),
+                        QuickInsightCard(
+                          goal: "SAVINGS",
+                          amount: "\$850",
+                          caption: "85% of monthly goal",
+                          iconPath: AppIcons.ic_arrow_up,
                         ),
-                        Expanded(
-                          child: AppCard(
-                            child: Column(
-                              spacing: AppSpacing.sm,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.all(AppSpacing.sm),
-                                  width: 50,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.brown.shade100,
-                                  ),
-                                  child: SvgPicture.asset(
-                                    AppIcons.ic_arrow_down,
-                                  ),
-                                ),
-                                Text(
-                                  "EXPENSES",
-                                  style: AppTextStyles.bodyMedium,
-                                ),
-                                Text(
-                                  "\$43.30",
-                                  style: AppTextStyles.titleLarge,
-                                ),
-                                Text(
-                                  "+12% from last month",
-                                  style: AppTextStyles.labelMedium,
-                                ),
-                              ],
-                            ),
-                          ),
+                        QuickInsightCard(
+                          goal: "EXPENSES",
+                          amount: "\$43.30",
+                          caption: "+12% from last month",
+                          iconPath: AppIcons.ic_arrow_down,
                         ),
                       ],
                     ),
-
                     SizedBox(height: AppSpacing.md),
 
+                    //___Recent Transactions_______________________________________________________
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -138,51 +92,44 @@ class HomeScreen extends StatelessWidget {
                       ],
                     ),
 
+                    //___Recent Transactions List_______________________________________________________
                     ListView.builder(
                       scrollDirection: Axis.vertical,
                       physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount: categoryList.length,
+                      itemCount: recentTransactions.length,
                       itemBuilder: (context, index) {
-                        Category cat = categoryList[index];
-                        return Container(
-                          margin: EdgeInsets.symmetric(vertical: AppSpacing.sm),
-                          padding: EdgeInsets.all(AppSpacing.md),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              width: 1,
-                              color: Colors.grey.shade300,
+                        RecentTransaction recentTrans = recentTransactions[index];
+                        return ListTile(
+                          leading: Container(
+                            padding: EdgeInsets.all(AppSpacing.sm),
+                            width: 50,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.grey.shade100,
                             ),
-                            borderRadius: BorderRadius.circular(AppSpacing.md),
+                            child: SvgPicture.asset(recentTrans.transactionCategory.icon),
                           ),
-                          child: Row(
+                          title: Text(
+                            recentTrans.transactionNote,
+                            style: AppTextStyles.titleMedium,
+                          ),
+                          subtitle: Text(
+                            "${recentTrans.transactionCategory.name} . ${recentTrans.transactionTime}",
+                            style: AppTextStyles.bodyMedium,
+                          ),
+                          trailing: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              Container(
-                                padding: EdgeInsets.all(AppSpacing.sm),
-                                width: 50,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.grey.shade100,
-                                ),
-                                child: SvgPicture.asset(cat.icon),
+                              Text(
+                                "-\$${recentTrans.transactionAmount}",
+                                style: AppTextStyles.titleMedium,
                               ),
-                              SizedBox(width: AppSpacing.sm),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                  Text("Actuall Note to display", style: AppTextStyles.titleMedium,),
-                                  Text("${cat.name} . Today, 8:15 AM", style: AppTextStyles.bodyMedium,),
-                                ],),
+                              Text(
+                                "completed",
+                                style: AppTextStyles.bodyMedium,
                               ),
-                               SizedBox(width: AppSpacing.sm),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                Text("-\$20.00", style: AppTextStyles.titleMedium,),
-                                Text("completed", style: AppTextStyles.bodyMedium,),
-                              ],),
                             ],
                           ),
                         );
@@ -192,6 +139,47 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class QuickInsightCard extends StatelessWidget {
+  final String goal;
+  final String amount;
+  final String caption;
+  final String iconPath;
+  const QuickInsightCard({
+    super.key,
+    required this.goal,
+    required this.amount,
+    required this.caption,
+    required this.iconPath,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: AppCard(
+        child: Column(
+          spacing: AppSpacing.sm,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: EdgeInsets.all(AppSpacing.sm),
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.brown.shade100,
+              ),
+              child: SvgPicture.asset(iconPath),
+            ),
+            Text(goal, style: AppTextStyles.bodyMedium),
+            Text(amount, style: AppTextStyles.titleLarge),
+            Text(caption, style: AppTextStyles.labelMedium),
           ],
         ),
       ),

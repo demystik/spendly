@@ -33,6 +33,29 @@ class Category {
   });
 }
 
+class RecentTransaction {
+  int transactionId;
+  Category transactionCategory;
+  DateTime transactionTime;
+  double transactionAmount;
+  String transactionNote;
+  RecentTransaction({
+    required this.transactionId,
+    required this.transactionCategory,
+    required this.transactionTime,
+    required this.transactionAmount,
+    required this.transactionNote,
+  });
+}
+
+List<RecentTransaction> recentTransactions = [
+  RecentTransaction(transactionId: DateTime.now().millisecondsSinceEpoch, transactionCategory: categoryList[0], transactionTime: DateTime.now(), transactionAmount: 25.50, transactionNote: "Uber Ride"),
+  RecentTransaction(transactionId: DateTime.now().millisecondsSinceEpoch, transactionCategory: categoryList[1], transactionTime: DateTime.now(), transactionAmount: 18.50, transactionNote: "Starbucks Coffee"),
+  RecentTransaction(transactionId: DateTime.now().millisecondsSinceEpoch, transactionCategory: categoryList[2], transactionTime: DateTime.now(), transactionAmount: 43.00, transactionNote: "Apple Store"),
+  RecentTransaction(transactionId: DateTime.now().millisecondsSinceEpoch, transactionCategory: categoryList[3], transactionTime: DateTime.now(), transactionAmount: 72.00, transactionNote: "Whole Food Market"),
+  RecentTransaction(transactionId: DateTime.now().millisecondsSinceEpoch, transactionCategory: categoryList[4], transactionTime: DateTime.now(),, transactionAmount: 37.0, transactionNote: "Netflix Subsciption"),
+];
+
 List<Category> categoryList = [
   Category(
     id: 32142342.342,
