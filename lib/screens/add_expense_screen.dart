@@ -23,19 +23,18 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
   Future<void> _showDatePicker() async {
     final DateTime? pickedDate = await showDatePicker(
-      context: context, 
+      context: context,
       initialDate: currentDate,
-      firstDate: DateTime(2020), 
+      firstDate: DateTime(2020),
       lastDate: DateTime(2027),
-      );
+    );
 
-      if(pickedDate != null && pickedDate != currentDate){
-        setState(() {
-          currentDate = pickedDate;
-        });
-      }
+    if (pickedDate != null && pickedDate != currentDate) {
+      setState(() {
+        currentDate = pickedDate;
+      });
+    }
   }
-
 
   @override
   void dispose() {
@@ -43,10 +42,8 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         // foregroundColor: Theme.of(context).colorScheme.onPrimary,
@@ -63,17 +60,15 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
         child: ListView(
           padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
           children: [
-            Center(
-              child: Text(
-                "Amount",
-                style: AppTextStyles.bodyLarge.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black54,
-                ),
+            Text(
+              "Amount",
+              style: AppTextStyles.bodyLarge.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Colors.black54,
               ),
             ),
             // Add Expense TextFeild___________________________________________
-            expenseTextField(screenSize, context),
+            expenseTextField(),
 
             SizedBox(height: AppSpacing.xl),
 
@@ -98,19 +93,42 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
             SizedBox(height: AppSpacing.xl),
 
-
             //Date and Payment method_________________________________________
-            Row(children: [
-              Expanded(
-                child: Column(
-                  children: [
-                    SectionLabel(actualLabel: "Date", leadingIcon: Icon(LucideIcons.calendar, size: 18,),),
-                    SizedBox(height: AppSpacing.sm,),
-                    AppButton(label: DateFormat("MMMM d, y").format(currentDate), onPressed: _showDatePicker),
-                  ],
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SectionLabel(
+                        actualLabel: "Date",
+                        leadingIcon: Icon(LucideIcons.calendar, size: 18),
+                      ),
+                      SizedBox(height: AppSpacing.sm),
+                      GestureDetector(
+                        onTap: _showDatePicker,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 14,
+                          ),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Theme.of(context).colorScheme.outline,
+                            ),
+                            borderRadius: BorderRadius.circular(AppRadius.md),
+                          ),
+                          child: Text(
+                                DateFormat("MMMM d, y").format(currentDate),
+                                style: AppTextStyles.bodyLarge,
+                              ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],),
+              ],
+            ),
             SizedBox(height: AppSpacing.md),
 
             //Note____________________________________________________
@@ -138,32 +156,36 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
   Wrap categoryWrap() {
     return Wrap(
-            spacing: 10,
-            runSpacing: 10,
-            children: List.generate(categoryList.length, (index) {
-              Category cat = categoryList[index];
-              return AppChip(
-                onTap: () {
-                  setState(() => selectedCategory = index);
-                },
-                selected: selectedCategory == index,
-                variant: AppChipVariant.outlined,
-                leadingIcon: Icon(cat.icon),
-                label: cat.name,
-                labelTextStyle: AppTextStyles.bodyLarge,
-              );
-            }),
-          );
+      spacing: 10,
+      runSpacing: 10,
+      children: List.generate(categoryList.length, (index) {
+        Category cat = categoryList[index];
+        return AppChip(
+          onTap: () {
+            setState(() => selectedCategory = index);
+          },
+          selected: selectedCategory == index,
+          variant: AppChipVariant.outlined,
+          leadingIcon: Icon(cat.icon),
+          label: cat.name,
+          labelTextStyle: AppTextStyles.bodyLarge,
+        );
+      }),
+    );
   }
 
-  Padding expenseTextField(Size screenSize, BuildContext context) {
+  Padding expenseTextField() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 22.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(LucideIcons.dollarSign600, size: 35, color: Theme.of(context).colorScheme.primary),
+          Icon(
+            LucideIcons.dollarSign600,
+            size: 35,
+            color: Theme.of(context).colorScheme.primary,
+          ),
           SizedBox(width: 10),
           Expanded(
             child: TextFormField(
@@ -188,21 +210,21 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                     width: 2.0,
                   ),
                 ),
-            
+
                 enabledBorder: UnderlineInputBorder(
                   borderSide: BorderSide(
                     color: Colors.blue.shade100,
                     width: 2.0,
                   ),
                 ),
-            
+
                 focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(
                     color: Theme.of(context).colorScheme.primary,
                     width: 2,
                   ),
                 ),
-            
+
                 isDense: true,
                 contentPadding: EdgeInsets.symmetric(vertical: 16),
               ),
@@ -213,6 +235,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
     );
   }
 }
+
 class SectionLabel extends StatelessWidget {
   const SectionLabel({super.key, required this.actualLabel, this.leadingIcon});
   final String actualLabel;
