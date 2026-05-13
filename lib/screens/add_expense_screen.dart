@@ -17,6 +17,17 @@ class AddExpenseScreen extends StatefulWidget {
 
 class _AddExpenseScreenState extends State<AddExpenseScreen> {
   int selectedCategory = -1;
+  DateTime currentDate = DateTime.now();
+
+  void _showDatePicker() {
+    showDatePicker(
+      context: context, 
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2020), 
+      lastDate: DateTime(2027),
+      );
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -67,25 +78,23 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
             ),
             SizedBox(height: AppSpacing.md),
 
-            Wrap(
-              spacing: 10,
-              runSpacing: 10,
-              children: List.generate(categoryList.length, (index) {
-                Category cat = categoryList[index];
-                return AppChip(
-                  onTap: () {
-                    setState(() => selectedCategory = index);
-                  },
-                  selected: selectedCategory == index,
-                  variant: AppChipVariant.outlined,
-                  leadingIcon: Icon(cat.icon),
-                  label: cat.name,
-                  labelTextStyle: AppTextStyles.bodyLarge,
-                );
-              }),
-            ),
+            categoryWrap(),
 
             SizedBox(height: AppSpacing.xl),
+
+
+            //Date and Payment method_________________________________________
+            Row(children: [
+              Expanded(
+                child: Column(
+                  children: [
+                    SectionLabel(actualLabel: "Date", leadingIcon: Icon(LucideIcons.calendar, size: 18,),),
+                    SizedBox(height: AppSpacing.sm,),
+                    AppButton(label: "$currentDate.totoIso8601String()", onPressed: _showDatePicker),
+                  ],
+                ),
+              ),
+            ],),
 
             //Note____________________________________________________
             SectionLabel(actualLabel: "Notes (Optional)"),
@@ -108,6 +117,26 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
         ),
       ),
     );
+  }
+
+  Wrap categoryWrap() {
+    return Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: List.generate(categoryList.length, (index) {
+              Category cat = categoryList[index];
+              return AppChip(
+                onTap: () {
+                  setState(() => selectedCategory = index);
+                },
+                selected: selectedCategory == index,
+                variant: AppChipVariant.outlined,
+                leadingIcon: Icon(cat.icon),
+                label: cat.name,
+                labelTextStyle: AppTextStyles.bodyLarge,
+              );
+            }),
+          );
   }
 
   Padding expenseTextField(Size screenSize, BuildContext context) {
@@ -183,7 +212,7 @@ class SectionLabel extends StatelessWidget {
         Text(
           actualLabel,
           style: AppTextStyles.bodyLarge.copyWith(
-            color: Colors.black87,
+            color: Colors.black.withAlpha(150),
             fontWeight: FontWeight.bold,
           ),
         ),
