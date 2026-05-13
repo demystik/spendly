@@ -52,29 +52,30 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
           onPressed: () {
             context.pop();
           },
-          icon: Icon(LucideIcons.chevronLeft),
+          icon: const Icon(LucideIcons.chevronLeft),
         ),
         title: Text("Add Expense", style: AppTextStyles.titleLarge),
       ),
       body: SafeArea(
         child: ListView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
           children: [
             Text(
               "Amount",
               style: AppTextStyles.bodyLarge.copyWith(
                 fontWeight: FontWeight.bold,
-                color: Colors.black54,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
             // Add Expense TextFeild___________________________________________
-            expenseTextField(),
+            ExpenseTextField(context: context, amountController:  _amountController),
 
             SizedBox(height: AppSpacing.xl),
 
             SectionLabel(
               actualLabel: "What was this for?",
-              leadingIcon: Icon(LucideIcons.tag, size: 18),
+              leadingIcon: const Icon(LucideIcons.tag, size: 18),
             ),
 
             SizedBox(height: AppSpacing.md),
@@ -85,7 +86,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
             //Category Wrap______________________________________________
             SectionLabel(
               actualLabel: "Category",
-              leadingIcon: Icon(LucideIcons.fileText, size: 18),
+              leadingIcon: const Icon(LucideIcons.fileText, size: 18),
             ),
             SizedBox(height: AppSpacing.md),
 
@@ -96,40 +97,10 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
             //Date and Payment method_________________________________________
             Row(
               children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SectionLabel(
-                        actualLabel: "Date",
-                        leadingIcon: Icon(LucideIcons.calendar, size: 18),
-                      ),
-                      SizedBox(height: AppSpacing.sm),
-                      GestureDetector(
-                        onTap: _showDatePicker,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 14,
-                          ),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Theme.of(context).colorScheme.outline,
-                            ),
-                            borderRadius: BorderRadius.circular(AppRadius.md),
-                          ),
-                          child: Text(
-                                DateFormat("MMMM d, y").format(currentDate),
-                                style: AppTextStyles.bodyLarge,
-                              ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                dateMethod(context),
               ],
             ),
-            SizedBox(height: AppSpacing.md),
+            SizedBox(height: AppSpacing.xl),
 
             //Note____________________________________________________
             SectionLabel(actualLabel: "Notes (Optional)"),
@@ -154,6 +125,40 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
     );
   }
 
+  Expanded dateMethod(BuildContext context) {
+    return Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SectionLabel(
+                      actualLabel: "Date",
+                      leadingIcon: const Icon(LucideIcons.calendar, size: 18),
+                    ),
+                    SizedBox(height: AppSpacing.sm),
+                    GestureDetector(
+                      onTap: _showDatePicker,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 14,
+                        ),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Theme.of(context).colorScheme.outline,
+                          ),
+                          borderRadius: BorderRadius.circular(AppRadius.md),
+                        ),
+                        child: Text(
+                              DateFormat("MMMM d, y").format(currentDate),
+                              style: AppTextStyles.bodyLarge,
+                            ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+  }
+
   Wrap categoryWrap() {
     return Wrap(
       spacing: 10,
@@ -173,8 +178,20 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
       }),
     );
   }
+}
 
-  Padding expenseTextField() {
+class ExpenseTextField extends StatelessWidget {
+  const ExpenseTextField({
+    super.key,
+    required this.context,
+    required TextEditingController amountController,
+  }) : _amountController = amountController;
+
+  final BuildContext context;
+  final TextEditingController _amountController;
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 22.0),
       child: Row(
@@ -201,7 +218,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                 hintText: "0.00",
                 hintStyle: AppTextStyles.displayLarge.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: Colors.black45,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                   fontSize: 42,
                 ),
                 border: UnderlineInputBorder(
@@ -252,7 +269,7 @@ class SectionLabel extends StatelessWidget {
         Text(
           actualLabel,
           style: AppTextStyles.bodyLarge.copyWith(
-            color: Colors.black.withAlpha(150),
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
             fontWeight: FontWeight.bold,
           ),
         ),
