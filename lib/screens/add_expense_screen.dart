@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:spendly/models/expense_model.dart';
 import 'package:spendly/themes/app_spacing.dart';
@@ -25,8 +26,14 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
       initialDate: DateTime.now(),
       firstDate: DateTime(2020), 
       lastDate: DateTime(2027),
-      );
+      ).then((value) {
+        setState(() {
+          currentDate = value!;
+        });
+      });
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -90,11 +97,12 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                   children: [
                     SectionLabel(actualLabel: "Date", leadingIcon: Icon(LucideIcons.calendar, size: 18,),),
                     SizedBox(height: AppSpacing.sm,),
-                    AppButton(label: "$currentDate.totoIso8601String()", onPressed: _showDatePicker),
+                    AppButton(label: DateFormat("MMMM d, y").format(currentDate), onPressed: _showDatePicker),
                   ],
                 ),
               ),
             ],),
+            SizedBox(height: AppSpacing.md),
 
             //Note____________________________________________________
             SectionLabel(actualLabel: "Notes (Optional)"),
