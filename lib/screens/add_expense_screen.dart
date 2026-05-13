@@ -19,6 +19,7 @@ class AddExpenseScreen extends StatefulWidget {
 class _AddExpenseScreenState extends State<AddExpenseScreen> {
   int selectedCategory = -1;
   DateTime currentDate = DateTime.now();
+  final TextEditingController _amountController = TextEditingController();
 
   Future<void> _showDatePicker() async {
     final DateTime? pickedDate = await showDatePicker(
@@ -35,6 +36,12 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
       }
   }
 
+
+  @override
+  void dispose() {
+    _amountController.dispose();
+    super.dispose();
+  }
 
 
   @override
@@ -158,14 +165,14 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
         children: [
           Icon(LucideIcons.dollarSign600, size: 35, color: Theme.of(context).colorScheme.primary),
           SizedBox(width: 10),
-          SizedBox(
-            width: screenSize.width * 0.5,
+          Expanded(
             child: TextFormField(
-              keyboardType: TextInputType.number,
+              controller: _amountController,
+              keyboardType: TextInputType.numberWithOptions(decimal: true),
               textAlign: TextAlign.center,
               style: AppTextStyles.displayLarge.copyWith(
                 fontWeight: FontWeight.bold,
-                fontSize: 40,
+                fontSize: 42,
               ),
               decoration: InputDecoration(
                 floatingLabelBehavior: FloatingLabelBehavior.never,
@@ -173,7 +180,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                 hintStyle: AppTextStyles.displayLarge.copyWith(
                   fontWeight: FontWeight.bold,
                   color: Colors.black45,
-                  fontSize: 40,
+                  fontSize: 42,
                 ),
                 border: UnderlineInputBorder(
                   borderSide: BorderSide(
@@ -181,21 +188,21 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                     width: 2.0,
                   ),
                 ),
-
+            
                 enabledBorder: UnderlineInputBorder(
                   borderSide: BorderSide(
                     color: Colors.blue.shade100,
                     width: 2.0,
                   ),
                 ),
-
+            
                 focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(
                     color: Theme.of(context).colorScheme.primary,
                     width: 2,
                   ),
                 ),
-
+            
                 isDense: true,
                 contentPadding: EdgeInsets.symmetric(vertical: 16),
               ),
