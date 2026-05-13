@@ -20,17 +20,19 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   int selectedCategory = -1;
   DateTime currentDate = DateTime.now();
 
-  void _showDatePicker() {
-    showDatePicker(
+  Future<void> _showDatePicker() async {
+    final DateTime? pickedDate = await showDatePicker(
       context: context, 
-      initialDate: DateTime.now(),
+      initialDate: currentDate,
       firstDate: DateTime(2020), 
       lastDate: DateTime(2027),
-      ).then((value) {
+      );
+
+      if(pickedDate != null && pickedDate != currentDate){
         setState(() {
-          currentDate = value!;
+          currentDate = pickedDate;
         });
-      });
+      }
   }
 
 
