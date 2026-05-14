@@ -19,11 +19,17 @@ class AddExpenseScreen extends StatefulWidget {
 }
 
 class _AddExpenseScreenState extends State<AddExpenseScreen> {
-  int selectedCategory = -1;
   DateTime currentDate = DateTime.now();
   final TextEditingController _amountController = TextEditingController();
   String? selectedMethod;
-  List<String> paymentMethodList = ["Credit Card", "Debit Card", "Mobile Wallet", "Cash", "Check", "Others.."];
+  List<String> paymentMethodList = [
+    "Credit Card",
+    "Debit Card",
+    "Mobile Wallet",
+    "Cash",
+    "Check",
+    "Others..",
+  ];
 
   Future<void> _showDatePicker() async {
     final DateTime? pickedDate = await showDatePicker(
@@ -74,7 +80,10 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
               ),
             ),
             // Add Expense TextFeild___________________________________________
-            ExpenseTextField(context: context, amountController:  _amountController),
+            ExpenseTextField(
+              context: context,
+              amountController: _amountController,
+            ),
 
             SizedBox(height: AppSpacing.xl),
 
@@ -95,7 +104,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
             ),
             SizedBox(height: AppSpacing.md),
 
-            categoryWrap(),
+            categoryWrap(context, paymentProvider),
 
             SizedBox(height: AppSpacing.xl),
 
@@ -134,88 +143,76 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
   Expanded dateMethod(BuildContext context) {
     return Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SectionLabel(
-                      actualLabel: "Date",
-                      leadingIcon: const Icon(LucideIcons.calendar, size: 18),
-                    ),
-                    SizedBox(height: AppSpacing.sm),
-                    GestureDetector(
-                      onTap: _showDatePicker,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 14,
-                        ),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Theme.of(context).colorScheme.outline,
-                          ),
-                          borderRadius: BorderRadius.circular(AppRadius.md),
-                        ),
-                        child: Text(
-                              DateFormat("MMMM d, y").format(currentDate),
-                              style: AppTextStyles.bodyLarge,
-                            ),
-                      ),
-                    ),
-                  ],
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SectionLabel(
+            actualLabel: "Date",
+            leadingIcon: const Icon(LucideIcons.calendar, size: 18),
+          ),
+          SizedBox(height: AppSpacing.sm),
+          GestureDetector(
+            onTap: _showDatePicker,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.outline,
                 ),
-              );
-  }
- 
-  Expanded paymentMethod(BuildContext context, PaymentMethodProvider paymentProvider) {
-    return Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SectionLabel(
-                      actualLabel: "Payment Method",
-                    ),
-                    SizedBox(height: AppSpacing.sm),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 14,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Theme.of(context).colorScheme.outline,
-                        ),
-                        borderRadius: BorderRadius.circular(AppRadius.md),
-                      ),
-                      child: DropdownButton<String>(
-                        
-                        focusColor: Colors.transparent,
-                                  value: paymentProvider.selectedMethod,
-                                  isDense: true,
-                                  hint: Text(
-                                    paymentMethodList[0],
-                                    style: AppTextStyles.bodyLarge,
-                                  ),
-                                  underline: const SizedBox(),
-                                  icon: const SizedBox(),
-                                  items: paymentMethodList.map((item) {
-                                    return DropdownMenuItem(
-                                      value: item,
-                                      child: Text(
-                                        item,
-                                        style: AppTextStyles.bodyLarge,
-                                      ),
-                                    );
-                                  }).toList(),
-                                  onChanged: (val) =>
-                                      context.read<PaymentMethodProvider>().changePaymentMethod(val),
-                                ),
-                    ),
-                  ],
-                ),
-              );
+                borderRadius: BorderRadius.circular(AppRadius.md),
+              ),
+              child: Text(
+                DateFormat("MMMM d, y").format(currentDate),
+                style: AppTextStyles.bodyLarge,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
-  Wrap categoryWrap() {
+  Expanded paymentMethod(
+    BuildContext context,
+    PaymentMethodProvider paymentProvider,
+  ) {
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SectionLabel(actualLabel: "Payment Method"),
+          SizedBox(height: AppSpacing.sm),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            decoration: BoxDecoration(
+              border: Border.all(color: Theme.of(context).colorScheme.outline),
+              borderRadius: BorderRadius.circular(AppRadius.md),
+            ),
+            child: DropdownButton<String>(
+              focusColor: Colors.transparent,
+              value: paymentProvider.selectedMethod,
+              isDense: true,
+              hint: Text(paymentMethodList[0], style: AppTextStyles.bodyLarge),
+              borderRadius: BorderRadius.circular(AppRadius.md),
+              underline: const SizedBox(),
+              icon: const SizedBox(),
+              items: paymentMethodList.map((item) {
+                return DropdownMenuItem(
+                  value: item,
+                  child: Text(item, style: AppTextStyles.bodyLarge),
+                );
+              }).toList(),
+              onChanged: (val) => context
+                  .read<PaymentMethodProvider>()
+                  .changePaymentMethod(val),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Wrap categoryWrap(BuildContext context, PaymentMethodProvider paymentProvider) {
     return Wrap(
       spacing: 10,
       runSpacing: 10,
@@ -223,9 +220,10 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
         Category cat = categoryList[index];
         return AppChip(
           onTap: () {
-            setState(() => selectedCategory = index);
+            context.read<PaymentMethodProvider>().changeCategory(index);
+            // setState(() => selectedCategory = index);
           },
-          selected: selectedCategory == index,
+          selected: context.read<PaymentMethodProvider>().selectedCategory == index,
           variant: AppChipVariant.outlined,
           leadingIcon: Icon(cat.icon),
           label: cat.name,
@@ -235,7 +233,6 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
     );
   }
 }
-
 class ExpenseTextField extends StatelessWidget {
   const ExpenseTextField({
     super.key,
