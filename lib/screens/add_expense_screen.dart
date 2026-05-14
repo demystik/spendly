@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:provider/provider.dart';
 import 'package:spendly/models/expense_model.dart';
+import 'package:spendly/providers/payment_method.dart';
 import 'package:spendly/themes/app_spacing.dart';
 import 'package:spendly/themes/app_text_styles.dart';
 import 'package:spendly/widgets/app_button.dart';
@@ -20,6 +22,8 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   int selectedCategory = -1;
   DateTime currentDate = DateTime.now();
   final TextEditingController _amountController = TextEditingController();
+  String? selectedMethod;
+  List<String> paymentMethodList = ["Credit Card", "Debit Card", "Mobile Wallet", "Cash", "Check", "Others.."];
 
   Future<void> _showDatePicker() async {
     final DateTime? pickedDate = await showDatePicker(
@@ -44,6 +48,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final paymentProvider = context.watch<PaymentMethodProvider>();
     return Scaffold(
       appBar: AppBar(
         // foregroundColor: Theme.of(context).colorScheme.onPrimary,
@@ -96,8 +101,10 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
             //Date and Payment method_________________________________________
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 dateMethod(context),
+                paymentMethod(context, paymentProvider),
               ],
             ),
             SizedBox(height: AppSpacing.xl),
@@ -153,6 +160,55 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                               style: AppTextStyles.bodyLarge,
                             ),
                       ),
+                    ),
+                  ],
+                ),
+              );
+  }
+ 
+  Expanded paymentMethod(BuildContext context, PaymentMethodProvider paymentProvider) {
+    return Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SectionLabel(
+                      actualLabel: "Payment Method",
+                    ),
+                    SizedBox(height: AppSpacing.sm),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 14,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Theme.of(context).colorScheme.outline,
+                        ),
+                        borderRadius: BorderRadius.circular(AppRadius.md),
+                      ),
+                      child: DropdownButton<String>(
+                        
+                        focusColor: Colors.transparent,
+                                  value: paymentProvider.selectedMethod,
+                                  isDense: true,
+                                  hint: Text(
+                                    paymentMethodList[0],
+                                    style: AppTextStyles.bodyLarge,
+                                  ),
+                                  underline: const SizedBox(),
+                                  icon: const SizedBox(),
+                                  items: paymentMethodList.map((item) {
+                                    return DropdownMenuItem(
+                                      value: item,
+                                      child: Text(
+                                        item,
+                                        style: AppTextStyles.bodyLarge,
+                                      ),
+                                    );
+                                  }).toList(),
+                                  onChanged: (val) =>
+                                      context.read<PaymentMethodProvider>().changePaymentMethod(val),
+                                ),
                     ),
                   ],
                 ),
