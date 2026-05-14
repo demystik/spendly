@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:spendly/models/expense_model.dart';
+import 'package:spendly/providers/category_provider.dart';
 import 'package:spendly/providers/expense_provider.dart';
 import 'package:spendly/providers/payment_method.dart';
 import 'package:spendly/themes/app_spacing.dart';
@@ -24,7 +25,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _noteController = TextEditingController();
-  String? selectedMethod;
+
 
   List<String> paymentMethodList = [
     "Credit Card",
@@ -42,7 +43,6 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
       firstDate: DateTime(2020),
       lastDate: DateTime(2027),
     );
-
     if (pickedDate != null && pickedDate != currentDate) {
       setState(() {
         currentDate = pickedDate;
@@ -52,7 +52,6 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
   @override
   void dispose() {
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
     _amountController.dispose();
     _titleController.dispose();
     _noteController.dispose();
@@ -61,7 +60,9 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final paymentProvider = context.watch<PaymentMethodProvider>();
+    final expenseProvider = context.watch<ExpenseProvider>();
+    final paymentProvider = context.watch<PaymentProvider>();
+    final categoryProvider = context.watch<CategoryProvider>();
     return Scaffold(
       appBar: AppBar(
         // foregroundColor: Theme.of(context).colorScheme.onPrimary,
@@ -88,7 +89,6 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
             ),
             // Add Expense TextFeild___________________________________________
             ExpenseTextField(
-              context: context,
               amountController: _amountController,
             ),
 
@@ -115,7 +115,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
             ),
             SizedBox(height: AppSpacing.md),
 
-            categoryWrap(context, paymentProvider),
+            CategoryWrap(context: context, categoryProvider: categoryProvider),
 
             SizedBox(height: AppSpacing.xl),
 
@@ -123,8 +123,8 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                dateMethod(context),
-                paymentMethod(context, paymentProvider),
+                dateSelectorWidget(context, _showDatePicker(), currentDate),
+                PaymentMethod(paymentMethodList: paymentMethodList, context: context, paymentProvider: paymentProvider),
               ],
             ),
             SizedBox(height: AppSpacing.xl),
@@ -145,21 +145,21 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
               variant: AppButtonVariant.primary,
               label: "Save Expense",
               onPressed: () {
-                if (_validateInput()) {
+                if (_validateInput(categoryProvider)) {
                   final double amount = double.parse(
                     _amountController.text.trim(),
                   );
                   final String title = _titleController.text.trim();
                   final String note = _noteController.text;
+                  final int? selectedCat = categoryProvider.selectedCategory;
+                  if(selectedCat == null) return;
 
-                  context.read<ExpenseProvider>().addExpense(
+                  expenseProvider.addExpense(
                     amount,
                     title,
                     currentDate,
                     note,
-                    categoryList[context
-                        .read<PaymentMethodProvider>()
-                        .selectedCategory!],
+                    categoryList[selectedCat],
                   );
 
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -169,8 +169,8 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                     ),
                   );
 
-                  context.read<PaymentMethodProvider>().resetCategory();
-
+                  context.read<CategoryProvider>().resetCategory();
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
                   context.pop();
                 }
               },
@@ -182,7 +182,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
     );
   }
 
-  bool _validateInput() {
+  bool _validateInput(CategoryProvider category) {
     final String expenseAmount = _amountController.text.trim();
     final String expenseTitle = _titleController.text.trim();
 
@@ -202,7 +202,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
       return false;
     }
 
-    int? selectedCat = context.read<PaymentMethodProvider>().selectedCategory;
+    int? selectedCat = category.selectedCategory;
     if (selectedCat == null || selectedCat < 0) {
       _showErrorSnackBar("Please select category");
       return false;
@@ -220,8 +220,9 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
       ),
     );
   }
+}
 
-  Expanded dateMethod(BuildContext context) {
+  Expanded dateSelectorWidget(BuildContext context, showDatePicker, currentDate) {
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -232,7 +233,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
           ),
           SizedBox(height: AppSpacing.sm),
           GestureDetector(
-            onTap: _showDatePicker,
+            onTap: showDatePicker,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(
@@ -251,11 +252,52 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
       ),
     );
   }
+class CategoryWrap extends StatelessWidget {
+  const CategoryWrap({
+    super.key,
+    required this.context,
+    required this.categoryProvider,
+  });
 
-  Expanded paymentMethod(
-    BuildContext context,
-    PaymentMethodProvider paymentProvider,
-  ) {
+  final BuildContext context;
+  final CategoryProvider categoryProvider;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 10,
+      runSpacing: 10,
+      children: List.generate(categoryList.length, (index) {
+        Category cat = categoryList[index];
+        return AppChip(
+          onTap: () {
+            categoryProvider.changeCategory(index);
+            // setState(() => selectedCategory = index);
+          },
+          selected: categoryProvider.selectedCategory == index,
+          variant: AppChipVariant.outlined,
+          leadingIcon: Icon(cat.icon),
+          label: cat.name,
+          labelTextStyle: AppTextStyles.bodyLarge,
+        );
+      }),
+    );
+  }
+}
+class PaymentMethod extends StatelessWidget {
+  const PaymentMethod({
+    super.key,
+    required this.paymentMethodList,
+    required this.context,
+    required this.paymentProvider,
+  });
+
+  final List<String> paymentMethodList;
+  final BuildContext context;
+  final PaymentProvider paymentProvider;
+
+  @override
+  Widget build(BuildContext context) {
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -282,8 +324,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                   child: Text(item, style: AppTextStyles.bodyLarge),
                 );
               }).toList(),
-              onChanged: (val) => context
-                  .read<PaymentMethodProvider>()
+              onChanged: (val) => paymentProvider
                   .changePaymentMethod(val),
             ),
           ),
@@ -291,41 +332,13 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
       ),
     );
   }
-
-  Wrap categoryWrap(
-    BuildContext context,
-    PaymentMethodProvider paymentProvider,
-  ) {
-    return Wrap(
-      spacing: 10,
-      runSpacing: 10,
-      children: List.generate(categoryList.length, (index) {
-        Category cat = categoryList[index];
-        return AppChip(
-          onTap: () {
-            context.read<PaymentMethodProvider>().changeCategory(index);
-            // setState(() => selectedCategory = index);
-          },
-          selected:
-              context.read<PaymentMethodProvider>().selectedCategory == index,
-          variant: AppChipVariant.outlined,
-          leadingIcon: Icon(cat.icon),
-          label: cat.name,
-          labelTextStyle: AppTextStyles.bodyLarge,
-        );
-      }),
-    );
-  }
 }
 class ExpenseTextField extends StatelessWidget {
+  final TextEditingController amountController;
   const ExpenseTextField({
     super.key,
-    required this.context,
-    required TextEditingController amountController,
-  }) : _amountController = amountController;
-
-  final BuildContext context;
-  final TextEditingController _amountController;
+    required this.amountController,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -343,7 +356,7 @@ class ExpenseTextField extends StatelessWidget {
           SizedBox(width: 10),
           Expanded(
             child: TextFormField(
-              controller: _amountController,
+              controller: amountController,
               keyboardType: TextInputType.numberWithOptions(decimal: true),
               textAlign: TextAlign.center,
               style: AppTextStyles.displayLarge.copyWith(
@@ -389,7 +402,6 @@ class ExpenseTextField extends StatelessWidget {
     );
   }
 }
-
 class SectionLabel extends StatelessWidget {
   const SectionLabel({super.key, required this.actualLabel, this.leadingIcon});
   final String actualLabel;

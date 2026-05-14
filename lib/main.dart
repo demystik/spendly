@@ -1,26 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:spendly/providers/category_provider.dart';
 import 'package:spendly/providers/expense_provider.dart';
 import 'package:spendly/providers/payment_method.dart';
 import 'package:spendly/routes/app_router.dart';
 
 void main() {
   runApp(
-    
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (_) => PaymentMethodProvider()
-          ),
-        ChangeNotifierProvider(
-          create: (_) => ExpenseProvider()
-          ),
+        ChangeNotifierProvider(create: (_) => PaymentProvider()),
+        ChangeNotifierProvider(create: (_) => ExpenseProvider()),
+        ChangeNotifierProvider(create: (_) => CategoryProvider()),
       ],
-    child: const MyApp()
-    ),   
-    );
+      child: const MyApp(),
+    ),
+  );
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -31,18 +27,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       title: "Spendly",
       debugShowCheckedModeBanner: false,
-    
+
       theme: ThemeData(
-       colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark
-      ),
+      darkTheme: ThemeData(brightness: Brightness.dark),
       themeMode: ThemeMode.light,
-    
+
       routerConfig: appRouter,
     );
   }
 }
-
-
