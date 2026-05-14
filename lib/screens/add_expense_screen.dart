@@ -19,9 +19,13 @@ class AddExpenseScreen extends StatefulWidget {
 }
 
 class _AddExpenseScreenState extends State<AddExpenseScreen> {
+  
   DateTime currentDate = DateTime.now();
   final TextEditingController _amountController = TextEditingController();
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _noteController = TextEditingController();
   String? selectedMethod;
+
   List<String> paymentMethodList = [
     "Credit Card",
     "Debit Card",
@@ -49,6 +53,8 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   @override
   void dispose() {
     _amountController.dispose();
+    _titleController.dispose();
+    _noteController.dispose();
     super.dispose();
   }
 
@@ -93,7 +99,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
             ),
 
             SizedBox(height: AppSpacing.md),
-            AppTextField(label: "e.g Lunch at Joe's"),
+            AppTextField(controller: _titleController, label: "e.g Lunch at Joe's"),
 
             SizedBox(height: AppSpacing.xl),
 
@@ -122,6 +128,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
             SectionLabel(actualLabel: "Notes (Optional)"),
             SizedBox(height: AppSpacing.md),
             AppTextField(
+              controller: _noteController,
               label: "Add more details about this expense...",
               hint: "Add more details about this expense...",
               minLines: 5,
@@ -132,7 +139,9 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
             AppButton(
               variant: AppButtonVariant.primary,
               label: "Save Expense",
-              onPressed: () {},
+              onPressed: () {
+                
+              },
             ),
             SizedBox(height: AppSpacing.md),
           ],
