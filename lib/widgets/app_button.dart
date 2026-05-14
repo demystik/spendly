@@ -27,8 +27,11 @@ class AppButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: variant == AppButtonVariant.outlined ? Colors.grey.shade100 : colors.primary,
+          elevation: 0,
+          backgroundColor: variant == AppButtonVariant.outlined ? Colors.grey.shade50 : colors.primary,
+          
           shape: RoundedRectangleBorder(
+            side: variant == AppButtonVariant.outlined ? BorderSide(width: 1, color: Theme.of(context).colorScheme.surfaceContainerHighest) : BorderSide(color: Colors.transparent),
             borderRadius: BorderRadius.circular(AppRadius.md),
           ),
         ),

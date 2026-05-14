@@ -5,6 +5,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:spendly/constants/app_icons.dart';
 import 'package:spendly/models/expense_model.dart';
 import 'package:spendly/providers/expense_provider.dart';
+import 'package:spendly/shared/no_expense.dart';
 import 'package:spendly/themes/app_spacing.dart';
 import 'package:spendly/themes/app_text_styles.dart';
 import 'package:spendly/widgets/app_button.dart';
@@ -92,7 +93,9 @@ class HomeScreen extends StatelessWidget {
                     SizedBox(height: AppSpacing.md),
 
                     //___Recent Transactions List_______________________________________________________
-                    ListView.builder(
+                    recentExpense.expense.isEmpty ?
+                    NoExpense()
+                    : ListView.builder(
                       scrollDirection: Axis.vertical,
                       physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
