@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 // import 'package:spendly/constants/app_icons.dart';
 
-class ExpenseModel {
-  double id;
+class Expense {
+  String id;
   String title;
   double amount;
   DateTime date;
   String note;
   Category category;
 
-  ExpenseModel({
+  Expense({
     required this.id,
     required this.title,
     required this.amount,
@@ -35,7 +35,7 @@ class Category {
 }
 
 class RecentTransaction {
-  int transactionId;
+  String transactionId;
   Category transactionCategory;
   DateTime transactionTime;
   double transactionAmount;
@@ -49,13 +49,6 @@ class RecentTransaction {
   });
 }
 
-List<RecentTransaction> recentTransactions = [
-  RecentTransaction(transactionId: DateTime.now().millisecondsSinceEpoch, transactionCategory: categoryList[0], transactionTime: DateTime.now(), transactionAmount: 25.50, transactionNote: "Uber Ride"),
-  RecentTransaction(transactionId: DateTime.now().millisecondsSinceEpoch, transactionCategory: categoryList[1], transactionTime: DateTime.now(), transactionAmount: 18.50, transactionNote: "Starbucks Coffee"),
-  RecentTransaction(transactionId: DateTime.now().millisecondsSinceEpoch, transactionCategory: categoryList[2], transactionTime: DateTime.now(), transactionAmount: 43.00, transactionNote: "Apple Store"),
-  RecentTransaction(transactionId: DateTime.now().millisecondsSinceEpoch, transactionCategory: categoryList[3], transactionTime: DateTime.now(), transactionAmount: 72.00, transactionNote: "Whole Food Market"),
-  RecentTransaction(transactionId: DateTime.now().millisecondsSinceEpoch, transactionCategory: categoryList[4], transactionTime: DateTime.now(), transactionAmount: 37.0, transactionNote: "Netflix Subsciption"),
-];
 
 List<Category> categoryList = [
   Category(

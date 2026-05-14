@@ -4,17 +4,20 @@ import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:spendly/constants/app_icons.dart';
 import 'package:spendly/models/expense_model.dart';
+import 'package:spendly/providers/recent_transactions_providers.dart';
 import 'package:spendly/themes/app_spacing.dart';
 import 'package:spendly/themes/app_text_styles.dart';
 import 'package:spendly/widgets/app_button.dart';
 import 'package:spendly/widgets/app_card.dart';
 import 'package:spendly/widgets/app_chip.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+  final recentTransactionProvider = context.watch<RecentTransactionProvider>().recentTransactions;
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).colorScheme.primary,
@@ -22,7 +25,7 @@ class HomeScreen extends StatelessWidget {
         onPressed: (){
           context.push("/add_expense_screen");
         },
-        child: Icon(LucideIcons.plus400, color: Colors.white70, size: 30,),
+        child: const Icon(LucideIcons.plus400, color: Colors.white70, size: 30,),
         ),
       body: SafeArea(
         child: Column(
@@ -38,7 +41,7 @@ class HomeScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(height: AppSpacing.sm),
-                    Text("Hello, Alex!", style: AppTextStyles.displayMedium),
+                    Text("Hello, Henry!", style: AppTextStyles.displayMedium),
                     Text(
                       "Here is your financial summary for March",
                       style: AppTextStyles.bodyMedium,
@@ -93,10 +96,9 @@ class HomeScreen extends StatelessWidget {
                       scrollDirection: Axis.vertical,
                       physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount: recentTransactions.length,
+                      itemCount: recentTransactionProvider.length,
                       itemBuilder: (context, index) {
-                        RecentTransaction recentTrans =
-                            recentTransactions[index];
+                        RecentTransaction recentTrans = recentTransactionProvider[index];
                         return RecentTransactionListTiles(
                           recentTrans: recentTrans,
                         );
