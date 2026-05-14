@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:spendly/constants/app_icons.dart';
 import 'package:spendly/models/expense_model.dart';
-import 'package:spendly/providers/recent_transactions_providers.dart';
+import 'package:spendly/providers/expense_provider.dart';
 import 'package:spendly/themes/app_spacing.dart';
 import 'package:spendly/themes/app_text_styles.dart';
 import 'package:spendly/widgets/app_button.dart';
@@ -17,7 +17,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  final recentTransactionProvider = context.watch<RecentTransactionProvider>().recentTransactions;
+  final recentExpense = context.watch<ExpenseProvider>();
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).colorScheme.primary,
@@ -96,9 +96,9 @@ class HomeScreen extends StatelessWidget {
                       scrollDirection: Axis.vertical,
                       physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount: recentTransactionProvider.length,
+                      itemCount: recentExpense.expense.length,
                       itemBuilder: (context, index) {
-                        RecentTransaction recentTrans = recentTransactionProvider[index];
+                        var recentTrans = recentExpense.expense[index];
                         return RecentTransactionListTiles(
                           recentTrans: recentTrans,
                         );
@@ -148,7 +148,7 @@ Row middleRowHeader(
 class RecentTransactionListTiles extends StatelessWidget {
   const RecentTransactionListTiles({super.key, required this.recentTrans});
 
-  final RecentTransaction recentTrans;
+  final Expense recentTrans;
 
   @override
   Widget build(BuildContext context) {
@@ -168,14 +168,14 @@ class RecentTransactionListTiles extends StatelessWidget {
             shape: BoxShape.circle,
             color: Colors.grey.shade200,
           ),
-          child: Icon(recentTrans.transactionCategory.icon, color: Colors.blue.shade400,)
+          child: Icon(recentTrans.category.icon, color: Colors.blue.shade400,)
         ),
         title: Text(
-          recentTrans.transactionNote,
+          recentTrans.note,
           style: AppTextStyles.titleMedium,
         ),
         subtitle: Text(
-          "${recentTrans.transactionCategory.name} . ${recentTrans.transactionTime}",
+          "${recentTrans.category.name} . ${recentTrans.date}",
           style: AppTextStyles.bodyMedium,
         ),
         trailing: Column(
@@ -184,7 +184,7 @@ class RecentTransactionListTiles extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              "-\$${recentTrans.transactionAmount}",
+              "-\$${recentTrans.amount}",
               style: AppTextStyles.titleMedium,
             ),
             AppChip(
