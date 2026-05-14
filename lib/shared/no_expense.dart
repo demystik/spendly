@@ -23,7 +23,9 @@ class NoExpense extends StatelessWidget {
             "You haven't added any transaction yet. Start tracking your budget today",
             textAlign: TextAlign.center,
             maxLines: 3,
+            
           ),
+          SizedBox(height: AppSpacing.sm,),
           AppButton(
             label: "Add First Expense",
             variant: AppButtonVariant.outlined,
