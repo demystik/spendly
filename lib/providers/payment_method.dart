@@ -17,4 +17,9 @@ class PaymentMethodProvider  with ChangeNotifier {
     notifyListeners();
   }
 
+  void resetCategory(){
+    _selectedCategory = null;
+    notifyListeners();
+  }
+
 }

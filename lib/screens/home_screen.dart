@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:spendly/constants/app_icons.dart';
 import 'package:spendly/models/expense_model.dart';
@@ -155,48 +156,51 @@ class RecentTransactionListTiles extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadiusGeometry.circular(12),
-        side: BorderSide(width: 1, color: Colors.grey.shade300),
-      ),
-
-      child: ListTile(
-        leading: Container(
-          padding: EdgeInsets.all(AppSpacing.sm),
-          width: 50,
-          height: 50,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.grey.shade200,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4.0),
+      child: Card(
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadiusGeometry.circular(12),
+          side: BorderSide(width: 1, color: Colors.grey.shade300),
+        ),
+      
+        child: ListTile(
+          leading: Container(
+            padding: EdgeInsets.all(AppSpacing.sm),
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.grey.shade200,
+            ),
+            child: Icon(recentTrans.category.icon, color: Colors.blue.shade400,)
           ),
-          child: Icon(recentTrans.category.icon, color: Colors.blue.shade400,)
-        ),
-        title: Text(
-          recentTrans.note,
-          style: AppTextStyles.titleMedium,
-        ),
-        subtitle: Text(
-          "${recentTrans.category.name} . ${recentTrans.date}",
-          style: AppTextStyles.bodyMedium,
-        ),
-        trailing: Column(
-          spacing: 5,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              "-\$${recentTrans.amount}",
-              style: AppTextStyles.titleMedium,
-            ),
-            AppChip(
-              label: "completed",
-              labelTextStyle: TextStyle(fontSize: 10),
-              variant: AppChipVariant.outlined,
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-            ),
-          ],
+          title: Text(
+            recentTrans.title,
+            style: AppTextStyles.titleMedium,
+          ),
+          subtitle: Text(
+            "${recentTrans.category.name} . ${DateFormat("MMMM d, y").format(recentTrans.date)}",
+            style: AppTextStyles.bodySmall,
+          ),
+          trailing: Column(
+            spacing: 5,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "-\$${recentTrans.amount}",
+                style: AppTextStyles.titleMedium,
+              ),
+              AppChip(
+                label: "completed",
+                labelTextStyle: TextStyle(fontSize: 10),
+                variant: AppChipVariant.outlined,
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              ),
+            ],
+          ),
         ),
       ),
     );

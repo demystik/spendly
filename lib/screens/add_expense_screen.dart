@@ -168,6 +168,10 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                       backgroundColor: Theme.of(context).colorScheme.onPrimary,
                     ),
                   );
+
+                  context.read<PaymentMethodProvider>().resetCategory();
+
+                  context.pop();
                 }
               },
             ),
@@ -187,7 +191,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
       return false;
     }
 
-    final double? amount = double.tryParse(expenseTitle);
+    final double? amount = double.tryParse(expenseAmount);
     if (amount == null || amount < 0) {
       _showErrorSnackBar("Please enter valid amount");
       return false;
@@ -313,7 +317,6 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
     );
   }
 }
-
 class ExpenseTextField extends StatelessWidget {
   const ExpenseTextField({
     super.key,
