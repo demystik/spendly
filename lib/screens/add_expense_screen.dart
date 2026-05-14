@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:spendly/models/expense_model.dart';
+import 'package:spendly/providers/expense_provider.dart';
 import 'package:spendly/providers/payment_method.dart';
 import 'package:spendly/themes/app_spacing.dart';
 import 'package:spendly/themes/app_text_styles.dart';
@@ -19,7 +20,6 @@ class AddExpenseScreen extends StatefulWidget {
 }
 
 class _AddExpenseScreenState extends State<AddExpenseScreen> {
-  
   DateTime currentDate = DateTime.now();
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _titleController = TextEditingController();
@@ -52,6 +52,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
   @override
   void dispose() {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
     _amountController.dispose();
     _titleController.dispose();
     _noteController.dispose();
@@ -93,13 +94,17 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
             SizedBox(height: AppSpacing.xl),
 
+            // Expense Title TextFeild___________________________________________
             SectionLabel(
               actualLabel: "What was this for?",
               leadingIcon: const Icon(LucideIcons.tag, size: 18),
             ),
 
             SizedBox(height: AppSpacing.md),
-            AppTextField(controller: _titleController, label: "e.g Lunch at Joe's"),
+            AppTextField(
+              controller: _titleController,
+              label: "e.g Lunch at Joe's",
+            ),
 
             SizedBox(height: AppSpacing.xl),
 
@@ -140,12 +145,74 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
               variant: AppButtonVariant.primary,
               label: "Save Expense",
               onPressed: () {
-                
+                if (_validateInput()) {
+                  final double amount = double.parse(
+                    _amountController.text.trim(),
+                  );
+                  final String title = _titleController.text.trim();
+                  final String note = _noteController.text;
+
+                  context.read<ExpenseProvider>().addExpense(
+                    amount,
+                    title,
+                    currentDate,
+                    note,
+                    categoryList[context
+                        .read<PaymentMethodProvider>()
+                        .selectedCategory!],
+                  );
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text("Expense Saved Successfully"),
+                      backgroundColor: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                  );
+                }
               },
             ),
             SizedBox(height: AppSpacing.md),
           ],
         ),
+      ),
+    );
+  }
+
+  bool _validateInput() {
+    final String expenseAmount = _amountController.text.trim();
+    final String expenseTitle = _titleController.text.trim();
+
+    if (expenseAmount.isEmpty) {
+      _showErrorSnackBar("Please enter amount");
+      return false;
+    }
+
+    final double? amount = double.tryParse(expenseTitle);
+    if (amount == null || amount < 0) {
+      _showErrorSnackBar("Please enter valid amount");
+      return false;
+    }
+
+    if (expenseTitle.isEmpty) {
+      _showErrorSnackBar("Please enter title");
+      return false;
+    }
+
+    int? selectedCat = context.read<PaymentMethodProvider>().selectedCategory;
+    if (selectedCat == null || selectedCat < 0) {
+      _showErrorSnackBar("Please select category");
+      return false;
+    }
+
+    return true;
+  }
+
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Theme.of(context).colorScheme.error,
+        behavior: SnackBarBehavior.floating,
       ),
     );
   }
@@ -221,7 +288,10 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
     );
   }
 
-  Wrap categoryWrap(BuildContext context, PaymentMethodProvider paymentProvider) {
+  Wrap categoryWrap(
+    BuildContext context,
+    PaymentMethodProvider paymentProvider,
+  ) {
     return Wrap(
       spacing: 10,
       runSpacing: 10,
@@ -232,7 +302,8 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
             context.read<PaymentMethodProvider>().changeCategory(index);
             // setState(() => selectedCategory = index);
           },
-          selected: context.read<PaymentMethodProvider>().selectedCategory == index,
+          selected:
+              context.read<PaymentMethodProvider>().selectedCategory == index,
           variant: AppChipVariant.outlined,
           leadingIcon: Icon(cat.icon),
           label: cat.name,
@@ -242,6 +313,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
     );
   }
 }
+
 class ExpenseTextField extends StatelessWidget {
   const ExpenseTextField({
     super.key,
