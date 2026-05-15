@@ -137,7 +137,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                   );
                   final String title = _titleController.text.trim();
                   final String note = _noteController.text;
-                  final int? selectedCat = context.read<CategoryProvider>().selectedCategory;
+                  final Category? selectedCat = context.read<CategoryProvider>().selectedCategory;
                   final expenseProvider = context.read<ExpenseProvider>();
                   final currentDate = context.read<DatetimeProvider>().currentDate;
                   if (selectedCat == null) return;
@@ -147,7 +147,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                       title,
                       currentDate,
                       note,
-                      categoryList[selectedCat],
+                      selectedCat,
                     );
 
 
@@ -264,9 +264,9 @@ class CategoryWrap extends StatelessWidget {
         Category cat = categoryList[index];
         return AppChip(
           onTap: () {
-            categoryProvider.changeCategory(index);
+            categoryProvider.changeCategory(cat);
           },
-          selected: categoryProvider.selectedCategory == index,
+          selected: categoryProvider.selectedCategory == cat,
           variant: AppChipVariant.outlined,
           leadingIcon: Icon(cat.icon),
           label: cat.name,

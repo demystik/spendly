@@ -5,6 +5,7 @@ import 'package:spendly/screens/analytics_screen.dart';
 import 'package:spendly/screens/budget_screen.dart';
 import 'package:spendly/screens/home_screen.dart';
 import 'package:spendly/screens/profile_screen.dart';
+import 'package:spendly/screens/search_and_filter_screen.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/homescreen',
@@ -62,6 +63,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: "/add_expense_screen",
       builder: (context, index) => const AddExpenseScreen(),
+      ),
+    GoRoute(
+      path: "/search_and_filter_screen",
+      builder: (context, index) => const SearchAndFilterScreen(),
       ),
   ],
 );
