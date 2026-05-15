@@ -1,12 +1,13 @@
 import 'package:flutter/widgets.dart';
+import 'package:spendly/models/expense_model.dart';
 
 class CategoryProvider with ChangeNotifier{
-  int? _selectedCategory;
+  Category? _selectedCategory;
 
-  int? get selectedCategory => _selectedCategory;
+  Category? get selectedCategory => _selectedCategory;
 
   
-  void changeCategory(int? category){
+  void changeCategory(Category? category){
     _selectedCategory = category;
     notifyListeners();
   }

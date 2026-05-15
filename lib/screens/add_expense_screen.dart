@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:spendly/constants/payment_method_list.dart';
 import 'package:spendly/models/expense_model.dart';
 import 'package:spendly/providers/category_provider.dart';
 import 'package:spendly/providers/datetime_provider.dart';
@@ -26,14 +27,6 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _noteController = TextEditingController();
 
-  final List<String> paymentMethodList = [
-    "Credit Card",
-    "Debit Card",
-    "Mobile Wallet",
-    "Cash",
-    "Check",
-    "Others..",
-  ];
 
   Future<void> _showDatePicker() async {
     final current = context.read<DatetimeProvider>().currentDate;
@@ -117,9 +110,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 DateSelectorWidget(showDatePicker: _showDatePicker),
-                PaymentMethodSelector(
-                  paymentMethodList: paymentMethodList,
-                ),
+                PaymentMethodSelector(),
               ],
             ),
             SizedBox(height: AppSpacing.xl),
@@ -289,10 +280,7 @@ class CategoryWrap extends StatelessWidget {
 class PaymentMethodSelector extends StatelessWidget {
   const PaymentMethodSelector({
     super.key,
-    required this.paymentMethodList,
   });
-  final List<String> paymentMethodList;
-
   @override
   Widget build(BuildContext context) {
   final paymentProvider = context.watch<PaymentProvider>();
