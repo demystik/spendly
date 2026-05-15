@@ -26,7 +26,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _noteController = TextEditingController();
 
-  List<String> paymentMethodList = [
+  final List<String> paymentMethodList = [
     "Credit Card",
     "Debit Card",
     "Mobile Wallet",
@@ -36,13 +36,14 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   ];
 
   Future<void> _showDatePicker() async {
+    final current = context.read<DatetimeProvider>().currentDate;
     final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: current,
       firstDate: DateTime(2020),
       lastDate: DateTime(2027),
     );
-    if (pickedDate != null && pickedDate != DateTime.now()) {
+    if (pickedDate != null && pickedDate != current) {
       context.read<DatetimeProvider>().setDate(pickedDate);
     }
   }
@@ -57,10 +58,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final dateProvider = context.watch<DatetimeProvider>();
-    final expenseProvider = context.watch<ExpenseProvider>();
-    final paymentProvider = context.watch<PaymentProvider>();
-    final categoryProvider = context.watch<CategoryProvider>();
+
     return Scaffold(
       appBar: AppBar(
         elevation: 4,
@@ -110,7 +108,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
             ),
             SizedBox(height: AppSpacing.md),
 
-            CategoryWrap(context: context, categoryProvider: categoryProvider),
+            CategoryWrap(),
 
             SizedBox(height: AppSpacing.xl),
 
@@ -118,11 +116,9 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                dateSelectorWidget(context, _showDatePicker),
-                PaymentMethod(
+                DateSelectorWidget(showDatePicker: _showDatePicker),
+                PaymentMethodSelector(
                   paymentMethodList: paymentMethodList,
-                  context: context,
-                  paymentProvider: paymentProvider,
                 ),
               ],
             ),
@@ -144,38 +140,35 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
               variant: AppButtonVariant.primary,
               label: "Save Expense",
               onPressed: () {
-                if (_validateInput(categoryProvider)) {
+                if (_validateInput()) {
                   final double amount = double.parse(
                     _amountController.text.trim(),
                   );
                   final String title = _titleController.text.trim();
                   final String note = _noteController.text;
-                  final int? selectedCat = categoryProvider.selectedCategory;
+                  final int? selectedCat = context.read<CategoryProvider>().selectedCategory;
+                  final expenseProvider = context.read<ExpenseProvider>();
+                  final currentDate = context.read<DatetimeProvider>().currentDate;
                   if (selectedCat == null) return;
-                  
 
-                  try {
                     expenseProvider.addExpense(
-                    amount,
-                    title,
-                    dateProvider.currentDate,
-                    note,
-                    categoryList[selectedCat],
-                  );
-                  } catch (e) {
-                    _showErrorSnackBar("Error in saving inputs $e");
-                    return;
-                  }
-                  
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text("Expense Saved Successfully"),
-                      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-                    ),
-                  );
+                      amount,
+                      title,
+                      currentDate,
+                      note,
+                      categoryList[selectedCat],
+                    );
+
+
+                    //TODO: Show Snackbar on home screen
+                  // ScaffoldMessenger.of(context).showSnackBar(
+                  //   SnackBar(
+                  //     content: Text("Expense Saved Successfully"),
+                  //     backgroundColor: Theme.of(context).colorScheme.onPrimary,
+                  //   ),
+                  // );
 
                   context.read<CategoryProvider>().resetCategory();
-                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
                   context.pop();
                 }
               },
@@ -187,9 +180,10 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
     );
   }
 
-  bool _validateInput(CategoryProvider category) {
+  bool _validateInput() {
     final String expenseAmount = _amountController.text.trim();
     final String expenseTitle = _titleController.text.trim();
+    final category = context.read<CategoryProvider>().selectedCategory;
 
     if (expenseAmount.isEmpty) {
       _showErrorSnackBar("Please enter amount");
@@ -207,7 +201,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
       return false;
     }
 
-    int? selectedCat = category.selectedCategory;
+    int? selectedCat = category;
     if (selectedCat == null || selectedCat < 0) {
       _showErrorSnackBar("Please select category");
       return false;
@@ -226,8 +220,13 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   }
 }
 
-Expanded dateSelectorWidget(BuildContext context, showDatePicker) {
-  return Expanded(
+class DateSelectorWidget extends StatelessWidget {
+  final VoidCallback showDatePicker;
+  const DateSelectorWidget({super.key, required this.showDatePicker});
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -257,20 +256,16 @@ Expanded dateSelectorWidget(BuildContext context, showDatePicker) {
       ],
     ),
   );
+  }
 }
 
 class CategoryWrap extends StatelessWidget {
-  const CategoryWrap({
-    super.key,
-    required this.context,
-    required this.categoryProvider,
-  });
+  const CategoryWrap({super.key, });
 
-  final BuildContext context;
-  final CategoryProvider categoryProvider;
 
   @override
   Widget build(BuildContext context) {
+    final categoryProvider = context.watch<CategoryProvider>();
     return Wrap(
       spacing: 10,
       runSpacing: 10,
@@ -279,7 +274,6 @@ class CategoryWrap extends StatelessWidget {
         return AppChip(
           onTap: () {
             categoryProvider.changeCategory(index);
-            // setState(() => selectedCategory = index);
           },
           selected: categoryProvider.selectedCategory == index,
           variant: AppChipVariant.outlined,
@@ -292,20 +286,16 @@ class CategoryWrap extends StatelessWidget {
   }
 }
 
-class PaymentMethod extends StatelessWidget {
-  const PaymentMethod({
+class PaymentMethodSelector extends StatelessWidget {
+  const PaymentMethodSelector({
     super.key,
     required this.paymentMethodList,
-    required this.context,
-    required this.paymentProvider,
   });
-
   final List<String> paymentMethodList;
-  final BuildContext context;
-  final PaymentProvider paymentProvider;
 
   @override
   Widget build(BuildContext context) {
+  final paymentProvider = context.watch<PaymentProvider>();
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -396,7 +386,6 @@ class ExpenseTextField extends StatelessWidget {
                     width: 2,
                   ),
                 ),
-
                 isDense: true,
                 contentPadding: EdgeInsets.symmetric(vertical: 16),
               ),
