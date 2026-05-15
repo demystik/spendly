@@ -89,7 +89,7 @@ class HomeScreen extends StatelessWidget {
                       context,
                       "Recent Transactions",
                       "Search",
-                      () {},
+                      () => context.push("/search_and_filter_screen"),
                     ),
                     SizedBox(height: AppSpacing.md),
 

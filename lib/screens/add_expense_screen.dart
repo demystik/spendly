@@ -151,7 +151,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                     );
 
 
-                    //TODO: Show Snackbar on home screen
+                    // TODO: Show Snackbar on home screen
                   // ScaffoldMessenger.of(context).showSnackBar(
                   //   SnackBar(
                   //     content: Text("Expense Saved Successfully"),
@@ -192,8 +192,8 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
       return false;
     }
 
-    int? selectedCat = category;
-    if (selectedCat == null || selectedCat < 0) {
+    Category? selectedCat = category;
+    if (selectedCat == null) {
       _showErrorSnackBar("Please select category");
       return false;
     }
