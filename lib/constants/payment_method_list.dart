@@ -1,4 +1,4 @@
-  final List<String> paymentMethodList = [
+ final List<String> paymentMethodList = [
     "Credit Card",
     "Debit Card",
     "Mobile Wallet",

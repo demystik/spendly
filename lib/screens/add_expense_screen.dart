@@ -9,6 +9,7 @@ import 'package:spendly/providers/category_provider.dart';
 import 'package:spendly/providers/datetime_provider.dart';
 import 'package:spendly/providers/expense_provider.dart';
 import 'package:spendly/providers/payment_method.dart';
+import 'package:spendly/shared/section_label.dart';
 import 'package:spendly/themes/app_spacing.dart';
 import 'package:spendly/themes/app_text_styles.dart';
 import 'package:spendly/widgets/app_button.dart';
@@ -253,7 +254,6 @@ class DateSelectorWidget extends StatelessWidget {
 class CategoryWrap extends StatelessWidget {
   const CategoryWrap({super.key, });
 
-
   @override
   Widget build(BuildContext context) {
     final categoryProvider = context.watch<CategoryProvider>();
@@ -381,31 +381,6 @@ class ExpenseTextField extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class SectionLabel extends StatelessWidget {
-  const SectionLabel({super.key, required this.actualLabel, this.leadingIcon});
-  final String actualLabel;
-  final Widget? leadingIcon;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        if (leadingIcon != null) ...[
-          leadingIcon!,
-          SizedBox(width: AppSpacing.sm),
-        ],
-        Text(
-          actualLabel,
-          style: AppTextStyles.bodyLarge.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ],
     );
   }
 }
