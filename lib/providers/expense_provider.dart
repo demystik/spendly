@@ -5,42 +5,47 @@ import 'package:uuid/uuid.dart';
 const uuid = Uuid();
 
 class ExpenseProvider with ChangeNotifier {
-  final List<Expense> _expense = [];
+  final List<Expense> _expenses = [];
 
   //getter for expense list
-  List<Expense> get expense => _expense;
+  List<Expense> get expense => _expenses;
 
   //add new expense
-  void addExpense(
-    double amount,
-    String title,
-    DateTime date,
-    String note,
-    Category category,
+  void addExpense(double amount, String title, DateTime date, String note, 
+  Category category,
   ) {
-    final newExpense = Expense(
-      id: uuid.v4(),
-      title: title,
-      amount: amount,
-      date: date,
-      note: note,
-      category: category,
+    final newExpense = Expense(id: uuid.v4(), title: title, amount: amount,
+      date: date, note: note, category: category,
     );
-    _expense.insert(0, newExpense);
+    _expenses.insert(0, newExpense);
     notifyListeners();
   }
 
-  List<Expense> filteredExpense = [];
-  void searchExpenseWithRange(double range) {
-    filteredExpense = _expense
-        .where((expense) => expense.amount <= range)
-        .toList();
-    notifyListeners();
-  }
-  void searchExpenseWithCategory(Category category) {
-    filteredExpense = _expense
-        .where((expense) => expense.category == category)
-        .toList();
+
+
+  //variables for searching
+  Category? selectedCategory;
+  double maxAmount = 2000;
+  String searchQuery = "";
+
+  List<Expense> _filteredExpenses = [];
+  List<Expense> get filteredExpense => _filteredExpenses;
+
+
+  void applySearch() {
+    _filteredExpenses = _expenses.where((expense) { 
+
+    final matchesCategory = selectedCategory == null || 
+    expense.category == selectedCategory;
+    
+      final matchesAmount = expense.amount <= maxAmount;
+    
+    final matchesSearch = searchQuery.isEmpty || 
+    expense.title.toLowerCase()
+    .contains(searchQuery.toLowerCase());
+
+      return matchesAmount && matchesCategory && matchesSearch;
+  }).toList();
     notifyListeners();
   }
 }
