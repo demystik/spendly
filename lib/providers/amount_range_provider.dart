@@ -8,4 +8,9 @@ class AmountRangeProvider with ChangeNotifier{
     _amountValue = newValue;
     notifyListeners();
   }
+
+  void reset(){
+    _amountValue = 2000;
+    notifyListeners();
+  }
 }

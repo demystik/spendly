@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
-import 'package:spendly/constants/time_period.dart';
-// import 'package:provider/provider.dart';
 import 'package:spendly/models/expense_model.dart';
 import 'package:spendly/providers/amount_range_provider.dart';
 import 'package:spendly/providers/category_provider.dart';
 import 'package:spendly/providers/expense_provider.dart';
-// import 'package:spendly/providers/category_provider.dart';
 import 'package:spendly/shared/section_label.dart';
 import 'package:spendly/shared/transaction_list_tiles.dart';
 import 'package:spendly/themes/app_spacing.dart';
@@ -37,12 +34,22 @@ class _SearchAndFilterScreenState extends State<SearchAndFilterScreen> {
     return Scaffold(
       //APPBAR_________________________________________________
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: (){
+            context.read<ExpenseProvider>().resetFilters();
+            context.read<AmountRangeProvider>().reset();
+            context.read<CategoryProvider>().resetCategory();
+            Navigator.pop(context);
+          },
+          icon: Icon(LucideIcons.arrowLeft400)),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 15.0),
             child: GestureDetector(
               onTap: () {
                 context.read<ExpenseProvider>().resetFilters();
+                context.read<AmountRangeProvider>().reset();
+                context.read<CategoryProvider>().resetCategory();
               },
               child: Text(
                 "reset",
@@ -111,33 +118,33 @@ class _SearchAndFilterScreenState extends State<SearchAndFilterScreen> {
             SizedBox(height: AppSpacing.md),
 
 
-            //Filter Time Period____________________________________________
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15.0),
-              child: SectionLabel(actualLabel: "Time Period"),
-            ),
-            SizedBox(height: AppSpacing.md),
+            // //Filter Time Period____________________________________________
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: 15.0),
+            //   child: SectionLabel(actualLabel: "Time Period"),
+            // ),
+            // SizedBox(height: AppSpacing.md),
 
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15.0),
-              child: Wrap(
-                spacing: 10,
-                runSpacing: 10,
-                children: List.generate(timePeriodList.length, (index) {
-                  String time = timePeriodList[index];
-                  return AppChip(
-                    // onTap: () {
-                    //   categoryProvider.changeCategory(cat);
-                    // },
-                    // selected: categoryProvider.selectedCategory == cat,
-                    variant: AppChipVariant.filled,
-                    label: time,
-                    labelTextStyle: AppTextStyles.bodyMedium,
-                  );
-                }),
-              ),
-            ),
-            SizedBox(height: AppSpacing.xl),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: 15.0),
+            //   child: Wrap(
+            //     spacing: 10,
+            //     runSpacing: 10,
+            //     children: List.generate(timePeriodList.length, (index) {
+            //       String time = timePeriodList[index];
+            //       return AppChip(
+            //         // onTap: () {
+            //         //   categoryProvider.changeCategory(cat);
+            //         // },
+            //         // selected: categoryProvider.selectedCategory == cat,
+            //         variant: AppChipVariant.filled,
+            //         label: time,
+            //         labelTextStyle: AppTextStyles.bodyMedium,
+            //       );
+            //     }),
+            //   ),
+            // ),
+            // SizedBox(height: AppSpacing.xl),
 
             //Filter Amount Range Indicator______________________________________________
             Padding(
