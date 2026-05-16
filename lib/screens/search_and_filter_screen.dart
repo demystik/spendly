@@ -28,6 +28,7 @@ class _SearchAndFilterScreenState extends State<SearchAndFilterScreen> {
   @override
   void dispose() {
     searchTextController.dispose();
+    context.read<ExpenseProvider>().resetFilters();
     super.dispose();
   }
 
@@ -39,11 +40,16 @@ class _SearchAndFilterScreenState extends State<SearchAndFilterScreen> {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 15.0),
-            child: Text(
-              "reset",
-              style: AppTextStyles.bodyLarge.copyWith(
-                color: Theme.of(context).colorScheme.primary,
-                fontWeight: FontWeight.w700,
+            child: GestureDetector(
+              onTap: () {
+                context.read<ExpenseProvider>().resetFilters();
+              },
+              child: Text(
+                "reset",
+                style: AppTextStyles.bodyLarge.copyWith(
+                  color: Theme.of(context).colorScheme.primary,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
           ),
@@ -61,8 +67,7 @@ class _SearchAndFilterScreenState extends State<SearchAndFilterScreen> {
               ),
               child: AppTextField(
                 onChanged: (text) {
-                  context.read<ExpenseProvider>().searchQuery = text;
-                  context.read<ExpenseProvider>().applySearch();
+                  context.read<ExpenseProvider>().setSearchQuery(text);
                 },
                 controller: searchTextController,
                 prefixIcon: Icon(LucideIcons.search),
@@ -94,8 +99,7 @@ class _SearchAndFilterScreenState extends State<SearchAndFilterScreen> {
                         leadingIcon: Icon(cat.icon),
                         onTap: (){
                           provider.changeCategory(cat);
-                          context.read<ExpenseProvider>().selectedCategory = cat;
-                          context.read<ExpenseProvider>().applySearch();
+                          context.read<ExpenseProvider>().setCategory(cat);
                         },
                         selected: provider.selectedCategory == cat,
                         label: cat.name,
@@ -174,7 +178,7 @@ class _SearchAndFilterScreenState extends State<SearchAndFilterScreen> {
                     ),
                     actualLabel: "RECENT RESULTS",
                   ),
-                  AppChip(variant: AppChipVariant.outlined, label: "${context.watch<ExpenseProvider>().filteredExpense.length.toString()} FOUND"),
+                  AppChip(variant: AppChipVariant.outlined, label: "${context.watch<ExpenseProvider>().filteredExpenses.length.toString()} FOUND"),
                 ],
               ),
             ),
@@ -185,15 +189,15 @@ class _SearchAndFilterScreenState extends State<SearchAndFilterScreen> {
               scrollDirection: Axis.vertical,
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              itemCount: context.watch<ExpenseProvider>().filteredExpense.length,
+              itemCount: context.watch<ExpenseProvider>().filteredExpenses.length,
               itemBuilder: (context, index) {
                 Expense recentTrans = context
                     .watch<ExpenseProvider>()
-                    .filteredExpense[index];
+                    .filteredExpenses[index];
                 return Column(
                   children: [
                     RecentTransactionListTiles(recentTrans: recentTrans, isSearchScreen: true,),
-                    ...[if(index < context.watch<ExpenseProvider>().filteredExpense.length - 1)
+                    ...[if(index < context.watch<ExpenseProvider>().filteredExpenses.length - 1)
                       Divider(),
                       ]
                   ],
@@ -234,8 +238,7 @@ class AmountRangeSlider extends StatelessWidget {
               value: context.watch<AmountRangeProvider>().amountValue,
               onChanged: (newValue) {
                 context.read<AmountRangeProvider>().changeValue(newValue);
-                context.read<ExpenseProvider>().maxAmount = newValue;
-                context.read<ExpenseProvider>().applySearch();
+                context.read<ExpenseProvider>().setMaxAmount(newValue);
               },
             ),
             Padding(

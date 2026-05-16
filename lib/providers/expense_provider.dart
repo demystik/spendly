@@ -18,6 +18,7 @@ class ExpenseProvider with ChangeNotifier {
       date: date, note: note, category: category,
     );
     _expenses.insert(0, newExpense);
+
     notifyListeners();
   }
 
@@ -28,13 +29,35 @@ class ExpenseProvider with ChangeNotifier {
   double maxAmount = 2000;
   String searchQuery = "";
 
-  List<Expense> _filteredExpenses = [];
-  List<Expense> get filteredExpense => _filteredExpenses;
+  //Set category to what user click
+  void setCategory(Category? category){
+    selectedCategory = category;
+    notifyListeners();
+  }
 
+  //Set maximum amount
+  void setMaxAmount(double amount){
+    maxAmount = amount;
+    notifyListeners();
+  }
 
-  void applySearch() {
-    _filteredExpenses = _expenses.where((expense) { 
+  //Set search query
+  void setSearchQuery(String query){
+    searchQuery = query;
+    notifyListeners();
+  }
 
+//Reset filter when user leave the page
+  void resetFilters(){
+    selectedCategory = null;
+    searchQuery = "";
+    maxAmount = 2000;
+    notifyListeners();
+  }
+
+  List<Expense> get filteredExpenses {
+
+   return _expenses.where((expense) { 
     final matchesCategory = selectedCategory == null || 
     expense.category == selectedCategory;
     
@@ -46,6 +69,6 @@ class ExpenseProvider with ChangeNotifier {
 
       return matchesAmount && matchesCategory && matchesSearch;
   }).toList();
-    notifyListeners();
   }
+  
 }
