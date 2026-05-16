@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:spendly/constants/app_icons.dart';
 import 'package:spendly/models/expense_model.dart';
 import 'package:spendly/providers/expense_provider.dart';
 import 'package:spendly/shared/no_expense.dart';
+import 'package:spendly/shared/transaction_list_tiles.dart';
 import 'package:spendly/themes/app_spacing.dart';
 import 'package:spendly/themes/app_text_styles.dart';
 import 'package:spendly/widgets/app_button.dart';
 import 'package:spendly/widgets/app_card.dart';
-import 'package:spendly/widgets/app_chip.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -19,7 +18,6 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  final recentExpense = context.watch<ExpenseProvider>();
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).colorScheme.primary,
@@ -94,17 +92,18 @@ class HomeScreen extends StatelessWidget {
                     SizedBox(height: AppSpacing.md),
 
                     //___Recent Transactions List_______________________________________________________
-                    recentExpense.expense.isEmpty ?
+                    context.watch<ExpenseProvider>().expense.isEmpty ?
                     NoExpense()
                     : ListView.builder(
                       scrollDirection: Axis.vertical,
                       physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount: recentExpense.expense.length,
+                      itemCount: context.watch<ExpenseProvider>().expense.length,
                       itemBuilder: (context, index) {
-                        var recentTrans = recentExpense.expense[index];
+                        Expense recentTrans = context.watch<ExpenseProvider>().expense[index];
                         return RecentTransactionListTiles(
                           recentTrans: recentTrans,
+                          isSearchScreen: false,
                         );
                       },
                     ),
@@ -146,63 +145,6 @@ Row middleRowHeader(
           ),
         ),
       ],
-    );
-  }
-}
-class RecentTransactionListTiles extends StatelessWidget {
-  const RecentTransactionListTiles({super.key, required this.recentTrans});
-
-  final Expense recentTrans;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 4.0),
-      child: Card(
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadiusGeometry.circular(12),
-          side: BorderSide(width: 1, color: Colors.grey.shade300),
-        ),
-      
-        child: ListTile(
-          leading: Container(
-            padding: EdgeInsets.all(AppSpacing.sm),
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.grey.shade200,
-            ),
-            child: Icon(recentTrans.category.icon, color: Colors.blue.shade400,)
-          ),
-          title: Text(
-            recentTrans.title,
-            style: AppTextStyles.titleMedium,
-          ),
-          subtitle: Text(
-            "${recentTrans.category.name} . ${DateFormat("MMMM d, y").format(recentTrans.date)}",
-            style: AppTextStyles.bodySmall,
-          ),
-          trailing: Column(
-            spacing: 5,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                "-\$${recentTrans.amount}",
-                style: AppTextStyles.titleMedium,
-              ),
-              AppChip(
-                label: "completed",
-                labelTextStyle: TextStyle(fontSize: 10),
-                variant: AppChipVariant.outlined,
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

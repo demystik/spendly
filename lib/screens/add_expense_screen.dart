@@ -283,7 +283,6 @@ class PaymentMethodSelector extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
-  final paymentProvider = context.watch<PaymentProvider>();
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -296,21 +295,26 @@ class PaymentMethodSelector extends StatelessWidget {
               border: Border.all(color: Theme.of(context).colorScheme.outline),
               borderRadius: BorderRadius.circular(AppRadius.md),
             ),
-            child: DropdownButton<String>(
-              focusColor: Colors.transparent,
-              value: paymentProvider.selectedMethod,
-              isDense: true,
-              hint: Text(paymentMethodList[0], style: AppTextStyles.bodyLarge),
-              borderRadius: BorderRadius.circular(AppRadius.md),
-              underline: const SizedBox(),
-              icon: const SizedBox(),
-              items: paymentMethodList.map((item) {
-                return DropdownMenuItem(
-                  value: item,
-                  child: Text(item, style: AppTextStyles.bodyLarge),
-                );
-              }).toList(),
-              onChanged: (val) => paymentProvider.changePaymentMethod(val),
+            child: Consumer<PaymentProvider>(
+              builder: (context, paymentProvider, child) {
+               return DropdownButton<String>(
+                focusColor: Colors.transparent,
+                value: paymentProvider.selectedMethod,
+                isDense: true,
+                hint: Text(paymentMethodList[0], style: AppTextStyles.bodyLarge),
+                borderRadius: BorderRadius.circular(AppRadius.md),
+                underline: const SizedBox(),
+                icon: const SizedBox(),
+                items: paymentMethodList.map((item) {
+                  return DropdownMenuItem(
+                    value: item,
+                    child: Text(item, style: AppTextStyles.bodyLarge),
+                  );
+                }).toList(),
+                onChanged: (val) => paymentProvider.changePaymentMethod(val),
+              );
+              },
+              
             ),
           ),
         ],
@@ -351,7 +355,7 @@ class ExpenseTextField extends StatelessWidget {
                 hintText: "0.00",
                 hintStyle: AppTextStyles.displayLarge.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  color: Theme.of(context).colorScheme.outline,
                   fontSize: 42,
                 ),
                 border: UnderlineInputBorder(
