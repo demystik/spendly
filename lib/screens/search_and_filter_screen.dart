@@ -90,7 +90,7 @@ class _SearchAndFilterScreenState extends State<SearchAndFilterScreen> {
                         return AppChip (
                         leadingIcon: Icon(cat.icon),
                         onTap: (){
-                          provider.changeCategory(cat);
+                          // provider.changeCategory(cat);
                           context.read<ExpenseProvider>().searchExpenseWithCategory(cat);
                         },
                         selected: context.watch<CategoryProvider>().selectedCategory == cat,
