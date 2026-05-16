@@ -60,6 +60,10 @@ class _SearchAndFilterScreenState extends State<SearchAndFilterScreen> {
                 vertical: 10,
               ),
               child: AppTextField(
+                onChanged: (text) {
+                  context.read<ExpenseProvider>().searchQuery = text;
+                  context.read<ExpenseProvider>().applySearch();
+                },
                 controller: searchTextController,
                 prefixIcon: Icon(LucideIcons.search),
                 label: "Search transactions...",
@@ -83,21 +87,18 @@ class _SearchAndFilterScreenState extends State<SearchAndFilterScreen> {
                 itemCount: categoryList.length,
                 itemBuilder: (context, index) {
                   Category cat = categoryList[index];
+                  final provider = context.watch<CategoryProvider>();
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                    child: Consumer<CategoryProvider>(
-                      builder: (context, provider, child) {
-                        return AppChip (
+                    child: AppChip (
                         leadingIcon: Icon(cat.icon),
                         onTap: (){
                           provider.changeCategory(cat);
-                          context.read<ExpenseProvider>().searchExpenseWithCategory(cat);
+                          context.read<ExpenseProvider>().selectedCategory = cat;
+                          context.read<ExpenseProvider>().applySearch();
                         },
-                        selected: context.watch<CategoryProvider>().selectedCategory == cat,
+                        selected: provider.selectedCategory == cat,
                         label: cat.name,
-                      );
-                      },
-                      
                     ),
                   );
                 },
@@ -233,7 +234,8 @@ class AmountRangeSlider extends StatelessWidget {
               value: context.watch<AmountRangeProvider>().amountValue,
               onChanged: (newValue) {
                 context.read<AmountRangeProvider>().changeValue(newValue);
-                context.read<ExpenseProvider>().searchExpenseWithRange(newValue);
+                context.read<ExpenseProvider>().maxAmount = newValue;
+                context.read<ExpenseProvider>().applySearch();
               },
             ),
             Padding(
