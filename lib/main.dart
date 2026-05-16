@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:spendly/providers/amount_range_provider.dart';
 import 'package:spendly/providers/category_provider.dart';
 import 'package:spendly/providers/datetime_provider.dart';
 import 'package:spendly/providers/expense_provider.dart';
@@ -14,6 +15,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => ExpenseProvider()),
         ChangeNotifierProvider(create: (_) => CategoryProvider()),
         ChangeNotifierProvider(create: (_) => DatetimeProvider()),
+        ChangeNotifierProvider(create: (_) => AmountRangeProvider()),
       ],
       child: const MyApp(),
     ),
