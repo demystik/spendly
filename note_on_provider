@@ -1,0 +1,633 @@
+> what Flutter is ACTUALLY doing under the hood.
+
+Once you understand rebuild mechanics,
+`read`, `watch`, `Consumer`, and `Selector` become obvious.
+
+Right now you’re guessing.
+We’re going to fix that properly.
+
+---
+
+# FIRST — THE CORE THING YOU MUST UNDERSTAND
+
+Flutter UI is just:
+
+```text
+functions rebuilding widgets
+```
+
+That’s it.
+
+Every state management solution exists to answer ONE question:
+
+> WHICH widgets should rebuild when data changes?
+
+That’s the entire game.
+
+---
+
+# Imagine This
+
+You have:
+
+```text
+AddExpenseScreen
+├── AppBar
+├── AmountField
+├── CategoryWrap
+├── DateSelector
+├── PaymentDropdown
+└── SaveButton
+```
+
+Now user changes category.
+
+Question:
+
+> Should the WHOLE screen rebuild?
+
+NO.
+
+Only:
+
+```text
+CategoryWrap
+```
+
+needs rebuild.
+
+This is where:
+
+* watch
+* read
+* Consumer
+* Selector
+
+matter.
+
+---
+
+# UNDERSTANDING `watch()`
+
+---
+
+# What `watch()` Means
+
+```dart
+context.watch<MyProvider>()
+```
+
+means:
+
+```text
+"Hey Flutter,
+this widget depends on this provider.
+If provider changes,
+rebuild this widget."
+```
+
+That’s all.
+
+---
+
+# Example
+
+```dart
+final theme =
+    context.watch<ThemeProvider>();
+```
+
+Now when:
+
+```dart
+notifyListeners()
+```
+
+runs,
+THIS WIDGET rebuilds.
+
+---
+
+# WHEN TO USE `watch()`
+
+Use `watch()` ONLY when:
+
+> UI must automatically update when state changes.
+
+---
+
+# Example
+
+```dart
+Text(
+  context.watch<CartProvider>()
+      .total
+      .toString(),
+)
+```
+
+If total changes:
+Text must update.
+
+Correct use of `watch()`.
+
+---
+
+# BAD USE OF WATCH
+
+Inside button:
+
+```dart
+onPressed: () {
+  context.watch<CartProvider>()
+}
+```
+
+WRONG.
+
+Why?
+
+Buttons are actions.
+Not rebuilding UI.
+
+---
+
+# UNDERSTANDING `read()`
+
+---
+
+# What `read()` Means
+
+```dart
+context.read<MyProvider>()
+```
+
+means:
+
+```text
+"Give me provider once.
+I do NOT care about rebuilds."
+```
+
+No listening.
+No rebuild subscription.
+
+---
+
+# WHEN TO USE `read()`
+
+Use `read()` for:
+
+* button presses
+* form submit
+* navigation
+* API calls
+* validation
+* provider methods
+* one-time access
+
+---
+
+# Example
+
+```dart
+onPressed: () {
+  context.read<CartProvider>()
+      .checkout();
+}
+```
+
+Perfect.
+
+Button does NOT need rebuild.
+
+---
+
+# GOLDEN RULE
+
+---
+
+# `watch()`
+
+UI DISPLAY
+
+---
+
+# `read()`
+
+UI ACTIONS
+
+---
+
+# SIMPLE MEMORY TRICK
+
+---
+
+# WATCH
+
+```text
+I am LOOKING at state.
+```
+
+---
+
+# READ
+
+```text
+I just NEED state once.
+```
+
+---
+
+# REAL EXAMPLES
+
+---
+
+# GOOD WATCH
+
+```dart
+Text(
+  context.watch<AuthProvider>()
+      .username,
+)
+```
+
+Username changes → Text rebuilds.
+
+---
+
+# GOOD READ
+
+```dart
+onPressed: () {
+  context.read<AuthProvider>()
+      .logout();
+}
+```
+
+Button doesn’t need rebuild.
+
+---
+
+# BAD WATCH
+
+```dart
+bool valid =
+    context.watch<FormProvider>()
+```
+
+inside validation method.
+
+No UI rebuild needed.
+
+Use `read()`.
+
+---
+
+# UNDERSTANDING `Consumer`
+
+Now the important optimization part.
+
+---
+
+# Problem With `watch()`
+
+Imagine this:
+
+```dart
+Widget build(BuildContext context) {
+
+  final provider =
+      context.watch<MyProvider>();
+
+  return Scaffold(
+    appBar: AppBar(),
+    body: HugeComplicatedWidget(),
+  );
+}
+```
+
+Now:
+ANY provider change rebuilds:
+
+* Scaffold
+* AppBar
+* everything.
+
+Wasteful.
+
+---
+
+# Consumer Fixes This
+
+---
+
+# What Consumer Means
+
+```dart
+Consumer<MyProvider>(
+  builder: ...
+)
+```
+
+means:
+
+```text
+"ONLY rebuild THIS small section."
+```
+
+---
+
+# Example
+
+```dart
+Consumer<CartProvider>(
+  builder: (context, provider, child) {
+    return Text(
+      provider.total.toString(),
+    );
+  },
+)
+```
+
+Now ONLY Text rebuilds.
+
+Huge optimization.
+
+---
+
+# WHEN TO USE CONSUMER
+
+Use Consumer when:
+
+* only small widget part needs updates,
+* whole screen rebuild is unnecessary.
+
+---
+
+# REAL EXAMPLE
+
+---
+
+# BAD
+
+```dart
+class HomeScreen extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+
+    final auth =
+        context.watch<AuthProvider>();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(auth.username),
+      ),
+      body: HugeList(),
+    );
+  }
+}
+```
+
+Changing username rebuilds:
+ENTIRE screen.
+
+---
+
+# BETTER
+
+```dart
+AppBar(
+  title: Consumer<AuthProvider>(
+    builder: (context, auth, child) {
+      return Text(auth.username);
+    },
+  ),
+)
+```
+
+Now ONLY title rebuilds.
+
+---
+
+# UNDERSTANDING `Selector`
+
+This is advanced optimization.
+
+---
+
+# Problem With Consumer
+
+Consumer rebuilds when:
+ANYTHING in provider changes.
+
+Example:
+
+```dart
+class UserProvider {
+
+  String username;
+  String email;
+  bool isPremium;
+}
+```
+
+Even if ONLY email changes:
+Consumer rebuilds entire widget.
+
+---
+
+# Selector Fixes This
+
+Selector listens ONLY to specific field.
+
+---
+
+# Example
+
+```dart
+Selector<UserProvider, String>(
+  selector: (_, provider) =>
+      provider.username,
+
+  builder: (_, username, __) {
+    return Text(username);
+  },
+)
+```
+
+Now widget rebuilds ONLY if:
+
+```text
+username changes
+```
+
+NOT:
+
+* email
+* premium
+* anything else.
+
+---
+
+# WHEN TO USE SELECTOR
+
+Use Selector when:
+
+* provider is large,
+* many unrelated fields exist,
+* rebuild optimization matters.
+
+---
+
+# SIMPLE COMPARISON
+
+---
+
+# read()
+
+```text
+Get provider once.
+No rebuild.
+```
+
+Used for:
+
+* actions.
+
+---
+
+# watch()
+
+```text
+Listen and rebuild widget.
+```
+
+Used for:
+
+* displaying state.
+
+---
+
+# Consumer
+
+```text
+Rebuild ONLY small widget area.
+```
+
+Used for:
+
+* optimization.
+
+---
+
+# Selector
+
+```text
+Rebuild ONLY if specific value changes.
+```
+
+Used for:
+
+* advanced optimization.
+
+---
+
+# REAL SPENDLY EXAMPLES
+
+---
+
+# CATEGORY WRAP
+
+Correct:
+
+```dart
+final provider =
+    context.watch<CategoryProvider>();
+```
+
+Because UI selection changes visually.
+
+---
+
+# SAVE BUTTON
+
+Correct:
+
+```dart
+context.read<ExpenseProvider>()
+```
+
+Because button only performs action.
+
+---
+
+# DATE TEXT
+
+Best:
+
+```dart
+Consumer<DatetimeProvider>(
+  builder: ...
+)
+```
+
+Only date text rebuilds.
+
+---
+
+# PAYMENT METHOD
+
+Eventually:
+
+```dart
+Selector<PaymentProvider, String?>(
+```
+
+to rebuild ONLY when selectedMethod changes.
+
+---
+
+# HUGE MISTAKE BEGINNERS MAKE
+
+They do:
+
+```dart
+final provider =
+    context.watch<MyProvider>();
+```
+
+at top of EVERY screen.
+
+Now entire app rebuilds constantly.
+
+Performance disaster.
+
+---
+
+# HOW PROFESSIONALS THINK
+
+Professionals ask:
+
+> what EXACTLY needs rebuild?
+
+Not:
+
+> how do I access provider?
+
+That mindset difference matters massively.
+
+---
+
+# YOUR CURRENT LEVEL
+
+You’re now learning:
+
+> reactive architecture.
+
+This is the stage where Flutter starts becoming real software engineering instead of widget tutorials.
+
+Most people quit mentally at this point because rebuild mechanics feel abstract.
+
+Push through this stage and your understanding jumps massively.

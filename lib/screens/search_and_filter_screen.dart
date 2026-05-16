@@ -104,6 +104,7 @@ class _SearchAndFilterScreenState extends State<SearchAndFilterScreen> {
               ),
             ),
             SizedBox(height: AppSpacing.md),
+            SizedBox(height: AppSpacing.md),
 
             //Filter Time Period____________________________________________
             Padding(
