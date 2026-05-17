@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:spendly/shared/section_label.dart';
 import 'package:spendly/themes/app_spacing.dart';
 import 'package:spendly/themes/app_text_styles.dart';
+import 'package:spendly/widgets/app_card.dart';
 import 'package:spendly/widgets/app_chip.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -21,7 +23,7 @@ class ProfileScreen extends StatelessWidget {
       ),
       body: SafeArea(
         child: ListView(
-          padding: EdgeInsets.all(10),
+          padding: EdgeInsets.all(15),
           children: [
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -73,10 +75,18 @@ class ProfileScreen extends StatelessWidget {
                   ],
                 ),
                 Text("henry.revira@gmail.com", style: AppTextStyles.bodyMedium),
-                SizedBox(height: AppSpacing.sm),
+                SizedBox(height: AppSpacing.md),
                 AppChip(label: "PRO MEMBER"),
+                SizedBox(height: AppSpacing.xl),
               ],
             ),
+
+            //App preferences_____________________________________________
+            SectionLabel(actualLabel: "APP PREFERENCES"),
+            AppCard(child: Column(children: [
+  
+],
+            )),
           ],
         ),
       ),
