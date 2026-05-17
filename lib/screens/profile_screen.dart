@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:spendly/themes/app_spacing.dart';
+import 'package:spendly/themes/app_text_styles.dart';
+import 'package:spendly/widgets/app_chip.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -51,12 +54,27 @@ class ProfileScreen extends StatelessWidget {
                           color: Colors.blue.shade200,
                           shape: BoxShape.circle,
                         ),
-
                         child: Image.asset("assets/logos/spendly_logo1.png"),
                       ),
                     ),
                   ],
                 ),
+
+                SizedBox(height: AppSpacing.md),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Henry Revira", style: AppTextStyles.titleLarge),
+                    SizedBox(width: AppSpacing.sm),
+                    Icon(
+                      LucideIcons.shieldCheck,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ],
+                ),
+                Text("henry.revira@gmail.com", style: AppTextStyles.bodyMedium),
+                SizedBox(height: AppSpacing.sm),
+                AppChip(label: "PRO MEMBER"),
               ],
             ),
           ],
