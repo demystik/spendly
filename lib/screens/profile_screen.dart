@@ -83,10 +83,24 @@ class ProfileScreen extends StatelessWidget {
 
             //App preferences_____________________________________________
             SectionLabel(actualLabel: "APP PREFERENCES"),
-            AppCard(child: Column(children: [
-  
-],
-            )),
+            AppCard(
+              child: Column(
+                children: [
+                  ListTile(
+                    leading: Container(
+                      padding: EdgeInsets.all(5),
+                      height: 45,
+                      width: 45,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.secondary,
+                        borderRadius: BorderRadius.circular(AppRadius.md),
+                      ),
+                      child: Icon(LucideIcons.sunDim),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
