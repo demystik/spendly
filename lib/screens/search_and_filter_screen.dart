@@ -89,32 +89,7 @@ class _SearchAndFilterScreenState extends State<SearchAndFilterScreen> {
               child: SectionLabel(actualLabel: "Category"),
             ),
 
-            SizedBox(
-              height: 55,
-              child: ListView.builder(
-                padding: EdgeInsets.only(top: 10, bottom: 10, left: 10),
-                scrollDirection: Axis.horizontal,
-                shrinkWrap: true,
-                physics: BouncingScrollPhysics(),
-                itemCount: categoryList.length,
-                itemBuilder: (context, index) {
-                  Category cat = categoryList[index];
-                  final provider = context.watch<CategoryProvider>();
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                    child: AppChip (
-                        leadingIcon: Icon(cat.icon),
-                        onTap: (){
-                          provider.changeCategory(cat);
-                          context.read<ExpenseProvider>().setCategory(cat);
-                        },
-                        selected: provider.selectedCategory == cat,
-                        label: cat.name,
-                    ),
-                  );
-                },
-              ),
-            ),
+            FilterCategoryWidget(),
             SizedBox(height: AppSpacing.md),
 
 
@@ -164,6 +139,7 @@ class _SearchAndFilterScreenState extends State<SearchAndFilterScreen> {
             ),
             SizedBox(height: AppSpacing.md),
 
+            //Amount Ranger Slider______________________________________________
             AmountRangeSlider(),
             SizedBox(height: AppSpacing.md),
 
@@ -172,23 +148,7 @@ class _SearchAndFilterScreenState extends State<SearchAndFilterScreen> {
             SizedBox(height: AppSpacing.xl),
 
             //RECENT RESULTS______________________________________________
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SectionLabel(
-                    leadingIcon: Icon(
-                      LucideIcons.funnel,
-                      size: 18,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    actualLabel: "RECENT RESULTS",
-                  ),
-                  AppChip(variant: AppChipVariant.outlined, label: "${context.watch<ExpenseProvider>().filteredExpenses.length.toString()} FOUND"),
-                ],
-              ),
-            ),
+            RecentResultHeaderWidget(),
             SizedBox(height: AppSpacing.md),
 
             ListView.builder(
@@ -216,6 +176,69 @@ class _SearchAndFilterScreenState extends State<SearchAndFilterScreen> {
             SizedBox(height: AppSpacing.xl),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class RecentResultHeaderWidget extends StatelessWidget {
+  const RecentResultHeaderWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          SectionLabel(
+            leadingIcon: Icon(
+              LucideIcons.funnel,
+              size: 18,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            actualLabel: "RECENT RESULTS",
+          ),
+          AppChip(variant: AppChipVariant.outlined, label: "${context.watch<ExpenseProvider>().filteredExpenses.length.toString()} FOUND"),
+        ],
+      ),
+    );
+  }
+}
+
+class FilterCategoryWidget extends StatelessWidget {
+  const FilterCategoryWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 55,
+      child: ListView.builder(
+        padding: EdgeInsets.only(top: 10, bottom: 10, left: 10),
+        scrollDirection: Axis.horizontal,
+        shrinkWrap: true,
+        physics: BouncingScrollPhysics(),
+        itemCount: categoryList.length,
+        itemBuilder: (context, index) {
+          Category cat = categoryList[index];
+          final provider = context.watch<CategoryProvider>();
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5.0),
+            child: AppChip (
+                leadingIcon: Icon(cat.icon),
+                onTap: (){
+                  provider.changeCategory(cat);
+                  context.read<ExpenseProvider>().setCategory(cat);
+                },
+                selected: provider.selectedCategory == cat,
+                label: cat.name,
+            ),
+          );
+        },
       ),
     );
   }
