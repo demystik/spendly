@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:provider/provider.dart';
+import 'package:spendly/constants/currency_type_list.dart';
+import 'package:spendly/providers/currency_providers.dart';
+import 'package:spendly/providers/theme_mode_provider.dart';
 import 'package:spendly/shared/section_label.dart';
 import 'package:spendly/themes/app_spacing.dart';
 import 'package:spendly/themes/app_text_styles.dart';
@@ -9,10 +13,12 @@ import 'package:spendly/widgets/app_chip.dart';
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 1.0,
         title: Text("Profile"),
         actions: [
           Padding(
@@ -82,33 +88,289 @@ class ProfileScreen extends StatelessWidget {
             ),
 
             //App preferences_____________________________________________
-            SectionLabel(actualLabel: "APP PREFERENCES"),
+            SectionLabel(
+              actualLabel: "APP PREFERENCES",
+              textStyle: AppTextStyles.bodyMedium.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.8,
+              ),
+            ),
+            SizedBox(height: AppSpacing.md),
             AppCard(
+              border: Border.all(
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              ),
               child: Column(
                 children: [
-                  ListTile(
-                    leading: Container(
-                      padding: EdgeInsets.all(5),
-                      height: 45,
-                      width: 45,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                        borderRadius: BorderRadius.circular(AppRadius.md),
-                      ),
-                      child: Icon(LucideIcons.sunDim, color: Theme.of(context).colorScheme.primary, size: 28,),
-                    ),
-
-                    title: Text("Dark Appearance"),
-                    subtitle: Text("Customize your interface"),
-
-                    trailing: ToggleButtons(children: [], isSelected: [false]),
+                  ProfileListTileWidget(
+                    title: "Dark Appearance",
+                    subTitle: "Customize your interface",
+                    leadingIcon: LucideIcons.sunDim,
+                    trailingWidget: ThemeSwitcher(),
+                  ),
+                  Divider(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.surfaceContainerHighest,
+                  ),
+                  ProfileListTileWidget(
+                    title: "Currency",
+                    subTitle: "Select your currency",
+                    leadingIcon: LucideIcons.dollarSign,
+                    trailingWidget: CurrencyDropDown(),
                   ),
                 ],
               ),
             ),
+            SizedBox(height: AppSpacing.xl),
+
+            //SECURITY & ALERTS_____________________________________________
+            SectionLabel(
+              actualLabel: "SECURITY & ALERTS",
+              textStyle: AppTextStyles.bodyMedium.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.8,
+              ),
+            ),
+
+            SizedBox(height: AppSpacing.md),
+            AppCard(
+              border: Border.all(
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              ),
+              child: Column(
+                children: [
+                  ProfileListTileWidget(
+                    title: "Push Notifications",
+                    subTitle: "Alerts for budgets & spending",
+                    leadingIcon: LucideIcons.bell,
+                    trailingWidget: NotificationSwitcher(),
+                  ),
+                  Divider(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.surfaceContainerHighest,
+                  ),
+                  ProfileListTileWidget(
+                    title: "Privacy & Security",
+                    subTitle: "Biometric Login & 2FA",
+                    leadingIcon: LucideIcons.lock,
+                    trailingWidget: Icon(LucideIcons.chevronRight),
+                  ),
+                  Divider(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.surfaceContainerHighest,
+                  ),
+                  ProfileListTileWidget(
+                    title: "Region",
+                    subTitle: "United States",
+                    leadingIcon: LucideIcons.globe,
+                    trailingWidget: Icon(LucideIcons.chevronRight),
+                  ),
+                ],
+              ),
+            ),
+
+            //DATA MANAGEMENT_____________________________________________
+            SizedBox(height: AppSpacing.xl),
+            SectionLabel(
+              actualLabel: "DATA MANAGEMENT",
+              textStyle: AppTextStyles.bodyMedium.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.8,
+              ),
+            ),
+            SizedBox(height: AppSpacing.md),
+             AppCard(
+              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+              border: Border.all(
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              ),
+              child: Column(
+                children: [
+                  ProfileListTileWidget(
+                    title: "Export Statement",
+                    subTitle: "Download your data in CSV or PDF",
+                    leadingIcon: LucideIcons.download,
+                    trailingWidget:  Icon(LucideIcons.chevronRight),
+                  ),
+                ],
+              ),
+            ),
+            //LOG OUT_____________________________________________
+            SizedBox(height: AppSpacing.xl),
+            OutlinedButton(
+              style: ButtonStyle(
+                shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                  borderRadius: BorderRadiusGeometry.circular(AppRadius.lg),
+                ),),
+              ),
+              onPressed: (){}, 
+              child: Container(
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(AppRadius.md),
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 15.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                  Icon(LucideIcons.logOut, size: 22, color: Theme.of(context).colorScheme.error,),
+                  SizedBox(width: AppSpacing.sm,),
+                  Text("Log Out", style: AppTextStyles.bodyMedium.copyWith(color: Theme.of(context).colorScheme.error, fontWeight: FontWeight.bold),),
+                ],),
+              )
+              ),
+            SizedBox(height: AppSpacing.xl),
+            //note_____________________________________________
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text("Spendly V0.0.1"),
+            Text("Made with love financial freedom by Demystik", style: AppTextStyles.labelMedium,),
+              ],
+            ),
+            SizedBox(height: AppSpacing.lg),
           ],
         ),
       ),
+    );
+  }
+}
+
+class ThemeSwitcher extends StatelessWidget {
+  const ThemeSwitcher({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<ThemeModeProvider>(
+      builder: (context, themeProvider, child) {
+        return Switch(
+          trackOutlineWidth: WidgetStateProperty.resolveWith((
+            Set<WidgetState> states,
+          ) {
+            if (states.contains(WidgetState.disabled)) {
+              return 5;
+            }
+            return null;
+          }),
+          activeTrackColor: Theme.of(
+            context,
+          ).colorScheme.surfaceContainerHighest,
+          inactiveTrackColor: Colors.grey.shade300,
+          inactiveThumbColor: Colors.white,
+          activeThumbColor: Theme.of(context).colorScheme.primary,
+          value: themeProvider.darkMode,
+          onChanged: (val) {
+            themeProvider.changeMode(val);
+          },
+        );
+      },
+    );
+  }
+}
+
+class NotificationSwitcher extends StatelessWidget {
+  const NotificationSwitcher({super.key,});
+  
+
+  @override
+  Widget build(BuildContext context) {
+        return Switch(
+          trackOutlineWidth: WidgetStateProperty.resolveWith((
+            Set<WidgetState> states,
+          ) {
+            if (states.contains(WidgetState.disabled)) {
+              return 5;
+            }
+            return null;
+          }),
+          activeTrackColor: Theme.of(
+            context,
+          ).colorScheme.surfaceContainerHighest,
+          inactiveTrackColor: Colors.grey.shade300,
+          inactiveThumbColor: Colors.white,
+          activeThumbColor: Theme.of(context).colorScheme.primary,
+          value: false,
+          onChanged: (val) {
+            
+          },
+        );
+      }
+  }
+
+class ProfileListTileWidget extends StatelessWidget {
+  const ProfileListTileWidget({
+    super.key,
+    required this.title,
+    required this.subTitle,
+    required this.leadingIcon,
+    required this.trailingWidget,
+  });
+  final String title;
+  final String subTitle;
+  final IconData leadingIcon;
+  final Widget trailingWidget;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Container(
+        padding: EdgeInsets.all(5),
+        height: 45,
+        width: 45,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(AppRadius.md),
+        ),
+        child: Icon(
+          leadingIcon,
+          color: Theme.of(context).colorScheme.primary,
+          size: 28,
+        ),
+      ),
+
+      title: Text(title, style: AppTextStyles.titleMedium),
+      subtitle: Text(subTitle, style: AppTextStyles.bodySmall),
+      contentPadding: EdgeInsets.all(0),
+      trailing: trailingWidget,
+    );
+  }
+}
+
+class CurrencyDropDown extends StatelessWidget {
+  const CurrencyDropDown({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<CurrencyProvider>(
+      builder: (context, currencyProvider, child) {
+        return DropdownButton<String>(
+          focusColor: Colors.transparent,
+          value: currencyProvider.selectedCurrency,
+          isDense: true,
+          hint: Text(
+            currencyTypesList[0],
+            style: AppTextStyles.bodyLarge.copyWith(
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          underline: const SizedBox(),
+          icon: const Icon(LucideIcons.chevronRight),
+          items: currencyTypesList.map((item) {
+            return DropdownMenuItem(
+              value: item,
+              child: Text(item, style: AppTextStyles.bodyLarge),
+            );
+          }).toList(),
+          onChanged: (val) => currencyProvider.changeCurrencyType(val),
+        );
+      },
     );
   }
 }

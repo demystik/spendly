@@ -12,5 +12,4 @@ class PaymentProvider  with ChangeNotifier {
     notifyListeners();
   }
 
-
 }

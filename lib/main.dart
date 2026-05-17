@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spendly/providers/amount_range_provider.dart';
 import 'package:spendly/providers/category_provider.dart';
+import 'package:spendly/providers/currency_providers.dart';
 import 'package:spendly/providers/datetime_provider.dart';
 import 'package:spendly/providers/expense_provider.dart';
 import 'package:spendly/providers/payment_method.dart';
+import 'package:spendly/providers/theme_mode_provider.dart';
 import 'package:spendly/routes/app_router.dart';
 
 void main() {
@@ -16,6 +18,8 @@ void main() {
         ChangeNotifierProvider(create: (_) => CategoryProvider()),
         ChangeNotifierProvider(create: (_) => DatetimeProvider()),
         ChangeNotifierProvider(create: (_) => AmountRangeProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeModeProvider()),
+        ChangeNotifierProvider(create: (_) => CurrencyProvider()),
       ],
       child: const MyApp(),
     ),
