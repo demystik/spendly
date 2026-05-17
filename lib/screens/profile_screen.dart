@@ -30,11 +30,29 @@ class ProfileScreen extends StatelessWidget {
                       height: 100,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.blue,
+                        color: Colors.grey,
                         image: DecorationImage(
                           fit: BoxFit.cover,
-                          image: AssetImage("assets/images/profile_male.png",),
+                          image: AssetImage("assets/images/profile_male.png"),
                         ),
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: Container(
+                        width: 30,
+                        height: 30,
+                        padding: EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(color: Colors.white, spreadRadius: 1.0),
+                          ],
+                          color: Colors.blue.shade200,
+                          shape: BoxShape.circle,
+                        ),
+
+                        child: Image.asset("assets/logos/spendly_logo1.png"),
                       ),
                     ),
                   ],
