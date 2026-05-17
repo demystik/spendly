@@ -92,11 +92,16 @@ class ProfileScreen extends StatelessWidget {
                       height: 45,
                       width: 45,
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.secondary,
+                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
                         borderRadius: BorderRadius.circular(AppRadius.md),
                       ),
-                      child: Icon(LucideIcons.sunDim),
+                      child: Icon(LucideIcons.sunDim, color: Theme.of(context).colorScheme.primary, size: 28,),
                     ),
+
+                    title: Text("Dark Appearance"),
+                    subtitle: Text("Customize your interface"),
+
+                    trailing: ToggleButtons(children: [], isSelected: [false]),
                   ),
                 ],
               ),
