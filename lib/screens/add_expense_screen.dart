@@ -90,9 +90,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
             SizedBox(height: AppSpacing.md),
             AppTextField(
-              myInputFormatters: [
-                FilteringTextInputFormatter.deny(RegExp('r')),
-              ],
+              selection: false,
               controller: _titleController,
               label: "e.g Lunch at Joe's",
             ),
@@ -361,8 +359,8 @@ class ExpenseTextField extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 fontSize: 42,
               ),
-              //disabling pasting..
-              inputFormatters: [FilteringTextInputFormatter.deny(RegExp('r'))],
+              //disabling pasting, copying, cutting..
+              enableInteractiveSelection: false,
               decoration: InputDecoration(
                 floatingLabelBehavior: FloatingLabelBehavior.never,
                 hintText: "0.00",

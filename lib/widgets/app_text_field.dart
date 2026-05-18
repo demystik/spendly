@@ -17,7 +17,8 @@ class AppTextField extends StatelessWidget {
     this.maxLines = 1,
     this.minLines,
     this.enabled = true,
-    this.myInputFormatters,
+    this.selection,
+
   });
 
   final String label;
@@ -32,7 +33,7 @@ class AppTextField extends StatelessWidget {
   final int maxLines;
   final int? minLines;
   final bool enabled;
-  final List<TextInputFormatter>? myInputFormatters;
+  final bool? selection;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +51,7 @@ class AppTextField extends StatelessWidget {
       textAlignVertical: TextAlignVertical.top,
       enabled: enabled,
       style: text.bodyLarge,
-      inputFormatters: myInputFormatters,
+      enableInteractiveSelection: selection,
       
       decoration: InputDecoration(
         labelText: label,

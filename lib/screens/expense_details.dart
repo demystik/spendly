@@ -41,13 +41,15 @@ class ExpenseDetailsScreen extends StatelessWidget {
                     ),
                     Text(
                       expense.amount.toStringAsFixed(2),
-                      style: AppTextStyles.displayLarge,
+                      style: AppTextStyles.displayLarge.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
                 SizedBox(height: AppSpacing.md),
 
                 AppChip(label: expense.category.name),
+                SizedBox(height: AppSpacing.md),
+                Text(expense.title),
               ],
             ),
             SizedBox(height: AppSpacing.md),
@@ -58,16 +60,18 @@ class ExpenseDetailsScreen extends StatelessWidget {
             SizedBox(height: AppSpacing.md),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Column(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       BatchCard(
                         icon: LucideIcons.calendar,
                         type: "Date",
                         value: DateFormat("MMMM d, y").format(expense.date),
                       ),
+                  SizedBox(height: AppSpacing.md),
                       BatchCard(
                         icon: LucideIcons.clock,
                         type: "Time",
@@ -75,15 +79,16 @@ class ExpenseDetailsScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: AppSpacing.xl),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  SizedBox(width: AppSpacing.xxl),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       BatchCard(
                         icon: LucideIcons.creditCard,
                         type: "Payment",
                         value: expense.paymentType,
                       ),
+                  SizedBox(height: AppSpacing.md),
                       BatchCard(
                         icon: LucideIcons.tag,
                         type: "ID",
@@ -105,7 +110,8 @@ class ExpenseDetailsScreen extends StatelessWidget {
               child: Column(
                 children: [
                   BatchCard(icon: LucideIcons.fileText, type: "Note"),
-                  Text(expense.note),
+            SizedBox(height: AppSpacing.sm),
+                  Text(expense.note, textAlign: TextAlign.justify,),
                 ],
               ),
             ),
