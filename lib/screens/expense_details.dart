@@ -138,13 +138,16 @@ class BatchCard extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Icon(icon, size: 18),
-            SizedBox(width: AppSpacing.sm),
-            Text(type, style: AppTextStyles.bodyMedium),
-          ],
+        Opacity(
+          opacity: 0.5,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(icon, size: 18),
+              SizedBox(width: AppSpacing.sm),
+              Text(type, style: AppTextStyles.bodyMedium),
+            ],
+          ),
         ),
         ...[if (value != null) Text(value!, style: AppTextStyles.titleMedium)],
       ],
