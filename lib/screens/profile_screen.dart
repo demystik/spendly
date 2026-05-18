@@ -30,8 +30,6 @@ class ProfileScreen extends StatelessWidget {
         child: ListView(
           padding: EdgeInsets.all(15),
           children: [
-
-
             //Header Section_____________________________________________
             HeaderSection(),
 
@@ -44,9 +42,9 @@ class ProfileScreen extends StatelessWidget {
                 letterSpacing: 1.8,
               ),
             ),
-            SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
             AppPreferences(),
-            SizedBox(height: AppSpacing.xl),
+            const SizedBox(height: AppSpacing.xl),
 
             //SECURITY & ALERTS_____________________________________________
             SectionLabel(
@@ -58,11 +56,11 @@ class ProfileScreen extends StatelessWidget {
               ),
             ),
 
-            SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
             SecurityAndAlerts(),
 
             //DATA MANAGEMENT_____________________________________________
-            SizedBox(height: AppSpacing.xl),
+            const SizedBox(height: AppSpacing.xl),
             SectionLabel(
               actualLabel: "DATA MANAGEMENT",
               textStyle: AppTextStyles.bodyMedium.copyWith(
@@ -71,8 +69,8 @@ class ProfileScreen extends StatelessWidget {
                 letterSpacing: 1.8,
               ),
             ),
-            SizedBox(height: AppSpacing.md),
-             AppCard(
+            const SizedBox(height: AppSpacing.md),
+            AppCard(
               padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
               border: Border.all(
                 color: Theme.of(context).colorScheme.surfaceContainerHighest,
@@ -83,60 +81,79 @@ class ProfileScreen extends StatelessWidget {
                     title: "Export Statement",
                     subTitle: "Download your data in CSV or PDF",
                     leadingIcon: LucideIcons.download,
-                    trailingWidget:  Icon(LucideIcons.chevronRight),
+                    trailingWidget: Icon(LucideIcons.chevronRight),
                   ),
                 ],
               ),
             ),
             //LOG OUT_____________________________________________
-            SizedBox(height: AppSpacing.xl),
-            logOutButton(context),
-            SizedBox(height: AppSpacing.xl),
+            const SizedBox(height: AppSpacing.xl),
+            LogOutButton(),
+            const SizedBox(height: AppSpacing.xl),
             //note_____________________________________________
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text("Spendly V0.0.1"),
-            Text("Made with love financial freedom by Demystik", style: AppTextStyles.labelMedium,),
+                Text(
+                  "Made with love financial freedom by Demystik",
+                  style: AppTextStyles.labelMedium,
+                ),
               ],
             ),
-            SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.lg),
           ],
         ),
       ),
     );
   }
+}
 
-  OutlinedButton logOutButton(BuildContext context) {
+class LogOutButton extends StatelessWidget {
+  const LogOutButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return OutlinedButton(
-            style: ButtonStyle(
-              shape: WidgetStateProperty.all(RoundedRectangleBorder(
-                borderRadius: BorderRadiusGeometry.circular(AppRadius.lg),
-              ),),
+      style: ButtonStyle(
+        shape: WidgetStateProperty.all(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadiusGeometry.circular(AppRadius.lg),
+          ),
+        ),
+      ),
+      onPressed: () {},
+      child: Container(
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(AppRadius.md),
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 15.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              LucideIcons.logOut,
+              size: 22,
+              color: Theme.of(context).colorScheme.error,
             ),
-            onPressed: (){}, 
-            child: Container(
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(AppRadius.md),
+            const SizedBox(width: AppSpacing.sm),
+            Text(
+              "Log Out",
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: Theme.of(context).colorScheme.error,
+                fontWeight: FontWeight.bold,
               ),
-              padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 15.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                Icon(LucideIcons.logOut, size: 22, color: Theme.of(context).colorScheme.error,),
-                SizedBox(width: AppSpacing.sm,),
-                Text("Log Out", style: AppTextStyles.bodyMedium.copyWith(color: Theme.of(context).colorScheme.error, fontWeight: FontWeight.bold),),
-              ],),
-            )
-            );
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
 class HeaderSection extends StatelessWidget {
-  const HeaderSection({
-    super.key,
-  });
+  const HeaderSection({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -176,13 +193,13 @@ class HeaderSection extends StatelessWidget {
             ),
           ],
         ),
-    
-        SizedBox(height: AppSpacing.md),
+
+        const SizedBox(height: AppSpacing.md),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text("Henry Revira", style: AppTextStyles.titleLarge),
-            SizedBox(width: AppSpacing.sm),
+            const SizedBox(width: AppSpacing.sm),
             Icon(
               LucideIcons.shieldCheck,
               color: Theme.of(context).colorScheme.primary,
@@ -190,18 +207,16 @@ class HeaderSection extends StatelessWidget {
           ],
         ),
         Text("henry.revira@gmail.com", style: AppTextStyles.bodyMedium),
-        SizedBox(height: AppSpacing.md),
+        const SizedBox(height: AppSpacing.md),
         AppChip(label: "PRO MEMBER"),
-        SizedBox(height: AppSpacing.xl),
+        const SizedBox(height: AppSpacing.xl),
       ],
     );
   }
 }
 
 class AppPreferences extends StatelessWidget {
-  const AppPreferences({
-    super.key,
-  });
+  const AppPreferences({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -217,11 +232,7 @@ class AppPreferences extends StatelessWidget {
             leadingIcon: LucideIcons.sunDim,
             trailingWidget: ThemeSwitcher(),
           ),
-          Divider(
-            color: Theme.of(
-              context,
-            ).colorScheme.surfaceContainerHighest,
-          ),
+          Divider(color: Theme.of(context).colorScheme.surfaceContainerHighest),
           ProfileListTileWidget(
             title: "Currency",
             subTitle: "Select your currency",
@@ -235,9 +246,7 @@ class AppPreferences extends StatelessWidget {
 }
 
 class SecurityAndAlerts extends StatelessWidget {
-  const SecurityAndAlerts({
-    super.key,
-  });
+  const SecurityAndAlerts({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -253,22 +262,14 @@ class SecurityAndAlerts extends StatelessWidget {
             leadingIcon: LucideIcons.bell,
             trailingWidget: NotificationSwitcher(),
           ),
-          Divider(
-            color: Theme.of(
-              context,
-            ).colorScheme.surfaceContainerHighest,
-          ),
+          Divider(color: Theme.of(context).colorScheme.surfaceContainerHighest),
           ProfileListTileWidget(
             title: "Privacy & Security",
             subTitle: "Biometric Login & 2FA",
             leadingIcon: LucideIcons.lock,
             trailingWidget: Icon(LucideIcons.chevronRight),
           ),
-          Divider(
-            color: Theme.of(
-              context,
-            ).colorScheme.surfaceContainerHighest,
-          ),
+          Divider(color: Theme.of(context).colorScheme.surfaceContainerHighest),
           ProfileListTileWidget(
             title: "Region",
             subTitle: "United States",
@@ -314,33 +315,28 @@ class ThemeSwitcher extends StatelessWidget {
 }
 
 class NotificationSwitcher extends StatelessWidget {
-  const NotificationSwitcher({super.key,});
-  
+  const NotificationSwitcher({super.key});
 
   @override
   Widget build(BuildContext context) {
-        return Switch(
-          trackOutlineWidth: WidgetStateProperty.resolveWith((
-            Set<WidgetState> states,
-          ) {
-            if (states.contains(WidgetState.disabled)) {
-              return 5;
-            }
-            return null;
-          }),
-          activeTrackColor: Theme.of(
-            context,
-          ).colorScheme.surfaceContainerHighest,
-          inactiveTrackColor: Colors.grey.shade300,
-          inactiveThumbColor: Colors.white,
-          activeThumbColor: Theme.of(context).colorScheme.primary,
-          value: false,
-          onChanged: (val) {
-            
-          },
-        );
-      }
+    return Switch(
+      trackOutlineWidth: WidgetStateProperty.resolveWith((
+        Set<WidgetState> states,
+      ) {
+        if (states.contains(WidgetState.disabled)) {
+          return 5;
+        }
+        return null;
+      }),
+      activeTrackColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+      inactiveTrackColor: Colors.grey.shade300,
+      inactiveThumbColor: Colors.white,
+      activeThumbColor: Theme.of(context).colorScheme.primary,
+      value: false,
+      onChanged: (val) {},
+    );
   }
+}
 
 class ProfileListTileWidget extends StatelessWidget {
   const ProfileListTileWidget({
