@@ -26,9 +26,9 @@ class _SearchAndFilterScreenState extends State<SearchAndFilterScreen> {
   @override
   void dispose() {
     searchTextController.dispose();
-    context.read<ExpenseProvider>().resetFilters();
     super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {

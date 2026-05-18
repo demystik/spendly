@@ -19,7 +19,7 @@ class ExpenseDetailsScreen extends StatelessWidget {
         child: ListView(
           padding: EdgeInsets.all(15.0),
           children: [
-            SizedBox(height: AppSpacing.md),
+            SizedBox(height: AppSpacing.sm),
             SizedBox(
               width: screenSize.width * 0.3,
               height: screenSize.width * 0.3,
@@ -27,7 +27,7 @@ class ExpenseDetailsScreen extends StatelessWidget {
             ),
             Column(
               children: [
-                SizedBox(height: AppSpacing.sm),
+                SizedBox(height: AppSpacing.md),
                 Opacity(
                   opacity: 0.7,
                   child: Text("AMOUNT SPENT", style: AppTextStyles.titleMedium),
@@ -139,7 +139,7 @@ class BatchCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Opacity(
-          opacity: 0.5,
+          opacity: 0.7,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [

@@ -97,7 +97,7 @@ class ProfileScreen extends StatelessWidget {
               children: [
                 Text("Spendly V0.0.1"),
                 Text(
-                  "Made with love financial freedom by Demystik",
+                  "Made with love for financial freedom by Demystik",
                   style: AppTextStyles.labelMedium,
                 ),
               ],
