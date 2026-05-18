@@ -157,6 +157,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                     currentDate,
                     note,
                     selectedCat,
+                    context.read<PaymentProvider>().selectedMethod.toString(),
                   );
 
                   // T0DO: Show Snackbar on home screen______________________________________________
