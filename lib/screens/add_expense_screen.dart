@@ -151,13 +151,14 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                       .currentDate;
                   if (selectedCat == null) return;
 
+                  String paymentMethod = context.read<PaymentProvider>().selectedMethod ?? paymentMethodList[0];
                   expenseProvider.addExpense(
                     amount,
                     title,
                     currentDate,
                     note,
                     selectedCat,
-                    context.read<PaymentProvider>().selectedMethod.toString(),
+                    paymentMethod,
                   );
 
                   // T0DO: Show Snackbar on home screen______________________________________________

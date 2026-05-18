@@ -16,59 +16,98 @@ class ExpenseDetailsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text("Expense details")),
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+        child: ListView(
+          padding: EdgeInsets.all(15.0),
           children: [
-            SizedBox(height: AppSpacing.lg),
+            SizedBox(height: AppSpacing.md),
             SizedBox(
-              width: screenSize.width * 0.4,
-              height: screenSize.width * 0.4,
+              width: screenSize.width * 0.3,
+              height: screenSize.width * 0.3,
               child: SvgPicture.asset("assets/animations/online-banking.svg"),
             ),
-            Opacity(
-              opacity: 0.7,
-              child: Text("AMOUNT SPENT", style: AppTextStyles.titleMedium),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            Column(
               children: [
-                Icon(
-                  LucideIcons.dollarSign400,
-                  color: Theme.of(context).colorScheme.primary,
+                SizedBox(height: AppSpacing.sm),
+                Opacity(
+                  opacity: 0.7,
+                  child: Text("AMOUNT SPENT", style: AppTextStyles.titleMedium),
                 ),
-                Text(
-                  expense.amount.toStringAsFixed(2),
-                  style: AppTextStyles.displayLarge,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      LucideIcons.dollarSign400,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    Text(
+                      expense.amount.toStringAsFixed(2),
+                      style: AppTextStyles.displayLarge,
+                    ),
+                  ],
                 ),
+                SizedBox(height: AppSpacing.md),
+
+                AppChip(label: expense.category.name),
               ],
             ),
-            SizedBox(height: AppSpacing.md),
-
-            AppChip(label: expense.category.name),
-
             SizedBox(height: AppSpacing.md),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25.0),
               child: Divider(),
             ),
             SizedBox(height: AppSpacing.md),
-            Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    BatchCard(icon: LucideIcons.card, type: "Payment", value: expense.category.),
-                    BatchCard(icon: LucideIcons.clock, type: "Time", value: "02:51 PM"),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    BatchCard(icon: LucideIcons.calendar, type: "Date", value:  DateFormat("MMMM d, y").format(expense.date)),
-                    BatchCard(icon: LucideIcons.clock, type: "Time", value: "02:51 PM"),
-                  ],
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      BatchCard(
+                        icon: LucideIcons.calendar,
+                        type: "Date",
+                        value: DateFormat("MMMM d, y").format(expense.date),
+                      ),
+                      BatchCard(
+                        icon: LucideIcons.clock,
+                        type: "Time",
+                        value: "02:51 PM",
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: AppSpacing.xl),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      BatchCard(
+                        icon: LucideIcons.creditCard,
+                        type: "Payment",
+                        value: expense.paymentType,
+                      ),
+                      BatchCard(
+                        icon: LucideIcons.tag,
+                        type: "ID",
+                        value: "TXN-${expense.id.substring(0, 7)}",
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: AppSpacing.md),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25.0),
+              child: Divider(),
+            ),
+            SizedBox(height: AppSpacing.md),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                children: [
+                  BatchCard(icon: LucideIcons.fileText, type: "Note"),
+                  Text(expense.note),
+                ],
+              ),
             ),
           ],
         ),
@@ -82,11 +121,11 @@ class BatchCard extends StatelessWidget {
     super.key,
     required this.icon,
     required this.type,
-    required this.value,
+    this.value,
   });
   final IconData icon;
   final String type;
-  final String value;
+  final String? value;
 
   @override
   Widget build(BuildContext context) {
@@ -96,12 +135,12 @@ class BatchCard extends StatelessWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(icon, size: 18,),
+            Icon(icon, size: 18),
             SizedBox(width: AppSpacing.sm),
             Text(type, style: AppTextStyles.bodyMedium),
           ],
         ),
-        Text(value, style: AppTextStyles.titleMedium),
+        ...[if (value != null) Text(value!, style: AppTextStyles.titleMedium)],
       ],
     );
   }
