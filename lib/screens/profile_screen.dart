@@ -15,6 +15,7 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+  final colorsScheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
         elevation: 1.0,
@@ -22,7 +23,7 @@ class ProfileScreen extends StatelessWidget {
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0),
-            child: Icon(LucideIcons.bell),
+            child: const Icon(LucideIcons.bell),
           ),
         ],
       ),
@@ -37,7 +38,7 @@ class ProfileScreen extends StatelessWidget {
             SectionLabel(
               actualLabel: "APP PREFERENCES",
               textStyle: AppTextStyles.bodyMedium.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                color: colorsScheme.onSurfaceVariant,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 1.8,
               ),
@@ -50,7 +51,7 @@ class ProfileScreen extends StatelessWidget {
             SectionLabel(
               actualLabel: "SECURITY & ALERTS",
               textStyle: AppTextStyles.bodyMedium.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                color: colorsScheme.onSurfaceVariant,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 1.8,
               ),
@@ -64,7 +65,7 @@ class ProfileScreen extends StatelessWidget {
             SectionLabel(
               actualLabel: "DATA MANAGEMENT",
               textStyle: AppTextStyles.bodyMedium.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                color: colorsScheme.onSurfaceVariant,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 1.8,
               ),
@@ -73,7 +74,7 @@ class ProfileScreen extends StatelessWidget {
             AppCard(
               padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
               border: Border.all(
-                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                color: colorsScheme.surfaceContainerHighest,
               ),
               child: Column(
                 children: [
@@ -81,7 +82,7 @@ class ProfileScreen extends StatelessWidget {
                     title: "Export Statement",
                     subTitle: "Download your data in CSV or PDF",
                     leadingIcon: LucideIcons.download,
-                    trailingWidget: Icon(LucideIcons.chevronRight),
+                    trailingWidget: const Icon(LucideIcons.chevronRight),
                   ),
                 ],
               ),
@@ -132,7 +133,7 @@ class LogOutButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+           Icon(
               LucideIcons.logOut,
               size: 22,
               color: Theme.of(context).colorScheme.error,
