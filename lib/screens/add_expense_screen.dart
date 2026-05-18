@@ -29,7 +29,6 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _noteController = TextEditingController();
 
-
   Future<void> _showDatePicker() async {
     final current = context.read<DatetimeProvider>().currentDate;
     final DateTime? pickedDate = await showDatePicker(
@@ -39,7 +38,9 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
       lastDate: DateTime(2027),
     );
     if (pickedDate != null && pickedDate != current) {
-      context.read<DatetimeProvider>().setDate(pickedDate);
+      if (mounted) {
+        context.read<DatetimeProvider>().setDate(pickedDate);
+      }
     }
   }
 
@@ -53,7 +54,6 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         elevation: 4,
@@ -90,7 +90,9 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
             SizedBox(height: AppSpacing.md),
             AppTextField(
-              myInputFormatters: [FilteringTextInputFormatter.deny(RegExp('r')),],
+              myInputFormatters: [
+                FilteringTextInputFormatter.deny(RegExp('r')),
+              ],
               controller: _titleController,
               label: "e.g Lunch at Joe's",
             ),
@@ -140,21 +142,24 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                   );
                   final String title = _titleController.text.trim();
                   final String note = _noteController.text;
-                  final Category? selectedCat = context.read<CategoryProvider>().selectedCategory;
+                  final Category? selectedCat = context
+                      .read<CategoryProvider>()
+                      .selectedCategory;
                   final expenseProvider = context.read<ExpenseProvider>();
-                  final currentDate = context.read<DatetimeProvider>().currentDate;
+                  final currentDate = context
+                      .read<DatetimeProvider>()
+                      .currentDate;
                   if (selectedCat == null) return;
 
-                    expenseProvider.addExpense(
-                      amount,
-                      title,
-                      currentDate,
-                      note,
-                      selectedCat,
-                    );
+                  expenseProvider.addExpense(
+                    amount,
+                    title,
+                    currentDate,
+                    note,
+                    selectedCat,
+                  );
 
-
-                    // TODO: Show Snackbar on home screen
+                  // T0DO: Show Snackbar on home screen______________________________________________
                   // ScaffoldMessenger.of(context).showSnackBar(
                   //   SnackBar(
                   //     content: Text("Expense Saved Successfully"),
@@ -221,40 +226,42 @@ class DateSelectorWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SectionLabel(
-          actualLabel: "Date",
-          leadingIcon: const Icon(LucideIcons.calendar, size: 18),
-        ),
-        SizedBox(height: AppSpacing.sm),
-        GestureDetector(
-          onTap: showDatePicker,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            decoration: BoxDecoration(
-              border: Border.all(color: Theme.of(context).colorScheme.outline),
-              borderRadius: BorderRadius.circular(AppRadius.md),
-            ),
-            child: Consumer<DatetimeProvider>(
-              builder: (context, provider, child) {
-                return Text(
-                  DateFormat("MMMM d, y").format(provider.currentDate),
-                  style: AppTextStyles.bodyLarge,
-                );
-              },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SectionLabel(
+            actualLabel: "Date",
+            leadingIcon: const Icon(LucideIcons.calendar, size: 18),
+          ),
+          SizedBox(height: AppSpacing.sm),
+          GestureDetector(
+            onTap: showDatePicker,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.outline,
+                ),
+                borderRadius: BorderRadius.circular(AppRadius.md),
+              ),
+              child: Consumer<DatetimeProvider>(
+                builder: (context, provider, child) {
+                  return Text(
+                    DateFormat("MMMM d, y").format(provider.currentDate),
+                    style: AppTextStyles.bodyLarge,
+                  );
+                },
+              ),
             ),
           ),
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
   }
 }
 
 class CategoryWrap extends StatelessWidget {
-  const CategoryWrap({super.key, });
+  const CategoryWrap({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -280,9 +287,7 @@ class CategoryWrap extends StatelessWidget {
 }
 
 class PaymentMethodSelector extends StatelessWidget {
-  const PaymentMethodSelector({
-    super.key,
-  });
+  const PaymentMethodSelector({super.key});
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -299,24 +304,26 @@ class PaymentMethodSelector extends StatelessWidget {
             ),
             child: Consumer<PaymentProvider>(
               builder: (context, paymentProvider, child) {
-               return DropdownButton<String>(
-                focusColor: Colors.transparent,
-                value: paymentProvider.selectedMethod,
-                isDense: true,
-                hint: Text(paymentMethodList[0], style: AppTextStyles.bodyLarge),
-                borderRadius: BorderRadius.circular(AppRadius.md),
-                underline: const SizedBox(),
-                icon: const SizedBox(),
-                items: paymentMethodList.map((item) {
-                  return DropdownMenuItem(
-                    value: item,
-                    child: Text(item, style: AppTextStyles.bodyLarge),
-                  );
-                }).toList(),
-                onChanged: (val) => paymentProvider.changePaymentMethod(val),
-              );
+                return DropdownButton<String>(
+                  focusColor: Colors.transparent,
+                  value: paymentProvider.selectedMethod,
+                  isDense: true,
+                  hint: Text(
+                    paymentMethodList[0],
+                    style: AppTextStyles.bodyLarge,
+                  ),
+                  borderRadius: BorderRadius.circular(AppRadius.md),
+                  underline: const SizedBox(),
+                  icon: const SizedBox(),
+                  items: paymentMethodList.map((item) {
+                    return DropdownMenuItem(
+                      value: item,
+                      child: Text(item, style: AppTextStyles.bodyLarge),
+                    );
+                  }).toList(),
+                  onChanged: (val) => paymentProvider.changePaymentMethod(val),
+                );
               },
-              
             ),
           ),
         ],
@@ -353,7 +360,7 @@ class ExpenseTextField extends StatelessWidget {
                 fontSize: 42,
               ),
               //disabling pasting..
-              inputFormatters: [FilteringTextInputFormatter.deny(RegExp('r')),],
+              inputFormatters: [FilteringTextInputFormatter.deny(RegExp('r'))],
               decoration: InputDecoration(
                 floatingLabelBehavior: FloatingLabelBehavior.never,
                 hintText: "0.00",

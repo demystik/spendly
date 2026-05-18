@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:spendly/models/expense_model.dart';
 import 'package:spendly/themes/app_spacing.dart';
@@ -54,48 +55,51 @@ class MyListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: Container(
-        padding: EdgeInsets.all(AppSpacing.sm),
-        width: 50,
-        height: 50,
-        decoration: isSearchScreen
-            ? BoxDecoration(
-                borderRadius: BorderRadius.circular(AppRadius.md),
-                color: recentTrans.category.color,
-              )
-            : BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.grey.shade200,
-              ),
-        child: Icon(
-          recentTrans.category.icon,
-          color: isSearchScreen ? Colors.white : Colors.blue.shade400,
-        ),
-      ),
-      title: Text(recentTrans.title, style: AppTextStyles.titleMedium),
-      subtitle: Text(
-        "${recentTrans.category.name} . ${DateFormat("MMMM d, y").format(recentTrans.date)}",
-        style: AppTextStyles.bodySmall,
-      ),
-      trailing: Column(
-        spacing: 5,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            "-\$${recentTrans.amount.toStringAsFixed(2)}",
-            style: AppTextStyles.titleMedium,
-          ),
-          isSearchScreen
-              ? SizedBox()
-              : AppChip(
-                  label: "completed",
-                  labelTextStyle: TextStyle(fontSize: 10),
-                  variant: AppChipVariant.outlined,
-                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+    return InkWell(
+      onTap: () => context.push("/expense_details_screen", extra: recentTrans),
+      child: ListTile(
+        leading: Container(
+          padding: EdgeInsets.all(AppSpacing.sm),
+          width: 50,
+          height: 50,
+          decoration: isSearchScreen
+              ? BoxDecoration(
+                  borderRadius: BorderRadius.circular(AppRadius.md),
+                  color: recentTrans.category.color,
+                )
+              : BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.grey.shade200,
                 ),
-        ],
+          child: Icon(
+            recentTrans.category.icon,
+            color: isSearchScreen ? Colors.white : Colors.blue.shade400,
+          ),
+        ),
+        title: Text(recentTrans.title, style: AppTextStyles.titleMedium),
+        subtitle: Text(
+          "${recentTrans.category.name} . ${DateFormat("MMMM d, y").format(recentTrans.date)}",
+          style: AppTextStyles.bodySmall,
+        ),
+        trailing: Column(
+          spacing: 5,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "-\$${recentTrans.amount.toStringAsFixed(2)}",
+              style: AppTextStyles.titleMedium,
+            ),
+            isSearchScreen
+                ? SizedBox()
+                : AppChip(
+                    label: "completed",
+                    labelTextStyle: TextStyle(fontSize: 10),
+                    variant: AppChipVariant.outlined,
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  ),
+          ],
+        ),
       ),
     );
   }

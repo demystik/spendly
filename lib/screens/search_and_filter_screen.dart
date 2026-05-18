@@ -5,6 +5,7 @@ import 'package:spendly/models/expense_model.dart';
 import 'package:spendly/providers/amount_range_provider.dart';
 import 'package:spendly/providers/category_provider.dart';
 import 'package:spendly/providers/expense_provider.dart';
+import 'package:spendly/shared/no_search_found.dart';
 import 'package:spendly/shared/section_label.dart';
 import 'package:spendly/shared/transaction_list_tiles.dart';
 import 'package:spendly/themes/app_spacing.dart';
@@ -150,7 +151,7 @@ class _SearchAndFilterScreenState extends State<SearchAndFilterScreen> {
             //RECENT RESULTS______________________________________________
             RecentResultHeaderWidget(),
             SizedBox(height: AppSpacing.md),
-
+            context.watch<ExpenseProvider>().filteredExpenses.isEmpty ? NoSearchFound() :
             ListView.builder(
               padding: EdgeInsets.symmetric(horizontal: 15),
               scrollDirection: Axis.vertical,

@@ -8,6 +8,7 @@ class Expense {
   double amount;
   DateTime date;
   String note;
+  String paymentType;
   Category category;
 
   Expense({
@@ -17,6 +18,7 @@ class Expense {
     required this.date,
     required this.note,
     required this.category,
+    required this.paymentType,
   });
 }
 

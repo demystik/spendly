@@ -12,10 +12,10 @@ class ExpenseProvider with ChangeNotifier {
 
   //add new expense
   void addExpense(double amount, String title, DateTime date, String note, 
-  Category category,
+  Category category, String paymentType,
   ) {
     final newExpense = Expense(id: uuid.v4(), title: title, amount: amount,
-      date: date, note: note, category: category,
+      date: date, note: note, category: category, paymentType: paymentType,
     );
     _expenses.insert(0, newExpense);
 
