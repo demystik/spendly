@@ -13,7 +13,6 @@ import 'package:spendly/widgets/app_chip.dart';
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,61 +30,10 @@ class ProfileScreen extends StatelessWidget {
         child: ListView(
           padding: EdgeInsets.all(15),
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Stack(
-                  children: [
-                    Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.grey,
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: AssetImage("assets/images/profile_male.png"),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: Container(
-                        width: 30,
-                        height: 30,
-                        padding: EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(color: Colors.white, spreadRadius: 1.0),
-                          ],
-                          color: Colors.blue.shade200,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Image.asset("assets/logos/spendly_logo1.png"),
-                      ),
-                    ),
-                  ],
-                ),
 
-                SizedBox(height: AppSpacing.md),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("Henry Revira", style: AppTextStyles.titleLarge),
-                    SizedBox(width: AppSpacing.sm),
-                    Icon(
-                      LucideIcons.shieldCheck,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ],
-                ),
-                Text("henry.revira@gmail.com", style: AppTextStyles.bodyMedium),
-                SizedBox(height: AppSpacing.md),
-                AppChip(label: "PRO MEMBER"),
-                SizedBox(height: AppSpacing.xl),
-              ],
-            ),
+
+            //Header Section_____________________________________________
+            HeaderSection(),
 
             //App preferences_____________________________________________
             SectionLabel(
@@ -97,32 +45,7 @@ class ProfileScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: AppSpacing.md),
-            AppCard(
-              border: Border.all(
-                color: Theme.of(context).colorScheme.surfaceContainerHighest,
-              ),
-              child: Column(
-                children: [
-                  ProfileListTileWidget(
-                    title: "Dark Appearance",
-                    subTitle: "Customize your interface",
-                    leadingIcon: LucideIcons.sunDim,
-                    trailingWidget: ThemeSwitcher(),
-                  ),
-                  Divider(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.surfaceContainerHighest,
-                  ),
-                  ProfileListTileWidget(
-                    title: "Currency",
-                    subTitle: "Select your currency",
-                    leadingIcon: LucideIcons.dollarSign,
-                    trailingWidget: CurrencyDropDown(),
-                  ),
-                ],
-              ),
-            ),
+            AppPreferences(),
             SizedBox(height: AppSpacing.xl),
 
             //SECURITY & ALERTS_____________________________________________
@@ -136,43 +59,7 @@ class ProfileScreen extends StatelessWidget {
             ),
 
             SizedBox(height: AppSpacing.md),
-            AppCard(
-              border: Border.all(
-                color: Theme.of(context).colorScheme.surfaceContainerHighest,
-              ),
-              child: Column(
-                children: [
-                  ProfileListTileWidget(
-                    title: "Push Notifications",
-                    subTitle: "Alerts for budgets & spending",
-                    leadingIcon: LucideIcons.bell,
-                    trailingWidget: NotificationSwitcher(),
-                  ),
-                  Divider(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.surfaceContainerHighest,
-                  ),
-                  ProfileListTileWidget(
-                    title: "Privacy & Security",
-                    subTitle: "Biometric Login & 2FA",
-                    leadingIcon: LucideIcons.lock,
-                    trailingWidget: Icon(LucideIcons.chevronRight),
-                  ),
-                  Divider(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.surfaceContainerHighest,
-                  ),
-                  ProfileListTileWidget(
-                    title: "Region",
-                    subTitle: "United States",
-                    leadingIcon: LucideIcons.globe,
-                    trailingWidget: Icon(LucideIcons.chevronRight),
-                  ),
-                ],
-              ),
-            ),
+            SecurityAndAlerts(),
 
             //DATA MANAGEMENT_____________________________________________
             SizedBox(height: AppSpacing.xl),
@@ -203,28 +90,7 @@ class ProfileScreen extends StatelessWidget {
             ),
             //LOG OUT_____________________________________________
             SizedBox(height: AppSpacing.xl),
-            OutlinedButton(
-              style: ButtonStyle(
-                shape: WidgetStateProperty.all(RoundedRectangleBorder(
-                  borderRadius: BorderRadiusGeometry.circular(AppRadius.lg),
-                ),),
-              ),
-              onPressed: (){}, 
-              child: Container(
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(AppRadius.md),
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 15.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                  Icon(LucideIcons.logOut, size: 22, color: Theme.of(context).colorScheme.error,),
-                  SizedBox(width: AppSpacing.sm,),
-                  Text("Log Out", style: AppTextStyles.bodyMedium.copyWith(color: Theme.of(context).colorScheme.error, fontWeight: FontWeight.bold),),
-                ],),
-              )
-              ),
+            logOutButton(context),
             SizedBox(height: AppSpacing.xl),
             //note_____________________________________________
             Column(
@@ -237,6 +103,179 @@ class ProfileScreen extends StatelessWidget {
             SizedBox(height: AppSpacing.lg),
           ],
         ),
+      ),
+    );
+  }
+
+  OutlinedButton logOutButton(BuildContext context) {
+    return OutlinedButton(
+            style: ButtonStyle(
+              shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                borderRadius: BorderRadiusGeometry.circular(AppRadius.lg),
+              ),),
+            ),
+            onPressed: (){}, 
+            child: Container(
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(AppRadius.md),
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 15.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                Icon(LucideIcons.logOut, size: 22, color: Theme.of(context).colorScheme.error,),
+                SizedBox(width: AppSpacing.sm,),
+                Text("Log Out", style: AppTextStyles.bodyMedium.copyWith(color: Theme.of(context).colorScheme.error, fontWeight: FontWeight.bold),),
+              ],),
+            )
+            );
+  }
+}
+
+class HeaderSection extends StatelessWidget {
+  const HeaderSection({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Stack(
+          children: [
+            Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.grey,
+                image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: AssetImage("assets/images/profile_male.png"),
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 0,
+              right: 0,
+              child: Container(
+                width: 30,
+                height: 30,
+                padding: EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(color: Colors.white, spreadRadius: 1.0),
+                  ],
+                  color: Colors.blue.shade200,
+                  shape: BoxShape.circle,
+                ),
+                child: Image.asset("assets/logos/spendly_logo1.png"),
+              ),
+            ),
+          ],
+        ),
+    
+        SizedBox(height: AppSpacing.md),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("Henry Revira", style: AppTextStyles.titleLarge),
+            SizedBox(width: AppSpacing.sm),
+            Icon(
+              LucideIcons.shieldCheck,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ],
+        ),
+        Text("henry.revira@gmail.com", style: AppTextStyles.bodyMedium),
+        SizedBox(height: AppSpacing.md),
+        AppChip(label: "PRO MEMBER"),
+        SizedBox(height: AppSpacing.xl),
+      ],
+    );
+  }
+}
+
+class AppPreferences extends StatelessWidget {
+  const AppPreferences({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      border: Border.all(
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+      ),
+      child: Column(
+        children: [
+          ProfileListTileWidget(
+            title: "Dark Appearance",
+            subTitle: "Customize your interface",
+            leadingIcon: LucideIcons.sunDim,
+            trailingWidget: ThemeSwitcher(),
+          ),
+          Divider(
+            color: Theme.of(
+              context,
+            ).colorScheme.surfaceContainerHighest,
+          ),
+          ProfileListTileWidget(
+            title: "Currency",
+            subTitle: "Select your currency",
+            leadingIcon: LucideIcons.dollarSign,
+            trailingWidget: CurrencyDropDown(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class SecurityAndAlerts extends StatelessWidget {
+  const SecurityAndAlerts({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      border: Border.all(
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+      ),
+      child: Column(
+        children: [
+          ProfileListTileWidget(
+            title: "Push Notifications",
+            subTitle: "Alerts for budgets & spending",
+            leadingIcon: LucideIcons.bell,
+            trailingWidget: NotificationSwitcher(),
+          ),
+          Divider(
+            color: Theme.of(
+              context,
+            ).colorScheme.surfaceContainerHighest,
+          ),
+          ProfileListTileWidget(
+            title: "Privacy & Security",
+            subTitle: "Biometric Login & 2FA",
+            leadingIcon: LucideIcons.lock,
+            trailingWidget: Icon(LucideIcons.chevronRight),
+          ),
+          Divider(
+            color: Theme.of(
+              context,
+            ).colorScheme.surfaceContainerHighest,
+          ),
+          ProfileListTileWidget(
+            title: "Region",
+            subTitle: "United States",
+            leadingIcon: LucideIcons.globe,
+            trailingWidget: Icon(LucideIcons.chevronRight),
+          ),
+        ],
       ),
     );
   }

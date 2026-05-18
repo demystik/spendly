@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:spendly/themes/app_spacing.dart';
 
 class AppTextField extends StatelessWidget {
@@ -16,6 +17,7 @@ class AppTextField extends StatelessWidget {
     this.maxLines = 1,
     this.minLines,
     this.enabled = true,
+    this.myInputFormatters,
   });
 
   final String label;
@@ -30,6 +32,7 @@ class AppTextField extends StatelessWidget {
   final int maxLines;
   final int? minLines;
   final bool enabled;
+  final List<TextInputFormatter>? myInputFormatters;
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +50,7 @@ class AppTextField extends StatelessWidget {
       textAlignVertical: TextAlignVertical.top,
       enabled: enabled,
       style: text.bodyLarge,
+      inputFormatters: myInputFormatters,
       
       decoration: InputDecoration(
         labelText: label,
