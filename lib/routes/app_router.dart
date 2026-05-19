@@ -5,6 +5,7 @@ import 'package:spendly/screens/add_expense_screen.dart';
 import 'package:spendly/screens/analytics_screen.dart';
 import 'package:spendly/screens/budget_screen.dart';
 import 'package:spendly/screens/expense_details.dart';
+import 'package:spendly/screens/first_splash_screen.dart';
 import 'package:spendly/screens/home_screen.dart';
 import 'package:spendly/screens/profile_screen.dart';
 import 'package:spendly/screens/search_and_filter_screen.dart';
@@ -61,6 +62,9 @@ final GoRouter appRouter = GoRouter(
       ],
     ),
 
+
+
+    //Other screens_________________________________________________
     GoRoute(
       path: "/add_expense_screen",
       builder: (context, index) => const AddExpenseScreen(),
@@ -76,5 +80,9 @@ final GoRouter appRouter = GoRouter(
         return ExpenseDetailsScreen(expense: expense);
       },
     ),
+    GoRoute(
+      path: "/first_splash_screen",
+      builder: (context, index) => const FirstSplashScreen(),
+      )
   ],
 );
