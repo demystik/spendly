@@ -83,6 +83,7 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: "/first_splash_screen",
       builder: (context, index) => const FirstSplashScreen(),
-      )
+      ),
+    GoRoute(path: path)
   ],
 );
