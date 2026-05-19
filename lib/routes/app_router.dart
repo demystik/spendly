@@ -10,6 +10,7 @@ import 'package:spendly/screens/home_screen.dart';
 import 'package:spendly/screens/profile_screen.dart';
 import 'package:spendly/screens/search_and_filter_screen.dart';
 import 'package:spendly/screens/second_splash_screen.dart';
+import 'package:spendly/screens/third_splash_screen.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/homescreen',
@@ -86,8 +87,12 @@ final GoRouter appRouter = GoRouter(
       builder: (context, index) => const FirstSplashScreen(),
       ),
     GoRoute(
-      path: "path",
+      path: "/second_splash_screen",
       builder: (context, index) => const SecondSplashScreen(),
-      )
+      ),
+    GoRoute(
+      path: "/third_splash_screen",
+      builder: (context, index) => const ThirdSplashScreen(),
+      ),
   ],
 );

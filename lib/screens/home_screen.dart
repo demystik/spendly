@@ -270,7 +270,9 @@ class HeaderPart extends StatelessWidget {
           Row(
             children: [
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  context.push("/first_splash_screen");
+                },
                 icon: Icon(LucideIcons.bell400, size: 28),
               ),
               SizedBox(width: 10),
