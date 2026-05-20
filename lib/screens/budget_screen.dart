@@ -83,7 +83,8 @@ class BudgetScreen extends StatelessWidget {
               ),
                 ],)),
 
-                Positioned(child: SvgPicture.asset("assetName"))
+                Positioned(child: SvgPicture.asset("assets/icons/wallet.svg"),),
+                
               ],
             ),
           ],
