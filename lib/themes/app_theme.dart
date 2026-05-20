@@ -21,6 +21,7 @@ final class AppTheme {
       surface: AppColors.white,
       onSurface: AppColors.black,
       outline: AppColors.grey400,
+      surfaceContainerHigh: AppColors.grey300,
       surfaceContainerHighest: AppColors.grey200,
       onSurfaceVariant: AppColors.grey700,
       shadow: AppColors.black,

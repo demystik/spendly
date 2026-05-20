@@ -213,7 +213,7 @@ class BalanceCard extends StatelessWidget {
             value: 0.7,
             minHeight: 7,
             borderRadius: BorderRadius.circular(AppRadius.md),
-            backgroundColor: Colors
+            backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
