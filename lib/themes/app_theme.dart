@@ -128,6 +128,7 @@ final class AppTheme {
     scaffoldBackgroundColor: AppColors.black,
     useMaterial3: true,
     colorScheme: const ColorScheme(
+      tertiaryContainer: AppColors.lightBlue100,
       brightness: Brightness.dark,
       primary: AppColors.primary,
       onPrimary: AppColors.white,
