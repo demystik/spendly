@@ -31,14 +31,18 @@ class BudgetScreen extends StatelessWidget {
                 fontWeight: FontWeight.w700,
               ),
             ),
+            SizedBox(height: AppSpacing.md,),
             AppCard(
-            // noShadow: ,
+            boxshadow: [BoxShadow(
+              color: appColorScheme.surfaceContainerHighest,
+            )],
+            border: Border.all(),
               child: Row(
                 children: [
                   Icon(LucideIcons.dollarSign500, color: appColorScheme.primary,),
                   Text("4500", style: AppTextStyles.displayMedium,),
                   Spacer(),
-                  AppChip(label: "Current Goal"),
+                  AppChip(label: "Current Goal", labelTextStyle: AppTextStyles.bodySmall.copyWith(color: appColorScheme.tertiary),),
                 ],
               ),
             ),

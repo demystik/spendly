@@ -25,6 +25,7 @@ final class AppTheme {
       onSurfaceVariant: AppColors.grey700,
       shadow: AppColors.black,
       tertiary: AppColors.prim,
+      tertiaryContainer: AppColors.lightBlue100,
     ),
     textTheme: const TextTheme(
       displayLarge: AppTextStyles.displayLarge,

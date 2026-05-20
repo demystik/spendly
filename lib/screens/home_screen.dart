@@ -36,7 +36,7 @@ class HomeScreen extends StatelessWidget {
             Divider(height: 1),
             Expanded(
               child: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -196,7 +196,8 @@ class BalanceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppCard(
-      color: const Color.fromARGB(255, 244, 244, 255),
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+      boxshadow: [BoxShadow()],
       child: Column(
         spacing: AppSpacing.sm,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -212,6 +213,7 @@ class BalanceCard extends StatelessWidget {
             value: 0.7,
             minHeight: 7,
             borderRadius: BorderRadius.circular(AppRadius.md),
+            backgroundColor: Colors
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
