@@ -202,10 +202,12 @@ class RemainingBalance extends StatelessWidget {
                 children: [
                   Row(
                     children: [
+                      Row(children: [
                       Icon(LucideIcons.trendingDown, size: 17),
                       SizedBox(width: AppSpacing.sm),
                       Text("Remaining Balance"),
-                      Spacer(),
+                      ],),
+
                       AppChip(
                         selected: true,
                         label: "SAFE",
