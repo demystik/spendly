@@ -144,16 +144,20 @@ class CategoryBudgetCard extends StatelessWidget {
       child: Column(
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(AppRadius.md),
-                ),
-                padding: EdgeInsets.all(AppSpacing.md),
-                child: Icon(cat.icon, color: cat.color),
+              Row(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(AppRadius.md),
+                    ),
+                    padding: EdgeInsets.all(AppSpacing.md),
+                    child: Icon(cat.icon, color: cat.color),
+                  ),
+                  Column(children: [Text(cat.name), Text("YY% used")]),
+                ],
               ),
-              Column(children: [Text(cat.name), Text("YY% used")]),
-              Spacer(),
               Column(children: [Text("YYY"), Text("of YYY")]),
             ],
           ),
@@ -194,6 +198,7 @@ class RemainingBalance extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(AppSpacing.md),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
