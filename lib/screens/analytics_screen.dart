@@ -8,11 +8,10 @@ class AnalyticsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(appBar: AppBar(
-      title: Text("Analytics"),
+      title: Text("Analytics"),,
       actions: [
         Icon(LucideIcons.share2),
         SizedBox(width: AppSpacing.md,),
-
         Icon(LucideIcons.download),
         SizedBox(width: AppSpacing.md,),
       ],
