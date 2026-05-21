@@ -201,6 +201,7 @@ class RemainingBalance extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(children: [
                       Icon(LucideIcons.trendingDown, size: 17),
