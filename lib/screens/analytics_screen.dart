@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:spendly/themes/app_spacing.dart';
+import 'package:spendly/widgets/app_card.dart';
 
 class AnalyticsScreen extends StatelessWidget {
   const AnalyticsScreen({super.key});
@@ -15,6 +16,15 @@ class AnalyticsScreen extends StatelessWidget {
         Icon(LucideIcons.download),
         SizedBox(width: AppSpacing.md,),
       ],
-    ),);
+    ),
+    body: SafeArea(child: ListView(children: [
+      AppCard(
+        child: Column(children: [
+        Text("SPENT"),
+        Text("\$1,824"),
+        Text("12% this month"),
+      ],),),
+    ],),),
+    );
   }
 }
