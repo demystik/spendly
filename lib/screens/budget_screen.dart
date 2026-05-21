@@ -43,13 +43,16 @@ class BudgetScreen extends StatelessWidget {
               ],
               border: Border.all(),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  Row(children: [
+
                   Icon(
                     LucideIcons.dollarSign500,
                     color: appColorScheme.primary,
                   ),
                   Text("4500", style: AppTextStyles.displayMedium),
-                  Spacer(),
+                  ],),
                   AppChip(
                     label: "Current Goal",
                     labelTextStyle: AppTextStyles.bodySmall.copyWith(
@@ -206,7 +209,7 @@ class RemainingBalance extends StatelessWidget {
                       Row(children: [
                       Icon(LucideIcons.trendingDown, size: 17),
                       SizedBox(width: AppSpacing.sm),
-                      Text("Remaining Balance"),
+                      Text("Remaining Balance", maxLines: 2, overflow: TextOverflow.ellipsis,),
                       ],),
 
                       AppChip(
