@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:spendly/models/expense_model.dart';
 import 'package:spendly/shared/middle_section_header.dart';
 import 'package:spendly/shared/section_label.dart';
 import 'package:spendly/themes/app_spacing.dart';
@@ -64,7 +65,11 @@ class BudgetScreen extends StatelessWidget {
             RemainingBalance(appColorScheme: appColorScheme),
 
             SizedBox(height: AppSpacing.md),
-            MiddleSectionHeader(leftText: "Spending Health", rightText: "72.9% of total", onTap: (){}),
+            MiddleSectionHeader(
+              leftText: "Spending Health",
+              rightText: "72.9% of total",
+              onTap: () {},
+            ),
             SizedBox(height: AppSpacing.md),
             LinearProgressIndicator(
               borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -75,15 +80,45 @@ class BudgetScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-              Text("SAFE", style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.bold),),
-              Text("CAUTION (85%)",style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.bold),),
-              Text("CRITICAL",style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.bold, color: appColorScheme.error),),
-            ],),
+                Text(
+                  "SAFE",
+                  style: AppTextStyles.bodySmall.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  "CAUTION (85%)",
+                  style: AppTextStyles.bodySmall.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  "CRITICAL",
+                  style: AppTextStyles.bodySmall.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: appColorScheme.error,
+                  ),
+                ),
+              ],
+            ),
 
             SizedBox(height: AppSpacing.lg),
             SectionLabel(
               leadingIcon: Icon(LucideIcons.folderKanban),
-              actualLabel: "Category Budgets"),
+              actualLabel: "Category Budgets",
+            ),
+            SizedBox(height: AppSpacing.md),
+
+            Column(
+              spacing: AppSpacing.sm,
+              children: List.generate(categoryList.length, (index) {
+                final cat = categoryList[index];
+                return CategoryBudgetCard(
+                  appColorScheme: appColorScheme,
+                  cat: cat,
+                );
+              }),
+            ),
           ],
         ),
       ),
@@ -91,11 +126,46 @@ class BudgetScreen extends StatelessWidget {
   }
 }
 
-class RemainingBalance extends StatelessWidget {
-  const RemainingBalance({
+class CategoryBudgetCard extends StatelessWidget {
+  const CategoryBudgetCard({
     super.key,
     required this.appColorScheme,
+    required this.cat,
   });
+
+  final ColorScheme appColorScheme;
+  final Category cat;
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      border: Border.all(color: appColorScheme.surfaceContainerHighest),
+      boxshadow: [BoxShadow()],
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(AppRadius.md),
+                ),
+                padding: EdgeInsets.all(AppSpacing.md),
+                child: Icon(cat.icon, color: cat.color),
+              ),
+              Column(children: [Text(cat.name), Text("YY% used")]),
+              Spacer(),
+              Column(children: [Text("YYY"), Text("of YYY")]),
+            ],
+          ),
+          LinearProgressIndicator(value: 0.5, color: cat.color),
+        ],
+      ),
+    );
+  }
+}
+
+class RemainingBalance extends StatelessWidget {
+  const RemainingBalance({super.key, required this.appColorScheme});
 
   final ColorScheme appColorScheme;
 
@@ -134,11 +204,10 @@ class RemainingBalance extends StatelessWidget {
                       AppChip(
                         selected: true,
                         label: "SAFE",
-                        labelTextStyle: AppTextStyles.bodyMedium
-                            .copyWith(
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1.4,
-                            ),
+                        labelTextStyle: AppTextStyles.bodyMedium.copyWith(
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.4,
+                        ),
                       ),
                     ],
                   ),
@@ -149,7 +218,9 @@ class RemainingBalance extends StatelessWidget {
                       Text("4500", style: AppTextStyles.displayLarge),
                     ],
                   ),
-                  Text("Your can spend ~\$200 per day for the rest of the month"),
+                  Text(
+                    "Your can spend ~\$200 per day for the rest of the month",
+                  ),
                   SizedBox(height: AppSpacing.sm),
                 ],
               ),
