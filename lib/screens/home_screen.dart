@@ -4,7 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:spendly/constants/app_icons.dart';
 import 'package:spendly/models/expense_model.dart';
+import 'package:spendly/providers/budget_provider.dart';
 import 'package:spendly/providers/expense_provider.dart';
+import 'package:spendly/services/finance_calculator.dart';
 import 'package:spendly/shared/no_expense.dart';
 import 'package:spendly/shared/transaction_list_tiles.dart';
 import 'package:spendly/themes/app_spacing.dart';
@@ -208,7 +210,8 @@ class BalanceCard extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
-          Text("\$2,000.00", style: AppTextStyles.displayLarge),
+          Consumer<BudgetProvider>(
+            builder: (context, value, child) => Text(value.budgetAmount, style: AppTextStyles.displayLarge)),
           LinearProgressIndicator(
             value: 0.7,
             minHeight: 7,
@@ -218,7 +221,9 @@ class BalanceCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("\$1,300.00 Spent", style: AppTextStyles.bodyMedium),
+              Consumer<ExpenseProvider>(
+                builder: (context, value, child) => 
+                Text("${calculateAmountSpent(value.expense)} Spent", style: AppTextStyles.bodyMedium)),
               Text("\$700.00 Saved", style: AppTextStyles.bodyMedium),
             ],
           ),

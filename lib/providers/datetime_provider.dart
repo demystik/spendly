@@ -8,4 +8,9 @@ class DatetimeProvider with ChangeNotifier {
     _currentDate = selectedDate;
     notifyListeners();
   }
+
+  void resetDate(){
+    _currentDate = DateTime.now();
+    notifyListeners();
+  }
 }

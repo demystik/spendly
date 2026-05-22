@@ -44,6 +44,12 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    context.read<DatetimeProvider>().resetDate();
+  }
+
+  @override
   void dispose() {
     _amountController.dispose();
     _titleController.dispose();
