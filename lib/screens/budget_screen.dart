@@ -161,7 +161,7 @@ class CategoryBudgetCard extends StatelessWidget {
                   Column(children: [Text(cat.name), Text("YY% used")]),
                 ],
               ),
-              Column(children: [Text("SSS"), Text("of RRR")]),
+              Column(children: [Text("DDD"), Text("of RRR")]),
             ],
           ),
           LinearProgressIndicator(
