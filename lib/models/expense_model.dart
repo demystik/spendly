@@ -22,17 +22,3 @@ class Expense {
 
 
 
-class RecentTransaction {
-  String transactionId;
-  Category transactionCategory;
-  DateTime transactionTime;
-  double transactionAmount;
-  String transactionNote;
-  RecentTransaction({
-    required this.transactionId,
-    required this.transactionCategory,
-    required this.transactionTime,
-    required this.transactionAmount,
-    required this.transactionNote,
-  });
-}
