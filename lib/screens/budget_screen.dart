@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:spendly/models/expense_model.dart';
+import 'package:spendly/models/category_model.dart';
 import 'package:spendly/shared/middle_section_header.dart';
 import 'package:spendly/shared/section_label.dart';
 import 'package:spendly/themes/app_spacing.dart';

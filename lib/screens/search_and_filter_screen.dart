@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:spendly/models/category_model.dart';
 import 'package:spendly/models/expense_model.dart';
 import 'package:spendly/providers/amount_range_provider.dart';
 import 'package:spendly/providers/category_provider.dart';

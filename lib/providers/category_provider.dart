@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:spendly/models/expense_model.dart';
+import 'package:spendly/models/category_model.dart';
 
 class CategoryProvider with ChangeNotifier{
   Category? _selectedCategory;

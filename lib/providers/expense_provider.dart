@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:spendly/models/category_model.dart';
 import 'package:spendly/models/expense_model.dart';
 import 'package:uuid/uuid.dart';
 
