@@ -164,7 +164,9 @@ class CategoryBudgetCard extends StatelessWidget {
               Column(children: [Text("YYY"), Text("of YYY")]),
             ],
           ),
-          LinearProgressIndicator(value: 0.5, color: cat.color),
+          LinearProgressIndicator(
+            borderRadius: BorderRadius.circular(AppRadius.md),
+            value: 0.5, color: cat.color),
         ],
       ),
     );
