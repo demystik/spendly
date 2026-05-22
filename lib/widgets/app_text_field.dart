@@ -54,7 +54,7 @@ class AppTextField extends StatelessWidget {
       enableInteractiveSelection: selection,
       
       decoration: InputDecoration(
-        error: Text(errorText ?? ""),
+        errorText: errorText,
         labelText: label,
         hintText: hint,
         suffixIcon: suffixIcon,

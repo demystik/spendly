@@ -67,7 +67,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                ElevatedButton(
+                FilledButton(
                   child: Text(
                     "Set Budget",
                     style: AppTextStyles.bodyMedium.copyWith(
@@ -144,74 +144,87 @@ class _BudgetScreenState extends State<BudgetScreen> {
 
       backgroundColor: appColorScheme.onPrimary,
       builder: (BuildContext context) {
-        return SingleChildScrollView(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          child: Container(
-            padding: EdgeInsets.all(AppSpacing.md),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Center(
-                        child: Text(
-                          "Set Budget",
-                          textAlign: TextAlign.center,
-                          style: AppTextStyles.titleLarge.copyWith(
-                            fontWeight: FontWeight.bold,
+        return StatefulBuilder(
+          builder: (context, modalSetState) => SingleChildScrollView(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+            ),
+            child: Container(
+              padding: EdgeInsets.all(AppSpacing.md),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            "Set Budget",
+                            textAlign: TextAlign.center,
+                            style: AppTextStyles.titleLarge.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    IconButton(
+                      IconButton(
+                        onPressed: () {
+                          amountInputController.clear();
+                          context.pop();
+                        },
+                        icon: Icon(LucideIcons.check),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: AppSpacing.sm),
+                  Text("Define your budget for this month"),
+                  SizedBox(height: AppSpacing.md),
+                  Text("Set Amount:"),
+                  SizedBox(height: AppSpacing.sm),
+                  AppTextField(
+                    controller: amountInputController,
+                    keyboardType: TextInputType.numberWithOptions(decimal: true),
+                    label: "0.00",
+                    errorText: errorText,
+                    onChanged: (_) {
+                       if (errorText != null) {
+                          modalSetState(() {
+                            errorText = null;
+                          });
+                       }
+                    }
+                    
+                  ),
+                  SizedBox(height: AppSpacing.lg),
+                  SizedBox(
+                    child: AppButton(
+                      label: "Save",
                       onPressed: () {
+                        final error = _validator(amountInputController);
+          
+                        modalSetState(() {
+                          errorText = error;
+                        });
+          
+                        if (error != null) return;
+          
+                        final double amount = double.parse(
+                          amountInputController.text.trim(),
+                        );
+                        context.read<BudgetProvider>().addBudget(amount);
                         amountInputController.clear();
+          
+                        
+                        modalSetState(() {
+                          errorText = null;
+                        });
+          
                         context.pop();
                       },
-                      icon: Icon(LucideIcons.check),
                     ),
-                  ],
-                ),
-                SizedBox(height: AppSpacing.sm),
-                Text("Define your budget for this month"),
-                SizedBox(height: AppSpacing.md),
-                Text("Set Amount"),
-                SizedBox(height: AppSpacing.sm),
-                AppTextField(
-                  controller: amountInputController,
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
-                  label: "0.00",
-                  errorText: errorText,
-                ),
-                SizedBox(height: AppSpacing.lg),
-                SizedBox(
-                  child: AppButton(
-                    label: "Save",
-                    onPressed: () {
-                      final error = _validator(amountInputController);
-
-                      setState(() {
-                        errorText = error;
-                      });
-
-                      if (error != null) return;
-
-                      final double amount = double.parse(
-                        amountInputController.text.trim(),
-                      );
-                      context.read<BudgetProvider>().addBudget(amount);
-                      amountInputController.clear();
-
-                      errorText = null;
-
-                      context.pop();
-                    },
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );
@@ -294,11 +307,17 @@ String? _validator(TextEditingController amountController) {
   }
   final double? amount = double.tryParse(inputAmount);
 
-  if (amount == null) return "Enter a valid number";
+  if (amount == null) {
+    return "Enter a valid number";
+  }
 
-  if (amount <= 0) return "Budget must be greater than 0";
+  if (amount <= 0) {
+    return "Budget must be greater than 0";
+  }
 
-  if (amount > 100000000) return "Too much, please enter valid budget";
+  if (amount > 100000000) {
+    return "Too much, please enter valid budget";
+  }
 
   return null;
 }
