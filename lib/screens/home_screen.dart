@@ -24,11 +24,11 @@ class HomeScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).colorScheme.primary,
         shape: const CircleBorder(),
-        onPressed: (){
+        onPressed: () {
           context.push("/add_expense_screen");
         },
-        child: const Icon(LucideIcons.plus400, color: Colors.white70, size: 30,),
-        ),
+        child: const Icon(LucideIcons.plus400, color: Colors.white70, size: 30),
+      ),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,7 +73,7 @@ class HomeScreen extends StatelessWidget {
                           caption: "85% of monthly goal",
                           iconPath: AppIcons.ic_arrow_up,
                         ),
-                        SizedBox(width:AppSpacing.md,),
+                        SizedBox(width: AppSpacing.md),
                         QuickInsightCard(
                           goal: "EXPENSES",
                           amount: "\$43.30",
@@ -94,21 +94,26 @@ class HomeScreen extends StatelessWidget {
                     SizedBox(height: AppSpacing.md),
 
                     //___Recent Transactions List_______________________________________________________
-                    context.watch<ExpenseProvider>().expense.isEmpty ?
-                    NoExpense()
-                    : ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: context.watch<ExpenseProvider>().expense.length,
-                      itemBuilder: (context, index) {
-                        Expense recentTrans = context.watch<ExpenseProvider>().expense[index];
-                        return RecentTransactionListTiles(
-                          recentTrans: recentTrans,
-                          isSearchScreen: false,
-                        );
-                      },
-                    ),
+                    context.watch<ExpenseProvider>().expense.isEmpty
+                        ? NoExpense()
+                        : ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            physics: NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: context
+                                .watch<ExpenseProvider>()
+                                .expense
+                                .length,
+                            itemBuilder: (context, index) {
+                              Expense recentTrans = context
+                                  .watch<ExpenseProvider>()
+                                  .expense[index];
+                              return RecentTransactionListTiles(
+                                recentTrans: recentTrans,
+                                isSearchScreen: false,
+                              );
+                            },
+                          ),
 
                     SizedBox(height: AppSpacing.md),
                     AppButton(
@@ -127,7 +132,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-Row middleRowHeader(
+  Row middleRowHeader(
     BuildContext context,
     String leftText,
     String rightText,
@@ -197,6 +202,12 @@ class BalanceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final budget = context.watch<BudgetProvider>().budgetAmount;
+    final expenseList = context.watch<ExpenseProvider>().expense;
+    final totalSpent = calculateAmountSpent(expenseList);
+    final saved = (budget - totalSpent).clamp(0, double.infinity);
+    final dailyAverage = averageDailySpent(totalSpent);
+    final daysLeft = calculateDaysLeft();
     return AppCard(
       color: Theme.of(context).colorScheme.surfaceContainerHighest,
       boxshadow: [BoxShadow()],
@@ -210,21 +221,26 @@ class BalanceCard extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
-          Consumer<BudgetProvider>(
-            builder: (context, value, child) => Text(value.budgetAmount, style: AppTextStyles.displayLarge)),
+          Text(formatCurrency(budget), style: AppTextStyles.displayLarge),
           LinearProgressIndicator(
-            value: 0.7,
+            value: totalSpent / budget,
             minHeight: 7,
             borderRadius: BorderRadius.circular(AppRadius.md),
-            backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh
+            backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh,
           ),
+
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Consumer<ExpenseProvider>(
-                builder: (context, value, child) => 
-                Text("${calculateAmountSpent(value.expense)} Spent", style: AppTextStyles.bodyMedium)),
-              Text("\$700.00 Saved", style: AppTextStyles.bodyMedium),
+              Text(
+                "${formatCurrency(totalSpent)} Spent",
+                style: AppTextStyles.bodyMedium,
+              ),
+
+              Text(
+                "${formatCurrency(saved.toDouble())} Saved",
+                style: AppTextStyles.bodyMedium,
+              ),
             ],
           ),
 
@@ -237,7 +253,7 @@ class BalanceCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text("DAILY AVERAGE", style: AppTextStyles.labelMedium),
-                    Text("\$43.30", style: AppTextStyles.titleLarge),
+                    Text(formatCurrency(dailyAverage), style: AppTextStyles.titleLarge),
                   ],
                 ),
 
@@ -245,7 +261,7 @@ class BalanceCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text("DAYS LEFT", style: AppTextStyles.labelMedium),
-                    Text("14 DAYS", style: AppTextStyles.titleLarge),
+                    Text("$daysLeft DAYS", style: AppTextStyles.titleLarge),
                   ],
                 ),
               ],

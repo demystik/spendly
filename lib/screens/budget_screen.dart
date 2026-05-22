@@ -281,7 +281,7 @@ class CurrentGoalCard extends StatelessWidget {
               Icon(LucideIcons.dollarSign500, color: appColorScheme.primary),
               Consumer<BudgetProvider>(
                 builder: (context, value, child) => Text(
-                  value.budgetAmount,
+                  "${value.budgetAmount}",
                   style: AppTextStyles.displayMedium,
                 ),
               ),

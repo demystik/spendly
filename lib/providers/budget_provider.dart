@@ -22,7 +22,7 @@ class BudgetProvider with ChangeNotifier{
     notifyListeners();
   }
 
-  String get budgetAmount {
+  double get budgetAmount {
     
     final now = DateTime.now();
     final month = DateFormat('MMMM').format(now);
@@ -34,9 +34,6 @@ class BudgetProvider with ChangeNotifier{
       orElse: ()=> MonthlyBudgetModel(monthlyBudgetAmount: 0, dateUpdated: now, month: month, year: year),
     );
 
-    return NumberFormat.currency(
-      symbol: '',
-      decimalDigits: 2,
-    ).format(budget.monthlyBudgetAmount);
+    return budget.monthlyBudgetAmount;
   }
 }
