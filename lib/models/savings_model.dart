@@ -1,1 +1,7 @@
-class SavingsModel {}
+class SavingsModel {
+  double savingAmount;
+
+  SavingsModel({
+    required this.savingAmount,
+  });
+}
