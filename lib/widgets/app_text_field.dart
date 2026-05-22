@@ -17,7 +17,7 @@ class AppTextField extends StatelessWidget {
     this.minLines,
     this.enabled = true,
     this.selection,
-
+    this.errorText,
   });
 
   final String label;
@@ -33,6 +33,7 @@ class AppTextField extends StatelessWidget {
   final int? minLines;
   final bool enabled;
   final bool? selection;
+  final String? errorText;
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +54,7 @@ class AppTextField extends StatelessWidget {
       enableInteractiveSelection: selection,
       
       decoration: InputDecoration(
+        error: Text(errorText ?? ""),
         labelText: label,
         hintText: hint,
         suffixIcon: suffixIcon,

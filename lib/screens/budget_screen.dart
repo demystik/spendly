@@ -1,16 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:provider/provider.dart';
 import 'package:spendly/models/category_model.dart';
+import 'package:spendly/providers/budget_provider.dart';
 import 'package:spendly/shared/middle_section_header.dart';
 import 'package:spendly/shared/section_label.dart';
 import 'package:spendly/themes/app_spacing.dart';
 import 'package:spendly/themes/app_text_styles.dart';
+import 'package:spendly/widgets/app_button.dart';
 import 'package:spendly/widgets/app_card.dart';
 import 'package:spendly/widgets/app_chip.dart';
+import 'package:spendly/widgets/app_text_field.dart';
 
-class BudgetScreen extends StatelessWidget {
+class BudgetScreen extends StatefulWidget {
   const BudgetScreen({super.key});
+
+  @override
+  State<BudgetScreen> createState() => _BudgetScreenState();
+}
+
+class _BudgetScreenState extends State<BudgetScreen> {
+  late final TextEditingController amountInputController;
+  String? errorText;
+
+  @override
+  void initState() {
+    super.initState();
+    amountInputController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    amountInputController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +46,10 @@ class BudgetScreen extends StatelessWidget {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: AppSpacing.md),
-            child: Icon(LucideIcons.circlePlus),
+            child: IconButton(
+              onPressed: () => showBottomSheetMethod(context, appColorScheme),
+              icon: Icon(LucideIcons.circlePlus),
+            ),
           ),
         ],
       ),
@@ -30,44 +58,38 @@ class BudgetScreen extends StatelessWidget {
           padding: EdgeInsets.all(AppSpacing.md),
           children: [
             //Monthly Spending goal____________________________________________
-            Text(
-              "Monthly Spending Goal",
-              style: AppTextStyles.bodyLarge.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            SizedBox(height: AppSpacing.md),
-            AppCard(
-              boxshadow: [
-                BoxShadow(color: appColorScheme.surfaceContainerHighest),
-              ],
-              border: Border.all(),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(children: [
-
-                  Icon(
-                    LucideIcons.dollarSign500,
-                    color: appColorScheme.primary,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Monthly Spending Goal",
+                  style: AppTextStyles.bodyLarge.copyWith(
+                    fontWeight: FontWeight.w700,
                   ),
-                  Text("4500", style: AppTextStyles.displayMedium),
-                  ],),
-                  AppChip(
-                    label: "Current Goal",
-                    labelTextStyle: AppTextStyles.bodySmall.copyWith(
-                      color: appColorScheme.tertiary,
+                ),
+                ElevatedButton(
+                  child: Text(
+                    "Set Budget",
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      color: appColorScheme.onPrimary,
                     ),
                   ),
-                ],
-              ),
+                  onPressed: () {
+                    showBottomSheetMethod(context, appColorScheme);
+                  },
+                ),
+              ],
             ),
+            SizedBox(height: AppSpacing.lg),
+            // Current Goal Card_______________________________________
+            CurrentGoalCard(appColorScheme: appColorScheme),
 
-            SizedBox(height: AppSpacing.md),
+            SizedBox(height: AppSpacing.lg),
             //Remaining Balance___________________________________________
             RemainingBalance(appColorScheme: appColorScheme),
 
-            SizedBox(height: AppSpacing.md),
+            SizedBox(height: AppSpacing.lg),
+            //Spending Health___________________________________________
             MiddleSectionHeader(
               leftText: "Spending Health",
               rightText: "72.9% of total",
@@ -80,32 +102,10 @@ class BudgetScreen extends StatelessWidget {
               value: 0.85,
             ),
             SizedBox(height: AppSpacing.sm),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "SAFE",
-                  style: AppTextStyles.bodySmall.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  "CAUTION (85%)",
-                  style: AppTextStyles.bodySmall.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  "CRITICAL",
-                  style: AppTextStyles.bodySmall.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: appColorScheme.error,
-                  ),
-                ),
-              ],
-            ),
+            SpendingHealthRange(appColorScheme: appColorScheme),
 
             SizedBox(height: AppSpacing.lg),
+            //Category Budgets___________________________________________
             SectionLabel(
               leadingIcon: Icon(LucideIcons.folderKanban),
               actualLabel: "Category Budgets",
@@ -127,6 +127,180 @@ class BudgetScreen extends StatelessWidget {
       ),
     );
   }
+
+  Future<dynamic> showBottomSheetMethod(
+    BuildContext context,
+    ColorScheme appColorScheme,
+  ) {
+    return showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppRadius.lg),
+          bottom: Radius.zero,
+        ),
+      ),
+      isScrollControlled: true,
+
+      backgroundColor: appColorScheme.onPrimary,
+      builder: (BuildContext context) {
+        return SingleChildScrollView(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Container(
+            padding: EdgeInsets.all(AppSpacing.md),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          "Set Budget",
+                          textAlign: TextAlign.center,
+                          style: AppTextStyles.titleLarge.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        amountInputController.clear();
+                        context.pop();
+                      },
+                      icon: Icon(LucideIcons.check),
+                    ),
+                  ],
+                ),
+                SizedBox(height: AppSpacing.sm),
+                Text("Define your budget for this month"),
+                SizedBox(height: AppSpacing.md),
+                Text("Set Amount"),
+                SizedBox(height: AppSpacing.sm),
+                AppTextField(
+                  controller: amountInputController,
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  label: "0.00",
+                  errorText: errorText,
+                ),
+                SizedBox(height: AppSpacing.lg),
+                SizedBox(
+                  child: AppButton(
+                    label: "Save",
+                    onPressed: () {
+                      final error = _validator(amountInputController);
+
+                      setState(() {
+                        errorText = error;
+                      });
+
+                      if (error != null) return;
+
+                      final double amount = double.parse(
+                        amountInputController.text.trim(),
+                      );
+                      context.read<BudgetProvider>().addBudget(amount);
+                      amountInputController.clear();
+
+                      errorText = null;
+
+                      context.pop();
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class SpendingHealthRange extends StatelessWidget {
+  const SpendingHealthRange({super.key, required this.appColorScheme});
+
+  final ColorScheme appColorScheme;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          "SAFE",
+          style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.bold),
+        ),
+        Text(
+          "CAUTION (85%)",
+          style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.bold),
+        ),
+        Text(
+          "CRITICAL",
+          style: AppTextStyles.bodySmall.copyWith(
+            fontWeight: FontWeight.bold,
+            color: appColorScheme.error,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class CurrentGoalCard extends StatelessWidget {
+  const CurrentGoalCard({super.key, required this.appColorScheme});
+
+  final ColorScheme appColorScheme;
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      boxshadow: [BoxShadow(color: appColorScheme.surfaceContainerHighest)],
+      border: Border.all(),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Icon(LucideIcons.dollarSign500, color: appColorScheme.primary),
+              Consumer<BudgetProvider>(
+                builder: (context, value, child) => Text(
+                  value.budgetAmount,
+                  style: AppTextStyles.displayMedium,
+                ),
+              ),
+            ],
+          ),
+          AppChip(
+            label: "Current Goal",
+            labelTextStyle: AppTextStyles.bodySmall.copyWith(
+              color: appColorScheme.tertiary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+String? _validator(TextEditingController amountController) {
+  final String inputAmount = amountController.text.trim();
+  if (inputAmount.isEmpty) {
+    return "Budget amount cannot be empty";
+  }
+  final double? amount = double.tryParse(inputAmount);
+
+  if (amount == null) return "Enter a valid number";
+
+  if (amount <= 0) return "Budget must be greater than 0";
+
+  if (amount > 100000000) return "Too much, please enter valid budget";
+
+  return null;
 }
 
 class CategoryBudgetCard extends StatelessWidget {
@@ -166,7 +340,9 @@ class CategoryBudgetCard extends StatelessWidget {
           ),
           LinearProgressIndicator(
             borderRadius: BorderRadius.circular(AppRadius.md),
-            value: 0.5, color: cat.color),
+            value: 0.5,
+            color: cat.color,
+          ),
         ],
       ),
     );
@@ -208,11 +384,19 @@ class RemainingBalance extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(children: [
-                      Icon(LucideIcons.trendingDown, size: 17),
-                      SizedBox(width: AppSpacing.sm),
-                      Text("Remaining Balance", maxLines: 2, overflow: TextOverflow.ellipsis,),
-                      ],),
+                      Expanded(
+                        child: Row(
+                          children: [
+                            Icon(LucideIcons.trendingDown, size: 17),
+                            SizedBox(width: AppSpacing.sm),
+                            Text(
+                              "Remaining Balance",
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
 
                       AppChip(
                         selected: true,
