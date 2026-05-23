@@ -1,5 +1,9 @@
 class IncomeModel {
-  double incomeAmount;
+  final double amount;
+  final DateTime updatedAt;
 
-  IncomeModel({required this.incomeAmount});
+  IncomeModel({
+    required this.amount,
+    required this.updatedAt,
+  });
 }
