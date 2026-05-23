@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:spendly/models/expense_model.dart';
+import 'package:spendly/services/finance_calculator.dart';
 import 'package:spendly/themes/app_spacing.dart';
 import 'package:spendly/themes/app_text_styles.dart';
 import 'package:spendly/widgets/app_chip.dart';
@@ -87,7 +88,7 @@ class MyListTile extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              "-\$${recentTrans.amount.toStringAsFixed(2)}",
+              "-${formatCurrency(recentTrans.amount, decimalDigits: 0)}",
               style: AppTextStyles.titleMedium,
             ),
             isSearchScreen
