@@ -515,10 +515,7 @@ Progress bar:
 ### Rules
 
 ```text
-0–80% → Excellent
-81–100% → Good
-101–120% → Warning
-120%+ → Dangerous
+
 ```
 
 This becomes meaningful UX.
