@@ -5,12 +5,13 @@ import 'package:spendly/screens/add_expense_screen.dart';
 import 'package:spendly/screens/analytics_screen.dart';
 import 'package:spendly/screens/budget_screen.dart';
 import 'package:spendly/screens/expense_details.dart';
-import 'package:spendly/screens/first_splash_screen.dart';
+import 'package:spendly/screens/onboarding/first_splash_screen.dart';
 import 'package:spendly/screens/home_screen.dart';
+import 'package:spendly/screens/onboarding/income_screen.dart';
 import 'package:spendly/screens/profile_screen.dart';
 import 'package:spendly/screens/search_and_filter_screen.dart';
-import 'package:spendly/screens/second_splash_screen.dart';
-import 'package:spendly/screens/third_splash_screen.dart';
+import 'package:spendly/screens/onboarding/second_splash_screen.dart';
+import 'package:spendly/screens/onboarding/third_splash_screen.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/homescreen',
@@ -93,6 +94,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: "/third_splash_screen",
       builder: (context, index) => const ThirdSplashScreen(),
+      ),
+    GoRoute(
+      path: "/income_onboarding_screen",
+      builder: (context, index) => const IncomeOnboardingScreen(),
       ),
   ],
 );
