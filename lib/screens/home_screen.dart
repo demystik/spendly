@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:spendly/constants/app_icons.dart';
 import 'package:spendly/models/expense_model.dart';
 import 'package:spendly/providers/budget_provider.dart';
+import 'package:spendly/providers/datetime_provider.dart';
 import 'package:spendly/providers/expense_provider.dart';
+import 'package:spendly/providers/income_provider.dart';
+// import 'package:spendly/providers/income_provider.dart';
+import 'package:spendly/services/date_calculator.dart';
 import 'package:spendly/services/finance_calculator.dart';
 import 'package:spendly/shared/no_expense.dart';
 import 'package:spendly/shared/transaction_list_tiles.dart';
@@ -44,9 +46,11 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     SizedBox(height: AppSpacing.sm),
                     Text("Hello, Henry!", style: AppTextStyles.displayMedium),
-                    Text(
-                      "Here is your financial summary for March",
-                      style: AppTextStyles.bodyMedium,
+                    Consumer<DatetimeProvider>(
+                      builder: (context, value, child) => Text(
+                        "Here is your financial summary for ${value.currentMonth}",
+                        style: AppTextStyles.bodyMedium,
+                      ),
                     ),
                     SizedBox(height: AppSpacing.md),
 
@@ -56,31 +60,42 @@ class HomeScreen extends StatelessWidget {
                     SizedBox(height: AppSpacing.md),
 
                     //_____Quick Insights_____________________________________________________
-                    middleRowHeader(
-                      context,
-                      "Quick Insights",
-                      "view all",
-                      () {},
-                    ),
+                    Text("Quick Insights", style: AppTextStyles.titleMedium),
                     SizedBox(height: AppSpacing.md),
 
                     //_____Quick Insight Cards_____________________________________________________
-                    Row(
-                      children: [
-                        QuickInsightCard(
-                          goal: "SAVINGS",
-                          amount: "\$850",
-                          caption: "85% of monthly goal",
-                          iconPath: AppIcons.ic_arrow_up,
-                        ),
-                        SizedBox(width: AppSpacing.md),
-                        QuickInsightCard(
-                          goal: "EXPENSES",
-                          amount: "\$43.30",
-                          caption: "+12% from last month",
-                          iconPath: AppIcons.ic_arrow_down,
-                        ),
-                      ],
+                    QuickIncomeCard(
+                      goal: "INCOME",
+                      amount: formatCurrency(context.watch<IncomeProvider>().monthlyIncome),
+                      caption: "Your monthly income",
+                      icon: LucideIcons.arrowDown,
+                    ),
+                    SizedBox(height: AppSpacing.md),
+                    Consumer<IncomeProvider>(
+                      builder: (context, provider, child) {
+                        final expenseList = context.select(
+      (ExpenseProvider expense) => expense.expense,);
+                      final totalSpent = calculateAmountSpent(expenseList);
+                      var (savings, percent) = calculateSavings(provider.monthlyIncome, totalSpent);
+                      var (expenseDiff, expensePercent) = expenseInsight(expenseList);
+                      return Row(
+                        children: [
+                          QuickInsightCard(
+                            goal: "EXPENSES",
+                            amount: formatCurrency(expenseDiff, decimalDigits: 0),
+                            caption: "$expensePercent from last month",
+                            icon: LucideIcons.trendingDown,
+                          ),
+                          SizedBox(width: AppSpacing.md),
+                          QuickInsightCard(
+                            goal: "SAVINGS",
+                            amount: formatCurrency(savings, decimalDigits: 0),
+                            caption: "$percent% of monthly goal",
+                            icon: LucideIcons.trendingUp,
+                          ),
+                        ],
+                      );
+                      },
                     ),
                     SizedBox(height: AppSpacing.xl),
 
@@ -160,13 +175,13 @@ class QuickInsightCard extends StatelessWidget {
   final String goal;
   final String amount;
   final String caption;
-  final String iconPath;
+  final IconData icon;
   const QuickInsightCard({
     super.key,
     required this.goal,
     required this.amount,
     required this.caption,
-    required this.iconPath,
+    required this.icon,
   });
 
   @override
@@ -179,19 +194,66 @@ class QuickInsightCard extends StatelessWidget {
           children: [
             Container(
               padding: EdgeInsets.all(AppSpacing.sm),
-              width: 50,
-              height: 50,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.brown.shade100,
               ),
-              child: SvgPicture.asset(iconPath),
+              child: Icon(icon),
             ),
             Text(goal, style: AppTextStyles.bodyMedium),
-            Text(amount, style: AppTextStyles.titleLarge),
+            Text(amount, style: AppTextStyles.displayMedium),
             Text(caption, style: AppTextStyles.labelMedium),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class QuickIncomeCard extends StatelessWidget {
+  final String goal;
+  final String amount;
+  final String caption;
+  final IconData icon;
+  const QuickIncomeCard({
+    super.key,
+    required this.goal,
+    required this.amount,
+    required this.caption,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      child: // SizedBox(width: double.infinity,),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(goal, style: AppTextStyles.bodyMedium),
+              Container(
+                padding: EdgeInsets.all(AppSpacing.sm),
+                height: 50,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.brown.shade100,
+                ),
+                child: Icon(icon),
+              ),
+            ],
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(caption, style: AppTextStyles.labelMedium),
+              SizedBox(height: AppSpacing.sm),
+              Text(amount, style: AppTextStyles.displayMedium),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -202,17 +264,23 @@ class BalanceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final budget = context.watch<BudgetProvider>().budgetAmount;
-    final expenseList = context.watch<ExpenseProvider>().expense;
+    final budget = context.select(
+      (BudgetProvider budget) => budget.budgetAmount,
+    );
+    final expenseList = context.select(
+      (ExpenseProvider expense) => expense.expense,
+    );
     final totalSpent = calculateAmountSpent(expenseList);
-    final saved = (budget - totalSpent).clamp(0, double.infinity);
+    final amountLeft = (budget - totalSpent);
     final dailyAverage = averageDailySpent(totalSpent);
     final daysLeft = calculateDaysLeft();
+    final progress = budget <= 0
+        ? 0.0
+        : (totalSpent / budget).clamp(0, double.infinity);
     return AppCard(
       color: Theme.of(context).colorScheme.surfaceContainerHighest,
       boxshadow: [BoxShadow()],
       child: Column(
-        spacing: AppSpacing.sm,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
@@ -221,13 +289,16 @@ class BalanceCard extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
+          SizedBox(height: AppSpacing.sm),
           Text(formatCurrency(budget), style: AppTextStyles.displayLarge),
+          SizedBox(height: AppSpacing.sm),
           LinearProgressIndicator(
-            value: totalSpent / budget,
+            value: progress.toDouble(),
             minHeight: 7,
             borderRadius: BorderRadius.circular(AppRadius.md),
             backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh,
           ),
+          SizedBox(height: AppSpacing.sm),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -238,34 +309,43 @@ class BalanceCard extends StatelessWidget {
               ),
 
               Text(
-                "${formatCurrency(saved.toDouble())} Saved",
+                amountLeft >= 0
+                    ? "${formatCurrency(amountLeft)} Left"
+                    : "${formatCurrency(amountLeft.abs())} Overspent",
                 style: AppTextStyles.bodyMedium,
               ),
             ],
           ),
 
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
-            child: Row(
-              spacing: AppSpacing.xxl,
-              children: [
-                Column(
+          SizedBox(height: AppSpacing.sm),
+          Row(
+            children: [
+              Expanded(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text("DAILY AVERAGE", style: AppTextStyles.labelMedium),
-                    Text(formatCurrency(dailyAverage), style: AppTextStyles.titleLarge),
+                    Text(
+                      formatCurrency(dailyAverage),
+                      style: AppTextStyles.titleLarge,
+                    ),
                   ],
                 ),
-
-                Column(
+              ),
+              // SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text("DAYS LEFT", style: AppTextStyles.labelMedium),
-                    Text("$daysLeft DAYS", style: AppTextStyles.titleLarge),
+                    Text(
+                      "$daysLeft ${daysLeft == 1 ? 'Day' : 'Days'}",
+                      style: AppTextStyles.titleLarge,
+                    ),
                   ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),
@@ -294,7 +374,7 @@ class HeaderPart extends StatelessWidget {
             children: [
               IconButton(
                 onPressed: () {
-                  context.push("/first_splash_screen");
+                  context.push("/income_onboarding_screen");
                 },
                 icon: Icon(LucideIcons.bell400, size: 28),
               ),
