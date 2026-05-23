@@ -27,7 +27,7 @@ class ExpenseProvider with ChangeNotifier {
 
   //variables for searching
   Category? selectedCategory;
-  double maxAmount = 2000;
+  double maxAmount = 1000000;
   String searchQuery = "";
 
   //Set category to what user click
