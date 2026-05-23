@@ -6,6 +6,7 @@ import 'package:spendly/providers/category_provider.dart';
 import 'package:spendly/providers/currency_providers.dart';
 import 'package:spendly/providers/datetime_provider.dart';
 import 'package:spendly/providers/expense_provider.dart';
+import 'package:spendly/providers/income_provider.dart';
 import 'package:spendly/providers/payment_method.dart';
 import 'package:spendly/providers/theme_mode_provider.dart';
 import 'package:spendly/routes/app_router.dart';
@@ -22,6 +23,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => ThemeModeProvider()),
         ChangeNotifierProvider(create: (_) => CurrencyProvider()),
         ChangeNotifierProvider(create: (_) => BudgetProvider()),
+        ChangeNotifierProvider(create: (_) => IncomeProvider()),
       ],
       child: const MyApp(),
     ),
