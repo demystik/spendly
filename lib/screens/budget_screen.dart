@@ -5,6 +5,9 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:spendly/models/category_model.dart';
 import 'package:spendly/providers/budget_provider.dart';
+import 'package:spendly/providers/expense_provider.dart';
+import 'package:spendly/services/date_calculator.dart';
+import 'package:spendly/services/finance_calculator.dart';
 import 'package:spendly/shared/middle_section_header.dart';
 import 'package:spendly/shared/section_label.dart';
 import 'package:spendly/themes/app_spacing.dart';
@@ -89,19 +92,8 @@ class _BudgetScreenState extends State<BudgetScreen> {
             RemainingBalance(appColorScheme: appColorScheme),
 
             SizedBox(height: AppSpacing.lg),
+
             //Spending Health___________________________________________
-            MiddleSectionHeader(
-              leftText: "Spending Health",
-              rightText: "72.9% of total",
-              onTap: () {},
-            ),
-            SizedBox(height: AppSpacing.md),
-            LinearProgressIndicator(
-              borderRadius: BorderRadius.circular(AppRadius.lg),
-              minHeight: 12,
-              value: 0.85,
-            ),
-            SizedBox(height: AppSpacing.sm),
             SpendingHealthRange(appColorScheme: appColorScheme),
 
             SizedBox(height: AppSpacing.lg),
@@ -183,17 +175,18 @@ class _BudgetScreenState extends State<BudgetScreen> {
                   SizedBox(height: AppSpacing.sm),
                   AppTextField(
                     controller: amountInputController,
-                    keyboardType: TextInputType.numberWithOptions(decimal: true),
+                    keyboardType: TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
                     label: "0.00",
                     errorText: errorText,
                     onChanged: (_) {
-                       if (errorText != null) {
-                          modalSetState(() {
-                            errorText = null;
-                          });
-                       }
-                    }
-                    
+                      if (errorText != null) {
+                        modalSetState(() {
+                          errorText = null;
+                        });
+                      }
+                    },
                   ),
                   SizedBox(height: AppSpacing.lg),
                   SizedBox(
@@ -201,24 +194,23 @@ class _BudgetScreenState extends State<BudgetScreen> {
                       label: "Save",
                       onPressed: () {
                         final error = _validator(amountInputController);
-          
+
                         modalSetState(() {
                           errorText = error;
                         });
-          
+
                         if (error != null) return;
-          
+
                         final double amount = double.parse(
                           amountInputController.text.trim(),
                         );
                         context.read<BudgetProvider>().addBudget(amount);
                         amountInputController.clear();
-          
-                        
+
                         modalSetState(() {
                           errorText = null;
                         });
-          
+
                         context.pop();
                       },
                     ),
@@ -240,25 +232,53 @@ class SpendingHealthRange extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          "SAFE",
-          style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.bold),
-        ),
-        Text(
-          "CAUTION (85%)",
-          style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.bold),
-        ),
-        Text(
-          "CRITICAL",
-          style: AppTextStyles.bodySmall.copyWith(
-            fontWeight: FontWeight.bold,
-            color: appColorScheme.error,
-          ),
-        ),
-      ],
+    return Consumer<ExpenseProvider>(
+      builder: (context, value, child) {
+        final budget = context.read<BudgetProvider>().budgetAmount;
+        final totalSpent = calculateAmountSpent(value.expense);
+        double percent = percentbudgetHealthScore(budget, totalSpent);
+        final linearPercent = percent <= 0 ? 0.0 : percent / 100;
+        return Column(
+          children: [
+            MiddleSectionHeader(
+              leftText: "Spending Health",
+              rightText: "${percent.toStringAsFixed(1)}% of total",
+              onTap: () {},
+            ),
+            SizedBox(height: AppSpacing.md),
+            LinearProgressIndicator(
+              borderRadius: BorderRadius.circular(AppRadius.lg),
+              minHeight: 12,
+              value: linearPercent >= 1.0 ? 1.0 : linearPercent,
+            ),
+            SizedBox(height: AppSpacing.sm),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "SAFE",
+                  style: AppTextStyles.bodySmall.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  "${translatePercentage(percent)} (${percent.toInt()}%)",
+                  style: AppTextStyles.bodySmall.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  "CRITICAL",
+                  style: AppTextStyles.bodySmall.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: appColorScheme.error,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -276,16 +296,11 @@ class CurrentGoalCard extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              Icon(LucideIcons.dollarSign500, color: appColorScheme.primary),
-              Consumer<BudgetProvider>(
-                builder: (context, value, child) => Text(
-                  "${value.budgetAmount}",
-                  style: AppTextStyles.displayMedium,
-                ),
-              ),
-            ],
+          Consumer<BudgetProvider>(
+            builder: (context, value, child) => Text(
+              formatCurrency(value.budgetAmount, decimalDigits: 0),
+              style: AppTextStyles.displayMedium,
+            ),
           ),
           AppChip(
             label: "Current Goal",
@@ -370,11 +385,18 @@ class CategoryBudgetCard extends StatelessWidget {
 
 class RemainingBalance extends StatelessWidget {
   const RemainingBalance({super.key, required this.appColorScheme});
-
   final ColorScheme appColorScheme;
-
   @override
   Widget build(BuildContext context) {
+    final budget = context.select(
+      (BudgetProvider budget) => budget.budgetAmount,
+    );
+    final expenseList = context.select(
+      (ExpenseProvider expense) => expense.expense,
+    );
+    final totalSpent = calculateAmountSpent(expenseList);
+    final amountLeft = (budget - totalSpent);
+    final toSpendDaily = amountLeft / calculateDaysLeft();
     return ClipRRect(
       borderRadius: BorderRadius.circular(AppSpacing.md),
       child: AppCard(
@@ -428,14 +450,12 @@ class RemainingBalance extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: AppSpacing.md),
-                  Row(
-                    children: [
-                      Icon(LucideIcons.dollarSign500),
-                      Text("4500", style: AppTextStyles.displayLarge),
-                    ],
+                  Text(
+                    formatCurrency(amountLeft, decimalDigits: 0),
+                    style: AppTextStyles.displayLarge,
                   ),
                   Text(
-                    "Your can spend ~\$200 per day for the rest of the month",
+                    "Your can spend ~${formatCurrency(toSpendDaily, decimalDigits: 0)} per day for the rest of the month",
                   ),
                   SizedBox(height: AppSpacing.sm),
                 ],
