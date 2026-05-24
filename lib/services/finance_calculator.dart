@@ -3,6 +3,7 @@ import 'package:spendly/models/expense_model.dart';
 
 // Total Amount Spent_____________________________________________
 double calculateAmountSpent(List<Expense> totalExpense) {
+  if(totalExpense.isEmpty) return 0.0;
   final DateTime now = DateTime.now();
   double amountSpent = 0;
   for (Expense expense in totalExpense) {
@@ -64,6 +65,7 @@ String formatCurrency(double amount, {int decimalDigits = 2}) {
 
 //Caculate Savings___________________________________
 (double, int) calculateSavings(double income, double expense) {
+  if(income <= 0 && expense <= 0) return(0.0, 0);
   final savings = income - expense;
   final percent = ((savings / income) * 100).toInt();
   return (savings, percent);
