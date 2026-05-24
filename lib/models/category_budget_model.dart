@@ -1,10 +1,10 @@
 class CategoryBudget {
-  String month;
-  String year;
-  double budgetAmount;
-  String categoryId;
+  final String month;
+  final String year;
+  final double budgetAmount;
+  final String categoryId;
 
-  CategoryBudget({
+  const CategoryBudget({
     required this.month,
     required this.year,
     required this.budgetAmount,

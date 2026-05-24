@@ -14,10 +14,10 @@ class CategoryBudgetProvider with ChangeNotifier {
     required String year,
   }) {
     //get current budget for all categories
-    final currentAllocated = allocatedBudget;
+    final currentAllocated = allocatedBudget(month: month, year: year);
 
     //get budget for this actual category
-    final currentCategoryAmount = getCategoryBudget(category.id);
+    final currentCategoryAmount = getCategoryBudget(category.id, month, year);
 
     // get remaining category allocatable budget
     final remainingBudget =
@@ -69,18 +69,21 @@ class CategoryBudgetProvider with ChangeNotifier {
   }
 
   //Remaining allocatable budget
-  double remainingBudget(double totalBudget) {
-    return totalBudget - allocatedBudget;
+  double remainingBudget(double totalBudget, String month, String year) {
+    return totalBudget - allocatedBudget(month: month, year: year);
   }
 
   //Category budget lookup
   double getCategoryBudget(String categoryId, String month, String year) {
     return _categoryBudget
         .firstWhere(
-          (cat) => cat.categoryId == categoryId,
+          (cat) =>
+              cat.categoryId == categoryId &&
+              cat.month == month &&
+              cat.year == year,
           orElse: () => CategoryBudget(
-            month: '',
-            year: '',
+            month: month,
+            year: year,
             budgetAmount: 0,
             categoryId: categoryId,
           ),
