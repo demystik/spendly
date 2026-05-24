@@ -7,10 +7,7 @@ class CategoryProvider with ChangeNotifier{
 
   List<Category> get budgetCategories => _budgetCategories;
 
-  void updateBudgetCategories(double budgetAmount, Category category){
-    budgetCategories.firstWhere((cat) => cat.id == category.id).amountToSpend = budgetAmount;
-    notifyListeners();
-  }
+
 
   Category? _selectedCategory;
 
