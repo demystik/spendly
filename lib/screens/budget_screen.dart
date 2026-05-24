@@ -174,6 +174,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
                   Text("Set Amount:"),
                   SizedBox(height: AppSpacing.sm),
                   AppTextField(
+                    prefixIcon: Text("₦"),
                     controller: amountInputController,
                     keyboardType: TextInputType.numberWithOptions(
                       decimal: true,
