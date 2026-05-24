@@ -10,18 +10,51 @@ class CategoryBudgetProvider with ChangeNotifier {
     required Category category,
     required double amount,
     required double totalBudget,
+    required String month,
+    required String year,
   }) {
+    //get current budget for all categories
     final currentAllocated = allocatedBudget;
 
+    //get budget for this actual category
     final currentCategoryAmount = getCategoryBudget(category.id);
 
-    final remainingBudget = totalBudget - (currentAllocated - currentCategoryAmount);
+    // get remaining category allocatable budget
+    final remainingBudget =
+        totalBudget - (currentAllocated - currentCategoryAmount);
 
-    if(amount > remainingBudget) {
+    if (amount > remainingBudget) {
       return false;
     }
 
-    //Update Budget
+    //Update Budget for this category
+    //find the category i want to update
+    final index = _categoryBudget.indexWhere(
+      (cat) =>
+          cat.categoryId == category.id &&
+          cat.month == month &&
+          cat.year == year,
+    );
+
+    if (index != -1) {
+      //if found, update it
+      _categoryBudget[index] = CategoryBudget(
+        month: month,
+        year: year,
+        budgetAmount: amount,
+        categoryId: category.id,
+      );
+    } else {
+      //create new category budget
+      _categoryBudget.add(
+        CategoryBudget(
+          month: month,
+          year: year,
+          budgetAmount: amount,
+          categoryId: category.id,
+        ),
+      );
+    }
 
     notifyListeners();
 
@@ -29,11 +62,10 @@ class CategoryBudgetProvider with ChangeNotifier {
   }
 
   //Total Amount allocated
-  double get allocatedBudget {
-    return _categoryBudget.fold(
-      0,
-      (previous, element) => previous + element.budgetAmount,
-    );
+  double allocatedBudget({required String month, required String year}) {
+    return _categoryBudget
+        .where((cat) => cat.month == month && cat.year == year)
+        .fold(0, (previous, element) => previous + element.budgetAmount);
   }
 
   //Remaining allocatable budget
@@ -42,7 +74,7 @@ class CategoryBudgetProvider with ChangeNotifier {
   }
 
   //Category budget lookup
-  double getCategoryBudget(String categoryId) {
+  double getCategoryBudget(String categoryId, String month, String year) {
     return _categoryBudget
         .firstWhere(
           (cat) => cat.categoryId == categoryId,
@@ -52,6 +84,7 @@ class CategoryBudgetProvider with ChangeNotifier {
             budgetAmount: 0,
             categoryId: categoryId,
           ),
-        ).budgetAmount;
+        )
+        .budgetAmount;
   }
 }
