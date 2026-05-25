@@ -3,7 +3,7 @@ import 'package:spendly/models/expense_model.dart';
 
 // Total Amount Spent_____________________________________________
 double calculateAmountSpent(List<Expense> totalExpense) {
-  if(totalExpense.isEmpty) return 0.0;
+  if (totalExpense.isEmpty) return 0.0;
   final DateTime now = DateTime.now();
   double amountSpent = 0;
   for (Expense expense in totalExpense) {
@@ -65,7 +65,7 @@ String formatCurrency(double amount, {int decimalDigits = 2}) {
 
 //Caculate Savings___________________________________
 (double, int) calculateSavings(double income, double expense) {
-  if(income <= 0 && expense <= 0) return(0.0, 0);
+  if (income <= 0 && expense <= 0) return (0.0, 0);
   final savings = income - expense;
   final percent = ((savings / income) * 100).toInt();
   return (savings, percent);
@@ -100,7 +100,6 @@ String translatePercentage(double percent) {
   }
 }
 
-
 //CalcuateAmountSpent on this category________________
 double categorySpent({
   required List<Expense> expenses,
@@ -111,16 +110,18 @@ double categorySpent({
   return expenses
       .where(
         (expense) =>
-            expense.category.id ==
-                categoryId &&
-            expense.date.month ==
-                now.month &&
-            expense.date.year ==
-                now.year,
+            expense.category.id == categoryId &&
+            expense.date.month == now.month &&
+            expense.date.year == now.year,
       )
-      .fold(
-        0,
-        (prev, item) =>
-            prev + item.amount,
-      );
+      .fold(0, (prev, item) => prev + item.amount);
+}
+
+double calculatePercentAmountSpent(double budget, double totalSpent) {
+  if (totalSpent <= 0 || budget <= 0) {
+    return 0;
+  }
+  double percent = (totalSpent / budget).clamp(0, double.infinity) * 100;
+
+  return percent;
 }

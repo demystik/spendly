@@ -1,6 +1,11 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:provider/provider.dart';
+import 'package:spendly/models/category_model.dart';
+import 'package:spendly/providers/budget_provider.dart';
+import 'package:spendly/providers/expense_provider.dart';
+import 'package:spendly/services/finance_calculator.dart';
 import 'package:spendly/themes/app_spacing.dart';
 import 'package:spendly/themes/app_text_styles.dart';
 import 'package:spendly/widgets/weekly_spending_bar_chat.dart';
@@ -33,75 +38,146 @@ class AnalyticsScreen extends StatelessWidget {
 
 
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                AnalyticSubHeadingCard(
-                  screenSize: screenSize,
-                  appColorScheme: appColorScheme,
-                  headString: "SPENT",
-                  title: "\$1,824",
-                  subheading: "12% this month",
-                ),
-                AnalyticSubHeadingCard(
-                  screenSize: screenSize,
-                  appColorScheme: appColorScheme,
-                  headString: "AVG/DAY",
-                  title: "\$61.40",
-                  subheading: "5% calculated",
-                ),
-                AnalyticSubHeadingCard(
-                  screenSize: screenSize,
-                  appColorScheme: appColorScheme,
-                  headString: "BUDGET",
-                  title: "74%",
-                  subheading: "Used up",
-                ),
-              ],
-            ),
+            AnalyticUpperCards(screenSize: screenSize, appColorScheme: appColorScheme),
 
-            SizedBox(height: AppSpacing.md),
+            SizedBox(height: AppSpacing.lg),
             // Chart_______________________________________________
-            SizedBox(
-              height: 250,
-              child: PieChart(
-                PieChartData(
-                  centerSpaceRadius: double.infinity,
-                  sectionsSpace: 4,
-                  sections: [
-                    PieChartSectionData(
-                      value: 450,
-                      color: Colors.green,
-                      radius: 30,
-                      showTitle: false,
-                    ),
-                    PieChartSectionData(
-                      value: 210,
-                      color: Colors.blue,
-                      radius: 30,
-                      showTitle: false,
-                    ),
-                    PieChartSectionData(
-                      value: 340,
-                      color: Colors.orange,
-                      radius: 30,
-                      showTitle: false,
-                    ),
-                    PieChartSectionData(
-                      value: 600,
-                      color: Colors.red,
-                      radius: 30,
-                      showTitle: false,
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            // Chart_______________________________________________
+            Text("Spending by Category", style: AppTextStyles.titleMedium,),
+            Text("Distribution of your top expenses"),
+            SizedBox(height: AppSpacing.lg),
+            PieChartWidget(),
+
+
+            //Category Wrap __________________________________________
             SizedBox(height: AppSpacing.md),
+            CategoryWrap(),
+            SizedBox(height: AppSpacing.xxl),
             WeeklySpendingChart(),
           ],
         ),
       ),
+    );
+  }
+}
+
+class PieChartWidget extends StatelessWidget {
+  const PieChartWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // final budget = context.select(
+    //   (BudgetProvider budget) => budget.budgetAmount,
+    // );
+    final expenseList = context.watch<ExpenseProvider>().expense;
+    final totalSpent = calculateAmountSpent(expenseList);
+    // final percentSpent = calculatePercentAmountSpent(budget, totalSpent);
+    // final dailySpent = averageDailySpent(totalSpent);
+    return SizedBox(
+      height: 250,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: PieChart(
+          PieChartData(
+            centerSpaceRadius: double.infinity,
+            sectionsSpace: 4,
+            sections: List.generate((categoryList.length), (index) {
+              Category cat = categoryList[index];
+              double amountSpentOnCat = categorySpent(expenses: expenseList, categoryId: cat.id);
+              return PieChartSectionData(
+                color: cat.color,
+                radius: 40,
+                showTitle: false,
+                value: (amountSpentOnCat / totalSpent) * 360
+              );
+            }),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class CategoryWrap extends StatelessWidget{
+  const CategoryWrap({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final expenseList = context.watch<ExpenseProvider>().expense;
+    Size screenSize = MediaQuery.of(context).size;
+    return Wrap(
+      spacing: 10,
+      runSpacing: 10,
+      children: List.generate(
+      categoryList.length, (index){
+        Category cat = categoryList[index];
+        double amountSpentOnCat = categorySpent(expenses: expenseList, categoryId: cat.id);
+      return SizedBox(
+        width: screenSize.width * 0.43,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(cat.name, style: AppTextStyles.bodySmall.copyWith(color: cat.color, fontWeight: FontWeight.w600),),
+            Text(formatCurrency(amountSpentOnCat, decimalDigits: 0),style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.w400),),
+          ],
+        ),
+      );
+    } ),);
+  }
+}
+
+class AnalyticUpperCards extends StatelessWidget {
+  const AnalyticUpperCards({
+    super.key,
+    required this.screenSize,
+    required this.appColorScheme,
+  });
+
+  final Size screenSize;
+  final ColorScheme appColorScheme;
+
+  @override
+  Widget build(BuildContext context) {
+        final budget = context.select(
+      (BudgetProvider budget) => budget.budgetAmount,
+    );
+    final expenseList = context.select(
+      (ExpenseProvider expense) => expense.expense,
+    );
+    final totalSpent = calculateAmountSpent(expenseList);
+    final percentSpent = calculatePercentAmountSpent(budget, totalSpent);
+    final dailySpent = averageDailySpent(totalSpent);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        AnalyticSubHeadingCard(
+          screenSize: screenSize,
+          appColorScheme: appColorScheme,
+          headString: "SPENT",
+          title: formatCurrency(totalSpent, decimalDigits: 0).length > 7 ?
+          formatCurrency(totalSpent, decimalDigits: 0).replaceRange(3, null, "K")
+          :formatCurrency(totalSpent, decimalDigits: 0),
+          subheading: "Amount spent so far",
+        ),
+        AnalyticSubHeadingCard(
+          screenSize: screenSize,
+          appColorScheme: appColorScheme,
+          headString: "AVG/DAY",
+          title: formatCurrency(dailySpent, decimalDigits: 0),
+          subheading: "Daily spent on average",
+        ),
+        AnalyticSubHeadingCard(
+          screenSize: screenSize,
+          appColorScheme: appColorScheme,
+          headString: "BUDGET",
+          title: "${percentSpent.toInt()}%",
+          subheading: "Used up",
+        ),
+      ],
     );
   }
 }
@@ -136,7 +212,6 @@ class UpperLabel extends StatelessWidget {
     );
   }
 }
-
 class AnalyticSubHeadingCard extends StatelessWidget {
   const AnalyticSubHeadingCard({
     super.key,
@@ -155,6 +230,7 @@ class AnalyticSubHeadingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Container(
       width: screenSize.width * 0.28,
       padding: EdgeInsets.all(AppSpacing.sm),

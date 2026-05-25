@@ -66,7 +66,9 @@ class HomeScreen extends StatelessWidget {
                     //_____Quick Insight Cards_____________________________________________________
                     QuickIncomeCard(
                       goal: "INCOME",
-                      amount: formatCurrency(context.watch<IncomeProvider>().monthlyIncome),
+                      amount: formatCurrency(
+                        context.watch<IncomeProvider>().monthlyIncome,
+                      ),
                       caption: "Your monthly income",
                       icon: LucideIcons.arrowDown,
                     ),
@@ -74,27 +76,36 @@ class HomeScreen extends StatelessWidget {
                     Consumer<IncomeProvider>(
                       builder: (context, provider, child) {
                         final expenseList = context.select(
-      (ExpenseProvider expense) => expense.expense,);
-                      final totalSpent = calculateAmountSpent(expenseList);
-                      var (savings, percent) = calculateSavings(provider.monthlyIncome, totalSpent);
-                      var (expenseDiff, expensePercent) = expenseInsight(expenseList);
-                      return Row(
-                        children: [
-                          QuickInsightCard(
-                            goal: "EXPENSES",
-                            amount: formatCurrency(expenseDiff, decimalDigits: 0),
-                            caption: "$expensePercent from last month",
-                            icon: LucideIcons.trendingDown,
-                          ),
-                          SizedBox(width: AppSpacing.md),
-                          QuickInsightCard(
-                            goal: "SAVINGS",
-                            amount: formatCurrency(savings, decimalDigits: 0),
-                            caption: "$percent% of monthly goal",
-                            icon: LucideIcons.trendingUp,
-                          ),
-                        ],
-                      );
+                          (ExpenseProvider expense) => expense.expense,
+                        );
+                        final totalSpent = calculateAmountSpent(expenseList);
+                        var (savings, percent) = calculateSavings(
+                          provider.monthlyIncome,
+                          totalSpent,
+                        );
+                        var (expenseDiff, expensePercent) = expenseInsight(
+                          expenseList,
+                        );
+                        return Row(
+                          children: [
+                            QuickInsightCard(
+                              goal: "EXPENSES",
+                              amount: formatCurrency(
+                                expenseDiff,
+                                decimalDigits: 0,
+                              ),
+                              caption: "$expensePercent from last month",
+                              icon: LucideIcons.trendingDown,
+                            ),
+                            SizedBox(width: AppSpacing.md),
+                            QuickInsightCard(
+                              goal: "SAVINGS",
+                              amount: formatCurrency(savings, decimalDigits: 0),
+                              caption: "$percent% of monthly goal",
+                              icon: LucideIcons.trendingUp,
+                            ),
+                          ],
+                        );
                       },
                     ),
                     SizedBox(height: AppSpacing.xl),
