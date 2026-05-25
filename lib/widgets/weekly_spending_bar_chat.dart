@@ -1,6 +1,9 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:spendly/models/expense_model.dart';
+import 'package:provider/provider.dart';
+import 'package:spendly/providers/expense_provider.dart';
+import 'package:spendly/services/finance_calculator.dart';
+// import 'package:spendly/models/expense_model.dart';
 import 'package:spendly/themes/app_spacing.dart';
 
 class WeeklySpendingChart extends StatelessWidget {
@@ -8,6 +11,9 @@ class WeeklySpendingChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final weeklyData = weeklySpending(
+      expenses: context.watch<ExpenseProvider>().expense,
+    );
     return SizedBox(
       height: 250,
       child: BarChart(
@@ -41,15 +47,10 @@ class WeeklySpendingChart extends StatelessWidget {
             ),
           ),
 
-          barGroups: [
-            makeGroup(0, 45),
-            makeGroup(1, 52),
-            makeGroup(2, 38),
-            makeGroup(3, 65),
-            makeGroup(4, 48),
-            makeGroup(5, 84),
-            makeGroup(6, 32),
-          ],
+          barGroups: List.generate(
+            weeklyData.length,
+            (index) => makeGroup(index, weeklyData[index]),
+          ),
         ),
       ),
     );
@@ -62,11 +63,11 @@ class WeeklySpendingChart extends StatelessWidget {
         BarChartRodData(
           toY: y,
           width: AppSpacing.lg,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.md)),
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(AppRadius.md),
+          ),
         ),
       ],
     );
   }
 }
-
-

@@ -126,7 +126,7 @@ double calculatePercentAmountSpent(double budget, double totalSpent) {
   return percent;
 }
 
-//Amount Spent in the last 7 daays
+//Amount Spent in the last 7 daays____________________________________
 List<double> weeklySpending({required List<Expense> expenses}) {
   final DateTime now = DateTime.now();
 

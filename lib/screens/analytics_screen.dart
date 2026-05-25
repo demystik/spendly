@@ -52,11 +52,18 @@ class AnalyticsScreen extends StatelessWidget {
             //Category Wrap __________________________________________
             SizedBox(height: AppSpacing.md),
             CategoryWrap(),
-            SizedBox(height: AppSpacing.xl),
+            SizedBox(height: AppSpacing.md),
+
+
+            Padding(padding: EdgeInsets.all(AppSpacing.lg), child: Divider(height: 1,),),
+
+            //Weekly Spending Chat Wrap __________________________________________
             Text("Weekly Spending", style: AppTextStyles.titleMedium,),
             Text("Activity over the last 7 days"),
             SizedBox(height: AppSpacing.xl),
             WeeklySpendingChart(),
+            Padding(padding: EdgeInsets.all(AppSpacing.lg), child: Divider(height: 1,),),
+            Text("Smart Insights", style: AppTextStyles.titleMedium,),
           ],
         ),
       ),
