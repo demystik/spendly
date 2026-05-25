@@ -63,7 +63,7 @@ class AnalyticsScreen extends StatelessWidget {
             SizedBox(height: AppSpacing.xl),
             WeeklySpendingChart(),
             Padding(padding: EdgeInsets.all(AppSpacing.lg), child: Divider(height: 1,),),
-            Text("Smart Insights", style: AppTextStyles.titleMedium,),
+            // Text("Smart Insights", style: AppTextStyles.titleMedium,),
           ],
         ),
       ),
