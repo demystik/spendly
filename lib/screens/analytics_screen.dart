@@ -28,20 +28,10 @@ class AnalyticsScreen extends StatelessWidget {
           children: [
 
           //Upper label___________________________________________
-          Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(AppRadius.md),
-              color: appColorScheme.surfaceContainerHighest,
-            ),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(AppRadius.md),
+          UpperLabel(appColorScheme: appColorScheme),
+          SizedBox(height: AppSpacing.md),
 
-              ),
-              child: Text("Monthly"),
-            ),
-          ),
+
 
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -110,6 +100,37 @@ class AnalyticsScreen extends StatelessWidget {
             SizedBox(height: AppSpacing.md),
             WeeklySpendingChart(),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class UpperLabel extends StatelessWidget {
+  const UpperLabel({
+    super.key,
+    required this.appColorScheme,
+  });
+
+  final ColorScheme appColorScheme;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(vertical: AppRadius.sm * 0.5),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        color: appColorScheme.surfaceContainerHighest.withValues(alpha: 0.7),
+      ),
+      child: Center(
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm * 0.7),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(AppRadius.md),
+            color: appColorScheme.onSecondary,
+          ),
+          child: Text("Monthly Analytics", style: AppTextStyles.bodyLarge,),
         ),
       ),
     );
