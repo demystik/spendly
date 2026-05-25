@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:spendly/themes/app_spacing.dart';
 import 'package:spendly/themes/app_text_styles.dart';
+import 'package:spendly/widgets/weekly_spending_bar_chat.dart';
 
 class AnalyticsScreen extends StatelessWidget {
   const AnalyticsScreen({super.key});
@@ -52,17 +53,45 @@ class AnalyticsScreen extends StatelessWidget {
               ],
             ),
 
-            
-            SizedBox(height: AppSpacing.md,),
+            SizedBox(height: AppSpacing.md),
             // Chart_______________________________________________
-            PieChart(
-              PieChartData(
-                // read about it in the PieChartData section
-
+            SizedBox(
+              height: 250,
+              child: PieChart(
+                PieChartData(
+                  centerSpaceRadius: double.infinity,
+                  sectionsSpace: 4,
+                  sections: [
+                    PieChartSectionData(
+                      value: 450,
+                      color: Colors.green,
+                      radius: 30,
+                      showTitle: false,
+                    ),
+                    PieChartSectionData(
+                      value: 210,
+                      color: Colors.blue,
+                      radius: 30,
+                      showTitle: false,
+                    ),
+                    PieChartSectionData(
+                      value: 340,
+                      color: Colors.orange,
+                      radius: 30,
+                      showTitle: false,
+                    ),
+                    PieChartSectionData(
+                      value: 600,
+                      color: Colors.red,
+                      radius: 30,
+                      showTitle: false,
+                    ),
+                  ],
+                ),
               ),
-              duration: Duration(milliseconds: 150), // Optional
-              curve: Curves.linear, // Optional
             ),
+            SizedBox(height: AppSpacing.md),
+            WeeklySpendingChart(),
           ],
         ),
       ),
