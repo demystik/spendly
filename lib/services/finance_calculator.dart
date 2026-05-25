@@ -125,3 +125,9 @@ double calculatePercentAmountSpent(double budget, double totalSpent) {
 
   return percent;
 }
+
+//Amount Spent in the last 7 daays
+List<double> weeklySpending({required List<Expense> expenses}) {
+  
+  return [45, 52, 38, 65, 48, 84, 32];
+}

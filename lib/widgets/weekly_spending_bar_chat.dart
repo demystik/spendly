@@ -1,5 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:spendly/models/expense_model.dart';
+import 'package:spendly/themes/app_spacing.dart';
 
 class WeeklySpendingChart extends StatelessWidget {
   const WeeklySpendingChart({super.key});
@@ -59,10 +61,12 @@ class WeeklySpendingChart extends StatelessWidget {
       barRods: [
         BarChartRodData(
           toY: y,
-          width: 18,
-          borderRadius: BorderRadius.circular(6),
+          width: AppSpacing.lg,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.md)),
         ),
       ],
     );
   }
 }
+
+

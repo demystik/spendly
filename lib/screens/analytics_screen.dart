@@ -52,7 +52,10 @@ class AnalyticsScreen extends StatelessWidget {
             //Category Wrap __________________________________________
             SizedBox(height: AppSpacing.md),
             CategoryWrap(),
-            SizedBox(height: AppSpacing.xxl),
+            SizedBox(height: AppSpacing.xl),
+            Text("Weekly Spending", style: AppTextStyles.titleMedium,),
+            Text("Activity over the last 7 days"),
+            SizedBox(height: AppSpacing.xl),
             WeeklySpendingChart(),
           ],
         ),
