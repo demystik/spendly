@@ -128,6 +128,24 @@ double calculatePercentAmountSpent(double budget, double totalSpent) {
 
 //Amount Spent in the last 7 daays
 List<double> weeklySpending({required List<Expense> expenses}) {
-  
-  return [45, 52, 38, 65, 48, 84, 32];
+  final DateTime now = DateTime.now();
+
+  // Monday -> Sunday
+  List<double> weeklyTotals = List.filled(7, 0);
+
+  for (Expense expense in expenses) {
+    final difference = now.difference(expense.date).inDays;
+
+    // only include last 7 days
+    if (difference >= 0 && difference < 7) {
+      // weekday:
+      // Monday = 1
+      // Sunday = 7
+      int index = expense.date.weekday - 1;
+
+      weeklyTotals[index] += expense.amount;
+    }
+  }
+
+  return weeklyTotals;
 }
