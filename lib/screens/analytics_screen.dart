@@ -26,6 +26,23 @@ class AnalyticsScreen extends StatelessWidget {
         child: ListView(
           padding: EdgeInsets.all(AppSpacing.md),
           children: [
+
+          //Upper label___________________________________________
+          Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(AppRadius.md),
+              color: appColorScheme.surfaceContainerHighest,
+            ),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(AppRadius.md),
+
+              ),
+              child: Text("Monthly"),
+            ),
+          ),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
