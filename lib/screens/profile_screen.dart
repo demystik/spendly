@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:spendly/constants/currency_type_list.dart';
-import 'package:spendly/constants/regions_list.dart';
+import 'package:spendly/models/region_model.dart';
 import 'package:spendly/providers/currency_providers.dart';
 import 'package:spendly/providers/theme_mode_provider.dart';
 import 'package:spendly/providers/user_region_provider.dart';
@@ -273,11 +273,13 @@ class SecurityAndAlerts extends StatelessWidget {
             trailingWidget: Icon(LucideIcons.chevronRight),
           ),
           Divider(color: Theme.of(context).colorScheme.surfaceContainerHighest),
-          ProfileListTileWidget(
-            title: "Region",
-            subTitle: "United States",
-            leadingIcon: LucideIcons.globe,
-            trailingWidget: UserRegionDropDown(),
+          Consumer<UserRegionProvider>(
+            builder: (context, value, child) => ProfileListTileWidget(
+              title: "Region",
+              subTitle: value.selectedRegion.name,
+              leadingIcon: LucideIcons.globe,
+              trailingWidget: UserRegionDropDown(),
+            ),
           ),
         ],
       ),
@@ -432,10 +434,10 @@ class UserRegionDropDown extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppRadius.md),
           underline: const SizedBox(),
           icon: const Icon(LucideIcons.chevronRight),
-          items: userRegionList.map((item) {
+          items: regions.map((item) {
             return DropdownMenuItem(
-              value: item,
-              child: Text(item, style: AppTextStyles.bodyLarge),
+              value: item.name,
+              child: Text(item.name, style: AppTextStyles.bodyLarge),
             );
           }).toList(),
           onChanged: (val) => userRegion.changeRegion(val),
