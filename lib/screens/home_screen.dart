@@ -207,7 +207,7 @@ class QuickInsightCard extends StatelessWidget {
               padding: EdgeInsets.all(AppSpacing.sm),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.brown.shade100,
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
               ),
               child: Icon(icon),
             ),
@@ -250,7 +250,7 @@ class QuickIncomeCard extends StatelessWidget {
                 height: 50,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.brown.shade100,
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
                 ),
                 child: Icon(icon),
               ),
