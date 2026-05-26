@@ -9,6 +9,7 @@ import 'package:spendly/providers/category_provider.dart';
 import 'package:spendly/providers/datetime_provider.dart';
 import 'package:spendly/providers/expense_provider.dart';
 import 'package:spendly/providers/payment_method.dart';
+import 'package:spendly/providers/user_region_provider.dart';
 import 'package:spendly/shared/section_label.dart';
 import 'package:spendly/themes/app_spacing.dart';
 import 'package:spendly/themes/app_text_styles.dart';
@@ -343,17 +344,15 @@ class ExpenseTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
+    final currency = context.watch<UserRegionProvider>().selectedRegion.currency;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 22.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(
-            LucideIcons.dollarSign600,
-            size: 35,
-            color: Theme.of(context).colorScheme.primary,
-          ),
+          Text(currency, style: AppTextStyles.displayLarge.copyWith(color: Theme.of(context).colorScheme.primary),),
           SizedBox(width: 10),
           Expanded(
             child: TextFormField(
