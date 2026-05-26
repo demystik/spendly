@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:spendly/constants/currency_type_list.dart';
 import 'package:spendly/providers/currency_providers.dart';
 import 'package:spendly/providers/theme_mode_provider.dart';
+import 'package:spendly/providers/user_region_provider.dart';
 import 'package:spendly/shared/section_label.dart';
 import 'package:spendly/themes/app_spacing.dart';
 import 'package:spendly/themes/app_text_styles.dart';
@@ -275,7 +276,7 @@ class SecurityAndAlerts extends StatelessWidget {
             title: "Region",
             subTitle: "United States",
             leadingIcon: LucideIcons.globe,
-            trailingWidget: Icon(LucideIcons.chevronRight),
+            trailingWidget: UserRegionDropDown(),
           ),
         ],
       ),
@@ -408,5 +409,35 @@ class CurrencyDropDown extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+class UserRegionDropDown extends StatelessWidget {
+  const UserRegionDropDown({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final userRegion = context.watch<UserRegionProvider>();
+    return DropdownButton<String>(
+          focusColor: Colors.transparent,
+          value: userRegion.selectedRegion,
+          isDense: true,
+          hint: Text(
+            currencyTypesList[0],
+            style: AppTextStyles.bodyLarge.copyWith(
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          underline: const SizedBox(),
+          icon: const Icon(LucideIcons.chevronRight),
+          items: currencyTypesList.map((item) {
+            return DropdownMenuItem(
+              value: item,
+              child: Text(item, style: AppTextStyles.bodyLarge),
+            );
+          }).toList(),
+          onChanged: (val) => userRegion.changeRegion(val),
+        );
   }
 }

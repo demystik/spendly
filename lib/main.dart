@@ -10,6 +10,7 @@ import 'package:spendly/providers/expense_provider.dart';
 import 'package:spendly/providers/income_provider.dart';
 import 'package:spendly/providers/payment_method.dart';
 import 'package:spendly/providers/theme_mode_provider.dart';
+import 'package:spendly/providers/user_region_provider.dart';
 import 'package:spendly/routes/app_router.dart';
 
 void main() {
@@ -26,6 +27,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => BudgetProvider()),
         ChangeNotifierProvider(create: (_) => IncomeProvider()),
         ChangeNotifierProvider(create: (_) => CategoryBudgetProvider()),
+        ChangeNotifierProvider(create: (_) => UserRegionProvider()),
       ],
       child: const MyApp(),
     ),
