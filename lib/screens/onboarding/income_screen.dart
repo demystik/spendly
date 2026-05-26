@@ -7,12 +7,10 @@ class IncomeOnboardingScreen extends StatefulWidget {
   const IncomeOnboardingScreen({super.key});
 
   @override
-  State<IncomeOnboardingScreen> createState() =>
-      _IncomeOnboardingScreenState();
+  State<IncomeOnboardingScreen> createState() => _IncomeOnboardingScreenState();
 }
 
-class _IncomeOnboardingScreenState
-    extends State<IncomeOnboardingScreen> {
+class _IncomeOnboardingScreenState extends State<IncomeOnboardingScreen> {
   late final TextEditingController incomeController;
 
   String? errorText;
@@ -34,8 +32,7 @@ class _IncomeOnboardingScreenState
 
     if (input.isEmpty) {
       setState(() {
-        errorText =
-            'Monthly income cannot be empty';
+        errorText = 'Monthly income cannot be empty';
       });
       return;
     }
@@ -44,18 +41,16 @@ class _IncomeOnboardingScreenState
 
     if (income == null || income <= 0) {
       setState(() {
-        errorText =
-            'Enter a valid income amount';
+        errorText = 'Enter a valid income amount';
       });
       return;
     }
 
-    context
-        .read<IncomeProvider>()
-        .setIncome(income);
+    context.read<IncomeProvider>().setIncome(income);
 
     context.pop();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,17 +58,13 @@ class _IncomeOnboardingScreenState
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
-            crossAxisAlignment:
-                CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Spacer(),
 
               const Text(
                 "What's your monthly income?",
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
               ),
 
               const SizedBox(height: 12),
@@ -86,13 +77,12 @@ class _IncomeOnboardingScreenState
 
               TextField(
                 controller: incomeController,
-                keyboardType:
-                    const TextInputType.numberWithOptions(
+                keyboardType: const TextInputType.numberWithOptions(
                   decimal: true,
                 ),
                 decoration: InputDecoration(
                   hintText: '0.00',
-                  prefixText: '₦ ',
+                  // prefixText: '₦ ',
                   errorText: errorText,
                 ),
                 onChanged: (_) {
@@ -111,9 +101,7 @@ class _IncomeOnboardingScreenState
                 width: double.infinity,
                 child: FilledButton(
                   onPressed: saveIncome,
-                  child: const Text(
-                    'Continue',
-                  ),
+                  child: const Text('Continue'),
                 ),
               ),
             ],

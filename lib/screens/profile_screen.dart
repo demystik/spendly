@@ -1,23 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
-import 'package:spendly/constants/currency_type_list.dart';
 import 'package:spendly/models/region_model.dart';
-import 'package:spendly/providers/currency_providers.dart';
+import 'package:spendly/providers/income_provider.dart';
 import 'package:spendly/providers/theme_mode_provider.dart';
 import 'package:spendly/providers/user_region_provider.dart';
 import 'package:spendly/shared/section_label.dart';
 import 'package:spendly/themes/app_spacing.dart';
 import 'package:spendly/themes/app_text_styles.dart';
+import 'package:spendly/widgets/app_button.dart';
 import 'package:spendly/widgets/app_card.dart';
 import 'package:spendly/widgets/app_chip.dart';
+import 'package:spendly/widgets/app_text_field.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
   @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  late final TextEditingController amountInputController;
+  String? errorText;
+
+  @override
+  void initState() {
+    amountInputController = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    amountInputController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-  final colorsScheme = Theme.of(context).colorScheme;
+    final colorsScheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
         elevation: 1.0,
@@ -38,7 +60,7 @@ class ProfileScreen extends StatelessWidget {
 
             //App preferences_____________________________________________
             SectionLabel(
-              actualLabel: "APP PREFERENCES",
+              actualLabel: "PREFERENCES",
               textStyle: AppTextStyles.bodyMedium.copyWith(
                 color: colorsScheme.onSurfaceVariant,
                 fontWeight: FontWeight.bold,
@@ -46,7 +68,7 @@ class ProfileScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.md),
-            AppPreferences(),
+            preferences(context, colorsScheme),
             const SizedBox(height: AppSpacing.xl),
 
             //SECURITY & ALERTS_____________________________________________
@@ -75,16 +97,14 @@ class ProfileScreen extends StatelessWidget {
             const SizedBox(height: AppSpacing.md),
             AppCard(
               padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-              border: Border.all(
-                color: colorsScheme.surfaceContainerHighest,
-              ),
+              border: Border.all(color: colorsScheme.surfaceContainerHighest),
               child: Column(
                 children: [
                   ProfileListTileWidget(
                     title: "Export Statement",
                     subTitle: "Download your data in CSV or PDF",
                     leadingIcon: LucideIcons.download,
-                    trailingWidget: const Icon(LucideIcons.chevronRight),
+                    trailingWidget: Icon(LucideIcons.chevronRight),
                   ),
                 ],
               ),
@@ -108,6 +128,143 @@ class ProfileScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  AppCard preferences(BuildContext context, ColorScheme colorsScheme) {
+    return AppCard(
+            border: Border.all(
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+            ),
+            child: Column(
+              children: [
+                ProfileListTileWidget(
+                  title: "Dark Appearance",
+                  subTitle: "Customize your interface",
+                  leadingIcon: LucideIcons.sunDim,
+                  trailingWidget: ThemeSwitcher(),
+                ),
+                Divider(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.surfaceContainerHighest,
+                ),
+                ProfileListTileWidget(
+                  title: "Income",
+                  subTitle: "Update your income",
+                  leadingIcon: LucideIcons.banknote,
+                  trailingWidget: FilledButton(
+                    onPressed: () =>
+                        showIncomeBottomSheetMethod(context, colorsScheme),
+                    child: Text("Edit"),
+                  ),
+                ),
+              ],
+            ),
+          );
+  }
+
+  Future<dynamic> showIncomeBottomSheetMethod(
+    BuildContext context,
+    ColorScheme appColorScheme,
+  ) {
+    return showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppRadius.lg),
+          bottom: Radius.zero,
+        ),
+      ),
+      isScrollControlled: true,
+
+      backgroundColor: appColorScheme.onPrimary,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, modalSetState) => SingleChildScrollView(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+            ),
+            child: Container(
+              padding: EdgeInsets.all(AppSpacing.md),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            "Update Income",
+                            textAlign: TextAlign.center,
+                            style: AppTextStyles.titleLarge.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          amountInputController.clear();
+                          context.pop();
+                        },
+                        icon: Icon(LucideIcons.x),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: AppSpacing.sm),
+                  Text("Update your income for this month"),
+                  SizedBox(height: AppSpacing.md),
+                  Text("Your Income:"),
+                  SizedBox(height: AppSpacing.sm),
+                  AppTextField(
+                    controller: amountInputController,
+                    keyboardType: TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    label: context.read<IncomeProvider>().monthlyIncome.toString(),
+                    errorText: errorText,
+                    onChanged: (_) {
+                      if (errorText != null) {
+                        modalSetState(() {
+                          errorText = null;
+                        });
+                      }
+                    },
+                  ),
+                  SizedBox(height: AppSpacing.lg),
+                  SizedBox(
+                    child: AppButton(
+                      label: "Save",
+                      onPressed: () {
+                        final error = _validator(amountInputController);
+
+                        modalSetState(() {
+                          errorText = error;
+                        });
+
+                        if (error != null) return;
+
+                        final double amount = double.parse(
+                          amountInputController.text.trim(),
+                        );
+                        context.read<IncomeProvider>().setIncome(amount);
+                        amountInputController.clear();
+
+                        modalSetState(() {
+                          errorText = null;
+                        });
+
+                        context.pop();
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -135,7 +292,7 @@ class LogOutButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-           Icon(
+            Icon(
               LucideIcons.logOut,
               size: 22,
               color: Theme.of(context).colorScheme.error,
@@ -214,36 +371,6 @@ class HeaderSection extends StatelessWidget {
         AppChip(label: "PRO MEMBER"),
         const SizedBox(height: AppSpacing.xl),
       ],
-    );
-  }
-}
-
-class AppPreferences extends StatelessWidget {
-  const AppPreferences({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return AppCard(
-      border: Border.all(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest,
-      ),
-      child: Column(
-        children: [
-          ProfileListTileWidget(
-            title: "Dark Appearance",
-            subTitle: "Customize your interface",
-            leadingIcon: LucideIcons.sunDim,
-            trailingWidget: ThemeSwitcher(),
-          ),
-          Divider(color: Theme.of(context).colorScheme.surfaceContainerHighest),
-          ProfileListTileWidget(
-            title: "Currency",
-            subTitle: "Select your currency",
-            leadingIcon: LucideIcons.dollarSign,
-            trailingWidget: CurrencyDropDown(),
-          ),
-        ],
-      ),
     );
   }
 }
@@ -382,60 +509,49 @@ class ProfileListTileWidget extends StatelessWidget {
   }
 }
 
-class CurrencyDropDown extends StatelessWidget {
-  const CurrencyDropDown({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<CurrencyProvider>(
-      builder: (context, currencyProvider, child) {
-        return DropdownButton<String>(
-          focusColor: Colors.transparent,
-          value: currencyProvider.selectedCurrency,
-          isDense: true,
-          hint: Text(
-            currencyTypesList[0],
-            style: AppTextStyles.bodyLarge.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-            ),
-          ),
-          borderRadius: BorderRadius.circular(AppRadius.md),
-          underline: const SizedBox(),
-          icon: const Icon(LucideIcons.chevronRight),
-          items: currencyTypesList.map((item) {
-            return DropdownMenuItem(
-              value: item,
-              child: Text(item, style: AppTextStyles.bodyLarge),
-            );
-          }).toList(),
-          onChanged: (val) => currencyProvider.changeCurrencyType(val),
-        );
-      },
-    );
-  }
-}
-
 class UserRegionDropDown extends StatelessWidget {
   const UserRegionDropDown({super.key});
 
   @override
   Widget build(BuildContext context) {
     return DropdownButton<RegionModel>(
-          focusColor: Colors.transparent,
-          // value: userRegion.selectedRegion,
-          isDense: true,
-          borderRadius: BorderRadius.circular(AppRadius.md),
-          underline: const SizedBox(),
-          icon: const Icon(LucideIcons.chevronRight),
-          items: regions.map((item) {
-            return DropdownMenuItem<RegionModel>(
-              value: item,
-              child: Text(item.name, style: AppTextStyles.bodyLarge),
-            );
-          }).toList(),
-          onChanged: (region) {
-            context.read<UserRegionProvider>().changeRegion(region!);
-            },
+      focusColor: Colors.transparent,
+      // value: userRegion.selectedRegion,
+      isDense: true,
+      borderRadius: BorderRadius.circular(AppRadius.md),
+      underline: const SizedBox(),
+      icon: const Icon(LucideIcons.chevronRight),
+      items: regions.map((item) {
+        return DropdownMenuItem<RegionModel>(
+          value: item,
+          child: Text(item.name, style: AppTextStyles.bodyLarge),
         );
+      }).toList(),
+      onChanged: (region) {
+        context.read<UserRegionProvider>().changeRegion(region!);
+      },
+    );
   }
+}
+
+String? _validator(TextEditingController amountController) {
+  final String inputAmount = amountController.text.trim();
+  if (inputAmount.isEmpty) {
+    return "Budget amount cannot be empty";
+  }
+  final double? amount = double.tryParse(inputAmount);
+
+  if (amount == null) {
+    return "Enter a valid number";
+  }
+
+  if (amount <= 0) {
+    return "Budget must be greater than 0";
+  }
+
+  if (amount > 100000000) {
+    return "Too much, please enter valid budget";
+  }
+
+  return null;
 }
