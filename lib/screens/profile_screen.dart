@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:spendly/constants/currency_type_list.dart';
+import 'package:spendly/constants/regions_list.dart';
 import 'package:spendly/providers/currency_providers.dart';
 import 'package:spendly/providers/theme_mode_provider.dart';
 import 'package:spendly/providers/user_region_provider.dart';
@@ -420,18 +421,18 @@ class UserRegionDropDown extends StatelessWidget {
     final userRegion = context.watch<UserRegionProvider>();
     return DropdownButton<String>(
           focusColor: Colors.transparent,
-          value: userRegion.selectedRegion,
+          // value: userRegion.selectedRegion,
           isDense: true,
-          hint: Text(
-            currencyTypesList[0],
-            style: AppTextStyles.bodyLarge.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-            ),
-          ),
+          // hint: Text(
+          //   userRegionList[0],
+          //   style: AppTextStyles.bodyLarge.copyWith(
+          //     color: Theme.of(context).colorScheme.primary,
+          //   ),
+          // ),
           borderRadius: BorderRadius.circular(AppRadius.md),
           underline: const SizedBox(),
           icon: const Icon(LucideIcons.chevronRight),
-          items: currencyTypesList.map((item) {
+          items: userRegionList.map((item) {
             return DropdownMenuItem(
               value: item,
               child: Text(item, style: AppTextStyles.bodyLarge),
