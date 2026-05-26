@@ -120,7 +120,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               children: [
                 Text("Spendly V0.0.1"),
                 Text(
-                  "Made with love for financial freedom by Demystik",
+                  "Made with ❤️ for financial freedom by Demystik",
                   style: AppTextStyles.labelMedium,
                 ),
               ],
