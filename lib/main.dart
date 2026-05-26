@@ -43,11 +43,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
 
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       darkTheme: ThemeData(brightness: Brightness.dark),
-      themeMode: ThemeMode.light,
-
+      // themeMode: ThemeMode.dark,
+      themeMode: context.watch<ThemeModeProvider>().darkMode ? ThemeMode.dark : ThemeMode.light,
       routerConfig: appRouter,
     );
   }
