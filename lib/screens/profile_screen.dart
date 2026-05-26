@@ -25,6 +25,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late final TextEditingController amountInputController;
   String? errorText;
 
+
   @override
   void initState() {
     amountInputController = TextEditingController();
@@ -446,9 +447,9 @@ class ThemeSwitcher extends StatelessWidget {
   }
 }
 
+
 class NotificationSwitcher extends StatelessWidget {
   const NotificationSwitcher({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Switch(
@@ -465,7 +466,8 @@ class NotificationSwitcher extends StatelessWidget {
       inactiveThumbColor: Colors.white,
       activeThumbColor: Theme.of(context).colorScheme.primary,
       value: false,
-      onChanged: (val) {},
+      onChanged: (val) {
+      },
     );
   }
 }
