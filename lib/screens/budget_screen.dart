@@ -8,6 +8,7 @@ import 'package:spendly/models/category_model.dart';
 import 'package:spendly/providers/budget_provider.dart';
 import 'package:spendly/providers/category_budget_provider.dart';
 import 'package:spendly/providers/expense_provider.dart';
+import 'package:spendly/providers/user_region_provider.dart';
 import 'package:spendly/services/date_calculator.dart';
 import 'package:spendly/services/finance_calculator.dart';
 import 'package:spendly/shared/middle_section_header.dart';
@@ -290,9 +291,9 @@ class CurrentGoalCard extends StatelessWidget {
   const CurrentGoalCard({super.key, required this.appColorScheme});
 
   final ColorScheme appColorScheme;
-
   @override
   Widget build(BuildContext context) {
+    final curr = context.watch<UserRegionProvider>().selectedRegion;
     return AppCard(
       boxshadow: [BoxShadow(color: appColorScheme.surfaceContainerHighest)],
       border: Border.all(),
@@ -301,7 +302,11 @@ class CurrentGoalCard extends StatelessWidget {
         children: [
           Consumer<BudgetProvider>(
             builder: (context, value, child) => Text(
-              formatCurrency(value.budgetAmount, decimalDigits: 0),
+              formatCurrency(
+                value.budgetAmount,
+                curr.currency,
+                decimalDigits: 0,
+              ),
               style: AppTextStyles.displayMedium,
             ),
           ),
@@ -376,6 +381,8 @@ class CategoryBudgetCard extends StatelessWidget {
     final progress = allocatedBudget <= 0
         ? 0.0
         : (spent / allocatedBudget).clamp(0.0, 1.0);
+    
+    final curr = context.watch<UserRegionProvider>().selectedRegion;
 
     return AppCard(
       border: Border.all(color: appColorScheme.surfaceContainerHighest),
@@ -408,7 +415,7 @@ class CategoryBudgetCard extends StatelessWidget {
                       Text(
                         allocatedBudget == 0
                             ? "No budget set"
-                            : "${formatCurrency(spent)} of ${formatCurrency(allocatedBudget)} spent",
+                            : "${formatCurrency(spent, curr.currency)} of ${formatCurrency(allocatedBudget, curr.currency)} spent",
                         style: AppTextStyles.bodySmall,
                       ),
                     ],
@@ -417,7 +424,10 @@ class CategoryBudgetCard extends StatelessWidget {
 
                 TextButton(
                   onPressed: () {
-                    showCategoryBudgetBottomSheet(context: context, category: cat);
+                    showCategoryBudgetBottomSheet(
+                      context: context,
+                      category: cat,
+                    );
                   },
                   child: Text(allocatedBudget == 0 ? "Set" : "Edit"),
                 ),
@@ -445,7 +455,7 @@ class CategoryBudgetCard extends StatelessWidget {
                 ),
 
                 Text(
-                  formatCurrency(allocatedBudget),
+                  formatCurrency(allocatedBudget, curr.currency),
                   style: AppTextStyles.bodyMedium,
                 ),
               ],
@@ -471,6 +481,7 @@ class RemainingBalance extends StatelessWidget {
     final totalSpent = calculateAmountSpent(expenseList);
     final amountLeft = (budget - totalSpent);
     final toSpendDaily = amountLeft / calculateDaysLeft();
+    final curr = context.watch<UserRegionProvider>().selectedRegion;
     return ClipRRect(
       borderRadius: BorderRadius.circular(AppSpacing.md),
       child: AppCard(
@@ -525,11 +536,11 @@ class RemainingBalance extends StatelessWidget {
                   ),
                   SizedBox(height: AppSpacing.md),
                   Text(
-                    formatCurrency(amountLeft, decimalDigits: 0),
+                    formatCurrency(amountLeft, curr.currency, decimalDigits: 0),
                     style: AppTextStyles.displayLarge,
                   ),
                   Text(
-                    "Your can spend ~${formatCurrency(toSpendDaily, decimalDigits: 0)} per day for the rest of the month",
+                    "Your can spend ~${formatCurrency(toSpendDaily, curr.currency, decimalDigits: 0)} per day for the rest of the month",
                   ),
                   SizedBox(height: AppSpacing.sm),
                 ],

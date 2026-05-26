@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:spendly/models/expense_model.dart';
+import 'package:spendly/providers/user_region_provider.dart';
 import 'package:spendly/services/finance_calculator.dart';
 import 'package:spendly/themes/app_spacing.dart';
 import 'package:spendly/themes/app_text_styles.dart';
@@ -56,6 +58,7 @@ class MyListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final curr = context.watch<UserRegionProvider>().selectedRegion.currency;
     return InkWell(
       onTap: () => context.push("/expense_details_screen", extra: recentTrans),
       child: ListTile(
@@ -88,7 +91,7 @@ class MyListTile extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              "-${formatCurrency(recentTrans.amount, decimalDigits: 0)}",
+              "-${formatCurrency(recentTrans.amount, curr, decimalDigits: 0)}",
               style: AppTextStyles.titleMedium,
             ),
             isSearchScreen

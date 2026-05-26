@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:spendly/models/category_model.dart';
 import 'package:spendly/providers/budget_provider.dart';
 import 'package:spendly/providers/expense_provider.dart';
+import 'package:spendly/providers/user_region_provider.dart';
 import 'package:spendly/services/finance_calculator.dart';
 import 'package:spendly/themes/app_spacing.dart';
 import 'package:spendly/themes/app_text_styles.dart';
@@ -114,6 +115,7 @@ class CategoryWrap extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     final expenseList = context.watch<ExpenseProvider>().expense;
+    final appCurrency = context.watch<UserRegionProvider>().selectedRegion;
     Size screenSize = MediaQuery.of(context).size;
     return Wrap(
       spacing: 10,
@@ -128,7 +130,7 @@ class CategoryWrap extends StatelessWidget{
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(cat.name, style: AppTextStyles.bodySmall.copyWith(color: cat.color, fontWeight: FontWeight.w600),),
-            Text(formatCurrency(amountSpentOnCat, decimalDigits: 0),style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.w400),),
+            Text(formatCurrency(amountSpentOnCat, appCurrency.currency, decimalDigits: 0),style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.w400),),
           ],
         ),
       );
@@ -157,6 +159,7 @@ class AnalyticUpperCards extends StatelessWidget {
     final totalSpent = calculateAmountSpent(expenseList);
     final percentSpent = calculatePercentAmountSpent(budget, totalSpent);
     final dailySpent = averageDailySpent(totalSpent);
+    final curr = context.watch<UserRegionProvider>().selectedRegion;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -164,16 +167,16 @@ class AnalyticUpperCards extends StatelessWidget {
           screenSize: screenSize,
           appColorScheme: appColorScheme,
           headString: "SPENT",
-          title: formatCurrency(totalSpent, decimalDigits: 0).length > 7 ?
-          formatCurrency(totalSpent, decimalDigits: 0).replaceRange(3, null, "K")
-          :formatCurrency(totalSpent, decimalDigits: 0),
+          title: formatCurrency(totalSpent, curr.currency, decimalDigits: 0).length > 7 ?
+          formatCurrency(totalSpent, curr.currency, decimalDigits: 0).replaceRange(3, null, "K")
+          :formatCurrency(totalSpent, curr.currency, decimalDigits: 0),
           subheading: "Amount spent so far",
         ),
         AnalyticSubHeadingCard(
           screenSize: screenSize,
           appColorScheme: appColorScheme,
           headString: "AVG/DAY",
-          title: formatCurrency(dailySpent, decimalDigits: 0),
+          title: formatCurrency(dailySpent, curr.currency, decimalDigits: 0),
           subheading: "Daily spent on average",
         ),
         AnalyticSubHeadingCard(

@@ -6,7 +6,7 @@ import 'package:spendly/providers/budget_provider.dart';
 import 'package:spendly/providers/datetime_provider.dart';
 import 'package:spendly/providers/expense_provider.dart';
 import 'package:spendly/providers/income_provider.dart';
-// import 'package:spendly/providers/income_provider.dart';
+import 'package:spendly/providers/user_region_provider.dart';
 import 'package:spendly/services/date_calculator.dart';
 import 'package:spendly/services/finance_calculator.dart';
 import 'package:spendly/shared/no_expense.dart';
@@ -68,6 +68,10 @@ class HomeScreen extends StatelessWidget {
                       goal: "INCOME",
                       amount: formatCurrency(
                         context.watch<IncomeProvider>().monthlyIncome,
+                        context
+                            .watch<UserRegionProvider>()
+                            .selectedRegion
+                            .currency,
                       ),
                       caption: "Your monthly income",
                       icon: LucideIcons.arrowDown,
@@ -86,12 +90,17 @@ class HomeScreen extends StatelessWidget {
                         var (expenseDiff, expensePercent) = expenseInsight(
                           expenseList,
                         );
+
+                        final curr = context
+                            .watch<UserRegionProvider>()
+                            .selectedRegion;
                         return Row(
                           children: [
                             QuickInsightCard(
                               goal: "EXPENSES",
                               amount: formatCurrency(
                                 expenseDiff,
+                                curr.currency,
                                 decimalDigits: 0,
                               ),
                               caption: "$expensePercent from last month",
@@ -100,7 +109,11 @@ class HomeScreen extends StatelessWidget {
                             SizedBox(width: AppSpacing.md),
                             QuickInsightCard(
                               goal: "SAVINGS",
-                              amount: formatCurrency(savings, decimalDigits: 0),
+                              amount: formatCurrency(
+                                savings,
+                                curr.currency,
+                                decimalDigits: 0,
+                              ),
                               caption: "$percent% of monthly goal",
                               icon: LucideIcons.trendingUp,
                             ),
@@ -288,6 +301,11 @@ class BalanceCard extends StatelessWidget {
     final progress = budget <= 0
         ? 0.0
         : (totalSpent / budget).clamp(0, double.infinity);
+
+    final currency = context
+        .watch<UserRegionProvider>()
+        .selectedRegion
+        .currency;
     return AppCard(
       color: Theme.of(context).colorScheme.surfaceContainerHighest,
       boxshadow: [BoxShadow()],
@@ -301,7 +319,10 @@ class BalanceCard extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
           SizedBox(height: AppSpacing.sm),
-          Text(formatCurrency(budget), style: AppTextStyles.displayLarge),
+          Text(
+            formatCurrency(budget, currency),
+            style: AppTextStyles.displayLarge,
+          ),
           SizedBox(height: AppSpacing.sm),
           LinearProgressIndicator(
             value: progress.toDouble(),
@@ -315,14 +336,14 @@ class BalanceCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "${formatCurrency(totalSpent)} Spent",
+                "${formatCurrency(totalSpent, currency)} Spent",
                 style: AppTextStyles.bodyMedium,
               ),
 
               Text(
                 amountLeft >= 0
-                    ? "${formatCurrency(amountLeft)} Left"
-                    : "${formatCurrency(amountLeft.abs())} Overspent",
+                    ? "${formatCurrency(amountLeft, currency)} Left"
+                    : "${formatCurrency(amountLeft.abs(), currency)} Overspent",
                 style: AppTextStyles.bodyMedium,
               ),
             ],
@@ -337,7 +358,7 @@ class BalanceCard extends StatelessWidget {
                   children: [
                     Text("DAILY AVERAGE", style: AppTextStyles.labelMedium),
                     Text(
-                      formatCurrency(dailyAverage),
+                      formatCurrency(dailyAverage, currency),
                       style: AppTextStyles.titleLarge,
                     ),
                   ],
