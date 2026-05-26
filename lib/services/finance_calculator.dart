@@ -1,5 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:spendly/models/expense_model.dart';
+import 'package:spendly/services/region_services.dart';
 
 // Total Amount Spent_____________________________________________
 double calculateAmountSpent(List<Expense> totalExpense) {
@@ -58,7 +59,7 @@ double averageDailySpent(double totalSpent) {
 //Format Money from double to actual money________________________
 String formatCurrency(double amount, {int decimalDigits = 2}) {
   return NumberFormat.currency(
-    symbol: '₦',
+    symbol: RegionServices.currencySymbol,
     decimalDigits: decimalDigits,
   ).format(amount);
 }

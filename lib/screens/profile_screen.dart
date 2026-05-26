@@ -420,27 +420,22 @@ class UserRegionDropDown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userRegion = context.watch<UserRegionProvider>();
-    return DropdownButton<String>(
+    return DropdownButton<RegionModel>(
           focusColor: Colors.transparent,
           // value: userRegion.selectedRegion,
           isDense: true,
-          // hint: Text(
-          //   userRegionList[0],
-          //   style: AppTextStyles.bodyLarge.copyWith(
-          //     color: Theme.of(context).colorScheme.primary,
-          //   ),
-          // ),
           borderRadius: BorderRadius.circular(AppRadius.md),
           underline: const SizedBox(),
           icon: const Icon(LucideIcons.chevronRight),
           items: regions.map((item) {
-            return DropdownMenuItem(
-              value: item.name,
+            return DropdownMenuItem<RegionModel>(
+              value: item,
               child: Text(item.name, style: AppTextStyles.bodyLarge),
             );
           }).toList(),
-          onChanged: (val) => userRegion.changeRegion(val),
+          onChanged: (region) {
+            context.read<UserRegionProvider>().changeRegion(region!);
+            },
         );
   }
 }
