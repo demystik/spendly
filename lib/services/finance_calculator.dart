@@ -105,6 +105,9 @@ double categorySpent({
   required List<Expense> expenses,
   required String categoryId,
 }) {
+  if(expenses.isEmpty){
+    return 0.0;
+  }
   final now = DateTime.now();
 
   return expenses

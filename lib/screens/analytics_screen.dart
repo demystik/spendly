@@ -78,14 +78,9 @@ class PieChartWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final budget = context.select(
-    //   (BudgetProvider budget) => budget.budgetAmount,
-    // );
     final expenseList = context.watch<ExpenseProvider>().expense;
     final totalSpent = calculateAmountSpent(expenseList);
-    // final percentSpent = calculatePercentAmountSpent(budget, totalSpent);
-    // final dailySpent = averageDailySpent(totalSpent);
-    return SizedBox(
+    return expenseList.isEmpty ? SizedBox() : SizedBox(
       height: 250,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -96,11 +91,12 @@ class PieChartWidget extends StatelessWidget {
             sections: List.generate((categoryList.length), (index) {
               Category cat = categoryList[index];
               double amountSpentOnCat = categorySpent(expenses: expenseList, categoryId: cat.id);
-              return PieChartSectionData(
+              final value = amountSpentOnCat <= 0 || totalSpent <= 0 ? 0.0 : (amountSpentOnCat / totalSpent) * 360;
+              return  PieChartSectionData(
                 color: cat.color,
                 radius: 40,
                 showTitle: false,
-                value: (amountSpentOnCat / totalSpent) * 360
+                value: value,
               );
             }),
           ),
