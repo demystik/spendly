@@ -1,21 +1,43 @@
-import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class AuthProvider extends ChangeNotifier {
-  late final StreamSubscription<User?> _authSubscription;
+enum AppStatus { loading, unauthenticated, needsIncome, authenticated }
 
-  AuthProvider() {
-    _authSubscription = FirebaseAuth.instance.authStateChanges().listen((_) {
+class AppAuthProvider extends ChangeNotifier {
+  User? user;
+  bool incomeSet = false;
+
+  AppStatus status = AppStatus.loading;
+
+  AppAuthProvider() {
+    FirebaseAuth.instance.authStateChanges().listen(_onAuthChanged);
+  }
+
+  void refresh(){
+    notifyListeners();
+  }
+
+  Future<void> _onAuthChanged(User? user) async {
+    this.user = user;
+
+    if (user == null) {
+      status = AppStatus.unauthenticated;
       notifyListeners();
-    });
+      return;
+    }
+
+    final doc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get();
+
+    incomeSet = doc.data()?['incomeSet'] ?? false;
+
+    status = incomeSet ? AppStatus.authenticated : AppStatus.needsIncome;
+
+    notifyListeners();
   }
 
-  bool get isLoggedIn => FirebaseAuth.instance.currentUser != null;
-
-  @override
-  void dispose() {
-    _authSubscription.cancel();
-    super.dispose();
-  }
+  bool get isLoggedIn => user != null;
 }
