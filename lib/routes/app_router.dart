@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spendly/bottom_navbar.dart';
 import 'package:spendly/models/expense_model.dart';
@@ -14,27 +13,46 @@ import 'package:spendly/screens/profile_screen.dart';
 import 'package:spendly/screens/search_and_filter_screen.dart';
 import 'package:spendly/screens/onboarding/second_splash_screen.dart';
 import 'package:spendly/screens/onboarding/third_splash_screen.dart';
-import 'package:spendly/providers/auth_provider.dart' as auth;
+import 'package:spendly/providers/auth_provider.dart';
 
-final authProvider = auth.AuthProvider();
+final authProvider = AppAuthProvider();
+
+final splashRoutes = {
+  '/first_splash_screen',
+  '/second_splash_screen',
+  '/third_splash_screen',
+};
+
 final GoRouter appRouter = GoRouter(
-
   refreshListenable: authProvider,
 
-  initialLocation: '/homescreen',
+  initialLocation: '/first_splash_screen',
 
   redirect: (context, state) {
-  
-    final isLoggedIn = FirebaseAuth.instance.currentUser != null;
+    final loc = state.uri.path;
+    final status = authProvider.status;
 
-    final isLoginRoute = state.matchedLocation == '/login';
+    if (status == AppStatus.loading) return null;
 
-    if(!isLoggedIn && !isLoginRoute){
-      return '/login';
+    // NOT logged in → onboarding + login allowed
+    if (status == AppStatus.unauthenticated) {
+      if (loc == '/login' || splashRoutes.contains(loc)) return null;
+      return '/first_splash_screen';
     }
 
-    if(isLoggedIn && isLoginRoute){
-      return ('/homescreen');
+    // logged in but no income
+    if (status == AppStatus.needsIncome) {
+      if (loc == '/income_onboarding_screen') return null;
+      return '/income_onboarding_screen';
+    }
+
+    // fully ready user
+    if (status == AppStatus.authenticated) {
+      if (loc == '/login' ||
+          loc == '/income_onboarding_screen' ||
+          splashRoutes.contains(loc)) {
+        return '/homescreen';
+      }
     }
 
     return null;
@@ -121,9 +139,6 @@ final GoRouter appRouter = GoRouter(
       path: "/income_onboarding_screen",
       builder: (context, index) => const IncomeOnboardingScreen(),
     ),
-    GoRoute(
-      path: "/login",
-      builder: (context, index) => const LoginScreen(),
-    ),
+    GoRoute(path: "/login", builder: (context, index) => const LoginScreen()),
   ],
 );
