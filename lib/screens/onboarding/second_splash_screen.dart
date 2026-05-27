@@ -31,7 +31,7 @@ class _SecondSplashScreenState extends State<SecondSplashScreen> with SingleTick
       CurvedAnimation(parent: ctrl, curve: Curves.easeIn),
     );
 
-    slider = Tween<Offset>(begin: Offset(1.0, 0.0), end: Offset.zero).animate(CurvedAnimation(parent: ctrl, curve: Curves.bounceIn),);
+    slider = Tween<Offset>(begin: Offset(1.0, 0.0), end: Offset.zero).animate(CurvedAnimation(parent: ctrl, curve: Curves.easeIn),);
     
     ctrl.forward();
     
@@ -53,7 +53,7 @@ class _SecondSplashScreenState extends State<SecondSplashScreen> with SingleTick
                 Align(
                   alignment: AlignmentGeometry.centerRight,
                   child: AppChip(
-                    onTap: () => context.pop(),
+                    onTap: () => context.go("/login"),
                     label: "Skip"),
                 ),
                 SizedBox(height: AppSpacing.lg),
@@ -71,7 +71,7 @@ class _SecondSplashScreenState extends State<SecondSplashScreen> with SingleTick
                       children: [
                         TextSpan(
                           text: "Manage Budgets",
-                          style: AppTextStyles.displayLarge,
+                          style: AppTextStyles.displayLarge.copyWith(color: screenColorScheme.onSurface),
                         ),
                         TextSpan(
                           text: "\nSmartly",
@@ -88,8 +88,8 @@ class _SecondSplashScreenState extends State<SecondSplashScreen> with SingleTick
                   opacity: 0.7,
                   child: Text(
                     textAlign: TextAlign.center,
-                    "Set custo limits for categories and get real-time alerts before you overspend.",
-                    style: AppTextStyles.titleMedium,
+                    "Set custom limits for categories and get real-time alerts before you overspend.",
+                    style: AppTextStyles.bodyLarge,
                     maxLines: 4,
                     overflow: TextOverflow.ellipsis,
                   ),
