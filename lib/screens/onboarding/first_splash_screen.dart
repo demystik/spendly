@@ -22,7 +22,9 @@ class FirstSplashScreen extends StatelessWidget {
             children: [
               Align(
                 alignment: AlignmentGeometry.centerRight,
-                child: AppChip(label: "Skip"),
+                child: AppChip(
+                  onTap: () => context.go("/login"),
+                  label: "Skip"),
               ),
               SizedBox(height: AppSpacing.lg),
               SizedBox(
@@ -31,13 +33,13 @@ class FirstSplashScreen extends StatelessWidget {
                 child: SvgPicture.asset("assets/animations/online-banking.svg"),
               ),
               Spacer(),
-              Text("Track expenses easily", style: AppTextStyles.displayLarge),
+              Text("Track expenses easily", style: AppTextStyles.displayLarge.copyWith(color: Theme.of(context).colorScheme.primary)),
               SizedBox(height: AppSpacing.md),
               Opacity(
                 opacity: 0.7,
                 child: Text(
                   "Log your daily spending in seconds with our intuitive interface. Simple, fast, and precise.",
-                  style: AppTextStyles.titleMedium,
+                  style: AppTextStyles.bodyLarge,
                   maxLines: 4,
                   overflow: TextOverflow.ellipsis,
                 ),
