@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -27,27 +29,24 @@ class _IncomeOnboardingScreenState extends State<IncomeOnboardingScreen> {
     super.dispose();
   }
 
-  void saveIncome() {
+  void saveIncome() async {
     final input = incomeController.text.trim();
-
-    if (input.isEmpty) {
-      setState(() {
-        errorText = 'Monthly income cannot be empty';
-      });
-      return;
-    }
 
     final income = double.tryParse(input);
 
-    if (income == null || income <= 0) {
-      setState(() {
-        errorText = 'Enter a valid income amount';
-      });
-      return;
-    }
+    if (income == null || income <= 0) return;
 
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) return;
+
+    await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+      'incomeSet': true,
+      'income': income,
+    });
+
+    if(!mounted) return;
     context.read<IncomeProvider>().setIncome(income);
-
     context.pop();
   }
 
