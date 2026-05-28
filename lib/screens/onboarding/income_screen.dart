@@ -44,10 +44,9 @@ class _IncomeOnboardingScreenState extends State<IncomeOnboardingScreen> {
       'incomeSet': true,
       'income': income,
     });
-
-    if(!mounted) return;
+    if (!mounted) return;
     context.read<IncomeProvider>().setIncome(income);
-    context.pop();
+    context.go('/homescreen');
   }
 
   @override
