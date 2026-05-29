@@ -38,7 +38,7 @@ List<Category> categoryList = [
   Category(
     id: "groceries",
     name: "Groceries",
-    color: Colors.lightBlue,
+    color: Colors.pinkAccent,
     icon: LucideIcons.utensils,
   ),
   Category(
