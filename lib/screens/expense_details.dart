@@ -63,38 +63,42 @@ class ExpenseDetailsScreen extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      BatchCard(
-                        icon: LucideIcons.calendar,
-                        type: "Date",
-                        value: DateFormat("MMMM d, y").format(expense.date),
-                      ),
-                  SizedBox(height: AppSpacing.md),
-                      BatchCard(
-                        icon: LucideIcons.clock,
-                        type: "Time",
-                        value: "02:51 PM",
-                      ),
-                    ],
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        BatchCard(
+                          icon: LucideIcons.calendar,
+                          type: "Date",
+                          value: DateFormat("MMMM d, y").format(expense.date),
+                        ),
+                    SizedBox(height: AppSpacing.md),
+                        BatchCard(
+                          icon: LucideIcons.clock,
+                          type: "Time",
+                          value: "02:51 PM",
+                        ),
+                      ],
+                    ),
                   ),
                   SizedBox(width: AppSpacing.xxl),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      BatchCard(
-                        icon: LucideIcons.creditCard,
-                        type: "Payment",
-                        value: expense.paymentType,
-                      ),
-                  SizedBox(height: AppSpacing.md),
-                      BatchCard(
-                        icon: LucideIcons.tag,
-                        type: "ID",
-                        value: "TXN-${expense.id.substring(0, 7)}",
-                      ),
-                    ],
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        BatchCard(
+                          icon: LucideIcons.creditCard,
+                          type: "Payment",
+                          value: expense.paymentType,
+                        ),
+                    SizedBox(height: AppSpacing.md),
+                        BatchCard(
+                          icon: LucideIcons.tag,
+                          type: "ID",
+                          value: "TXN-${expense.id.substring(0, 7)}",
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

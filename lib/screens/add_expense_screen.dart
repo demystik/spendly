@@ -47,7 +47,9 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_){
     context.read<DatetimeProvider>().resetDate();
+    });
   }
 
   @override
