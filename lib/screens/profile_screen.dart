@@ -25,7 +25,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late final TextEditingController amountInputController;
   String? errorText;
 
-
   @override
   void initState() {
     amountInputController = TextEditingController();
@@ -134,35 +133,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   AppCard preferences(BuildContext context, ColorScheme colorsScheme) {
     return AppCard(
-            border: Border.all(
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+      border: Border.all(
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+      ),
+      child: Column(
+        children: [
+          ProfileListTileWidget(
+            title: "Dark Appearance",
+            subTitle: "Customize your interface",
+            leadingIcon: LucideIcons.sunDim,
+            trailingWidget: ThemeSwitcher(),
+          ),
+          Divider(color: Theme.of(context).colorScheme.surfaceContainerHighest),
+          ProfileListTileWidget(
+            title: "Income",
+            subTitle: "Update your income",
+            leadingIcon: LucideIcons.banknote,
+            trailingWidget: FilledButton(
+              onPressed: () =>
+                  showIncomeBottomSheetMethod(context, colorsScheme),
+              child: Text("Edit"),
             ),
-            child: Column(
-              children: [
-                ProfileListTileWidget(
-                  title: "Dark Appearance",
-                  subTitle: "Customize your interface",
-                  leadingIcon: LucideIcons.sunDim,
-                  trailingWidget: ThemeSwitcher(),
-                ),
-                Divider(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.surfaceContainerHighest,
-                ),
-                ProfileListTileWidget(
-                  title: "Income",
-                  subTitle: "Update your income",
-                  leadingIcon: LucideIcons.banknote,
-                  trailingWidget: FilledButton(
-                    onPressed: () =>
-                        showIncomeBottomSheetMethod(context, colorsScheme),
-                    child: Text("Edit"),
-                  ),
-                ),
-              ],
-            ),
-          );
+          ),
+        ],
+      ),
+    );
   }
 
   Future<dynamic> showIncomeBottomSheetMethod(
@@ -223,7 +218,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     keyboardType: TextInputType.numberWithOptions(
                       decimal: true,
                     ),
-                    label: context.read<IncomeProvider>().monthlyIncome.toString(),
+                    label: context
+                        .read<IncomeProvider>()
+                        .monthlyIncome
+                        .toString(),
                     errorText: errorText,
                     onChanged: (_) {
                       if (errorText != null) {
@@ -447,9 +445,17 @@ class ThemeSwitcher extends StatelessWidget {
   }
 }
 
-
-class NotificationSwitcher extends StatelessWidget {
+class NotificationSwitcher extends StatefulWidget {
   const NotificationSwitcher({super.key});
+
+  @override
+  State<NotificationSwitcher> createState() => _NotificationSwitcherState();
+}
+
+class _NotificationSwitcherState extends State<NotificationSwitcher> {
+
+  bool notif = false;
+
   @override
   Widget build(BuildContext context) {
     return Switch(
@@ -465,8 +471,11 @@ class NotificationSwitcher extends StatelessWidget {
       inactiveTrackColor: Colors.grey.shade300,
       inactiveThumbColor: Colors.white,
       activeThumbColor: Theme.of(context).colorScheme.primary,
-      value: false,
+      value: notif,
       onChanged: (val) {
+        setState(() {
+          notif = val;
+        });
       },
     );
   }
