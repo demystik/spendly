@@ -6,14 +6,16 @@ class UserRegionProvider with ChangeNotifier {
   final Box _settingsBox = Hive.box('settingsBox');
 
   // RegionModel _selectedRegion = regions.first;
-  RegionModel get selectedRegion => _settingsBox.get(
+  RegionModel get selectedRegion {
+    final regionId = _settingsBox.get('region_id', defaultValue: '₦');
+    return regions.firstWhere((region) => region.currency == regionId);
+  }
 
-    defaultValue: ''
-  );
-  String currencySymbol = '₦';
+  // String currencySymbol = '₦';
 
   void changeRegion(RegionModel selectregion) {
-    _selectedRegion = selectregion;
+    // _selectedRegion = selectregion;
+    _settingsBox.put('region_id', selectregion.currency);
 
     notifyListeners();
   }
