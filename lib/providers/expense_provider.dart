@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:spendly/models/category_model.dart';
 import 'package:spendly/models/expense_model.dart';
 import 'package:uuid/uuid.dart';
@@ -16,7 +17,7 @@ class ExpenseProvider with ChangeNotifier {
   Category category, String paymentType,
   ) {
     final newExpense = Expense(id: uuid.v4(), title: title, amount: amount,
-      date: date, note: note, category: category, paymentType: paymentType,
+      date: date, note: note, categoryId: category.id, paymentType: paymentType,
     );
     _expenses.insert(0, newExpense);
 
@@ -60,7 +61,7 @@ class ExpenseProvider with ChangeNotifier {
 
    return _expenses.where((expense) { 
     final matchesCategory = selectedCategory == null || 
-    expense.category == selectedCategory;
+    expense.categoryId == selectedCategory!.id;
     
       final matchesAmount = expense.amount <= maxAmount;
     
@@ -72,4 +73,9 @@ class ExpenseProvider with ChangeNotifier {
   }).toList();
   }
   
+
+  //Helper method to help get category by using Id
+  Category getCategoryById(String id){
+    return categoryList.firstWhere((cat) => cat.id == id, orElse: () => Category(id: "Unknown", name: "Unknown", color: Colors.grey, icon: LucideIcons.helpCircle),);
+  }
 }

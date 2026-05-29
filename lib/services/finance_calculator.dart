@@ -113,7 +113,7 @@ double categorySpent({
   return expenses
       .where(
         (expense) =>
-            expense.category.id == categoryId &&
+            expense.categoryId == categoryId &&
             expense.date.month == now.month &&
             expense.date.year == now.year,
       )

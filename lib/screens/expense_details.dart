@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:provider/provider.dart';
 import 'package:spendly/models/expense_model.dart';
+import 'package:spendly/providers/expense_provider.dart';
 import 'package:spendly/themes/app_spacing.dart';
 import 'package:spendly/themes/app_text_styles.dart';
 import 'package:spendly/widgets/app_chip.dart';
@@ -47,7 +49,7 @@ class ExpenseDetailsScreen extends StatelessWidget {
                 ),
                 SizedBox(height: AppSpacing.md),
 
-                AppChip(label: expense.category.name),
+                AppChip(label: context.watch<ExpenseProvider>().getCategoryById(expense.categoryId).name),
                 SizedBox(height: AppSpacing.md),
                 Text(expense.title),
               ],

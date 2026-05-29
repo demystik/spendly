@@ -1,5 +1,3 @@
-import 'package:spendly/models/category_model.dart';
-
 class Expense {
   String id;
   String title;
@@ -7,7 +5,7 @@ class Expense {
   DateTime date;
   String note;
   String paymentType;
-  Category category;
+  String categoryId;
 
   Expense({
     required this.id,
@@ -15,7 +13,7 @@ class Expense {
     required this.amount,
     required this.date,
     required this.note,
-    required this.category,
     required this.paymentType,
+    required this.categoryId,
   });
 }
