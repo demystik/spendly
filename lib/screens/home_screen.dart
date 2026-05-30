@@ -80,7 +80,7 @@ class HomeScreen extends StatelessWidget {
                     Consumer<IncomeProvider>(
                       builder: (context, provider, child) {
                         final expenseList = context.select(
-                          (ExpenseProvider expense) => expense.expense,
+                          (ExpenseProvider expense) => expense.expenseBox,
                         );
                         final totalSpent = calculateAmountSpent(expenseList);
                         var (savings, percent) = calculateSavings(
@@ -133,7 +133,7 @@ class HomeScreen extends StatelessWidget {
                     SizedBox(height: AppSpacing.md),
 
                     //___Recent Transactions List_______________________________________________________
-                    context.watch<ExpenseProvider>().expense.isEmpty
+                    context.watch<ExpenseProvider>().expenseBox.isEmpty
                         ? NoExpense()
                         : ListView.builder(
                             scrollDirection: Axis.vertical,
@@ -141,12 +141,12 @@ class HomeScreen extends StatelessWidget {
                             shrinkWrap: true,
                             itemCount: context
                                 .watch<ExpenseProvider>()
-                                .expense
+                                .expenseBox
                                 .length,
                             itemBuilder: (context, index) {
                               Expense recentTrans = context
                                   .watch<ExpenseProvider>()
-                                  .expense[index];
+                                  .expenseBox[index];
                               return RecentTransactionListTiles(
                                 recentTrans: recentTrans,
                                 isSearchScreen: false,
@@ -292,7 +292,7 @@ class BalanceCard extends StatelessWidget {
       (BudgetProvider budget) => budget.budgetAmount,
     );
     final expenseList = context.select(
-      (ExpenseProvider expense) => expense.expense,
+      (ExpenseProvider expense) => expense.expenseBox,
     );
     final totalSpent = calculateAmountSpent(expenseList);
     final amountLeft = (budget - totalSpent);

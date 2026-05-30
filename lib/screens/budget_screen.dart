@@ -239,7 +239,7 @@ class SpendingHealthRange extends StatelessWidget {
     return Consumer<ExpenseProvider>(
       builder: (context, value, child) {
         final budget = context.read<BudgetProvider>().budgetAmount;
-        final totalSpent = calculateAmountSpent(value.expense);
+        final totalSpent = calculateAmountSpent(value.expenseBox);
         double percent = percentbudgetHealthScore(budget, totalSpent);
         final linearPercent = percent <= 0 ? 0.0 : percent / 100;
         return Column(
@@ -374,7 +374,7 @@ class CategoryBudgetCard extends StatelessWidget {
     );
 
     final spent = categorySpent(
-      expenses: expenseProvider.expense,
+      expenses: expenseProvider.expenseBox,
       categoryId: cat.id,
     );
 
@@ -476,7 +476,7 @@ class RemainingBalance extends StatelessWidget {
       (BudgetProvider budget) => budget.budgetAmount,
     );
     final expenseList = context.select(
-      (ExpenseProvider expense) => expense.expense,
+      (ExpenseProvider expense) => expense.expenseBox,
     );
     final totalSpent = calculateAmountSpent(expenseList);
     final amountLeft = (budget - totalSpent);

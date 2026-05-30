@@ -16,6 +16,9 @@ double calculateAmountSpent(List<Expense> totalExpense) {
 
 //ExpensefInsight__________________________________
 (double, String) expenseInsight(List<Expense> totalExpense) {
+  if(totalExpense.isEmpty){
+    return (0.0, "");
+  }
   final DateTime now = DateTime.now();
   double expenseThisMonth = 0;
   double expenseLastMonth = 0;
@@ -29,7 +32,7 @@ double calculateAmountSpent(List<Expense> totalExpense) {
   if (now.year == 1) {
     for (Expense expense in totalExpense) {
       if (expense.date.month == 12 && expense.date.year == now.year - 1) {
-        expenseThisMonth += expense.amount;
+        expenseLastMonth += expense.amount;
       }
     }
     //calculate for last month
@@ -37,7 +40,7 @@ double calculateAmountSpent(List<Expense> totalExpense) {
     for (Expense expense in totalExpense) {
       if (expense.date.month == now.month - 1 &&
           expense.date.year == now.year) {
-        expenseThisMonth += expense.amount;
+        expenseLastMonth += expense.amount;
       }
     }
   }
@@ -65,7 +68,7 @@ String formatCurrency(double amount, String currency, {int decimalDigits = 2}) {
 
 //Caculate Savings___________________________________
 (double, int) calculateSavings(double income, double expense) {
-  if (income <= 0 && expense <= 0) return (0.0, 0);
+  if (income <= 0) return (0.0, 0);
   final savings = income - expense;
   final percent = ((savings / income) * 100).toInt();
   return (savings, percent);

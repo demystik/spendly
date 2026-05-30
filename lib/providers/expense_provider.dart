@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:spendly/models/category_model.dart';
 import 'package:spendly/models/expense_model.dart';
@@ -7,19 +8,23 @@ import 'package:uuid/uuid.dart';
 const uuid = Uuid();
 
 class ExpenseProvider with ChangeNotifier {
-  final List<Expense> _expenses = [];
+  // final List<Expense> _expenses = [];
+  final Box<Expense> _expenseBox = Hive.box<Expense>('expensesBox');
 
   //getter for expense list
-  List<Expense> get expense => _expenses;
+  // final List<Expense> expenses => _expenses;
+  List<Expense> get expenseBox => _expenseBox.values.toList().reversed.toList();
 
   //add new expense
-  void addExpense(double amount, String title, DateTime date, String note, 
+  void addExpense  (double amount, String title, DateTime date, String note, 
   Category category, String paymentType,
-  ) {
+  ) async {
     final newExpense = Expense(id: uuid.v4(), title: title, amount: amount,
       date: date, note: note, categoryId: category.id, paymentType: paymentType,
     );
-    _expenses.insert(0, newExpense);
+
+    // _expenses.insert(0, newExpense);
+    await _expenseBox.put(newExpense.id, newExpense);
 
     notifyListeners();
   }
@@ -59,7 +64,7 @@ class ExpenseProvider with ChangeNotifier {
 
   List<Expense> get filteredExpenses {
 
-   return _expenses.where((expense) { 
+   return expenseBox.where((expense) { 
     final matchesCategory = selectedCategory == null || 
     expense.categoryId == selectedCategory!.id;
     

@@ -79,7 +79,7 @@ class PieChartWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final expenseList = context.watch<ExpenseProvider>().expense;
+    final expenseList = context.watch<ExpenseProvider>().expenseBox;
     final totalSpent = calculateAmountSpent(expenseList);
     return expenseList.isEmpty ? SizedBox() : SizedBox(
       height: 250,
@@ -114,7 +114,7 @@ class CategoryWrap extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    final expenseList = context.watch<ExpenseProvider>().expense;
+    final expenseList = context.watch<ExpenseProvider>().expenseBox;
     final appCurrency = context.watch<UserRegionProvider>().selectedRegion;
     Size screenSize = MediaQuery.of(context).size;
     return Wrap(
@@ -154,7 +154,7 @@ class AnalyticUpperCards extends StatelessWidget {
       (BudgetProvider budget) => budget.budgetAmount,
     );
     final expenseList = context.select(
-      (ExpenseProvider expense) => expense.expense,
+      (ExpenseProvider expense) => expense.expenseBox,
     );
     final totalSpent = calculateAmountSpent(expenseList);
     final percentSpent = calculatePercentAmountSpent(budget, totalSpent);

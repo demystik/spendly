@@ -12,7 +12,7 @@ class WeeklySpendingChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final weeklyData = weeklySpending(
-      expenses: context.watch<ExpenseProvider>().expense,
+      expenses: context.watch<ExpenseProvider>().expenseBox,
     );
     return SizedBox(
       height: 250,
