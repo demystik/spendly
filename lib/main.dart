@@ -32,6 +32,7 @@ void main() async {
   await Hive.openBox<IncomeModel>('incomeBox');
   Hive.registerAdapter(CategoryBudgetAdapter());
   await Hive.openBox<CategoryBudget>('categoryBudgetBox');
+  await Hive.openBox("settingsBox");
 
   runApp(
     MultiProvider(
