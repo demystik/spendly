@@ -25,8 +25,8 @@ void main() async {
   Hive.registerAdapter(ExpenseAdapter());
   await Hive.openBox<Expense>('expensesBox');
   Hive.registerAdapter(MonthlyBudgetModelAdapter());
-  await Hive.openBox<MonthlyBudgetModel>('monthlyBudget');
-  
+  await Hive.openBox<MonthlyBudgetModel>('monthlyBudgetBox');
+
   runApp(
     MultiProvider(
       providers: [
