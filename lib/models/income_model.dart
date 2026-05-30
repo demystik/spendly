@@ -9,12 +9,16 @@ part 'income_model.g.dart';
 class IncomeModel extends HiveObject{
 
   @HiveField(0)
-  double amount;
+  String id;
 
   @HiveField(1)
+  double amount;
+
+  @HiveField(2)
   DateTime updatedAt;
 
   IncomeModel({
+    required this.id,
     required this.amount,
     required this.updatedAt,
   });
