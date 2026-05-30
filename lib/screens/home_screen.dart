@@ -45,7 +45,7 @@ class HomeScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(height: AppSpacing.sm),
-                    Text("Hello, Henry!", style: AppTextStyles.displayMedium),
+                    Text("Hello Yinka!", style: AppTextStyles.displayMedium),
                     Consumer<DatetimeProvider>(
                       builder: (context, value, child) => Text(
                         "Here is your financial summary for ${value.currentMonth}",
