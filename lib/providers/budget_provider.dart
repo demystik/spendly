@@ -6,7 +6,7 @@ import 'package:spendly/models/monthly_budget_model.dart';
 class BudgetProvider with ChangeNotifier{
 
   // final List<MonthlyBudgetModel> _monthlyBudgets = [];
-  final Box<MonthlyBudgetModel> _budgetBox = Hive.box('budgetBox');
+  final Box<MonthlyBudgetModel> _budgetBox = Hive.box<MonthlyBudgetModel>('budgetBox');
 
   // List<MonthlyBudgetModel> get monthlyBudgets => UnmodifiableListView(_monthlyBudgets);
   List<MonthlyBudgetModel> get budgetBox => _budgetBox.values.toList().reversed.toList();

@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:spendly/models/category_budget_model.dart';
 import 'package:spendly/models/category_model.dart';
 
 class CategoryBudgetProvider with ChangeNotifier {
-  final List<CategoryBudget> _categoryBudgets = [];
-  List<CategoryBudget> get categoryBudgets => _categoryBudgets;
+  // final List<CategoryBudget> _categoryBudgets = [];
+  final Box<CategoryBudget> _categoryBudgetBox = Hive.box<CategoryBudget>(
+    'categoryBudgetBox',
+  );
+  List<CategoryBudget> get categoryBudgetBox =>
+      _categoryBudgetBox.values.toList().reversed.toList();
 
   bool setCategoryBudget({
     required Category category,
@@ -13,8 +18,7 @@ class CategoryBudgetProvider with ChangeNotifier {
     required String month,
     required String year,
   }) {
-
-    if(totalBudget <= 0){
+    if (totalBudget <= 0) {
       return false;
     }
 
@@ -34,33 +38,16 @@ class CategoryBudgetProvider with ChangeNotifier {
 
     //Update Budget for this category
     //find the category i want to update
-    final index = _categoryBudgets.indexWhere(
-      (cat) =>
-          cat.categoryId == category.id &&
-          cat.month == month &&
-          cat.year == year,
+    final key = '${category.id}_$month/_$year';
+
+    final newCategoryBudget = CategoryBudget(
+      month: month,
+      year: year,
+      budgetAmount: amount,
+      categoryId: category.id,
     );
 
-    if (index != -1) {
-      //if found, update it
-      _categoryBudgets[index] = CategoryBudget(
-        month: month,
-        year: year,
-        budgetAmount: amount,
-        categoryId: category.id,
-      );
-    } else {
-      //create new category budget
-      _categoryBudgets.add(
-        CategoryBudget(
-          month: month,
-          year: year,
-          budgetAmount: amount,
-          categoryId: category.id,
-        ),
-      );
-    }
-
+    _categoryBudgetBox.put(key, newCategoryBudget);
     notifyListeners();
 
     return true;
@@ -68,7 +55,7 @@ class CategoryBudgetProvider with ChangeNotifier {
 
   //Total Amount allocated
   double allocatedBudget({required String month, required String year}) {
-    return _categoryBudgets
+    return categoryBudgetBox
         .where((cat) => cat.month == month && cat.year == year)
         .fold(0, (previous, element) => previous + element.budgetAmount);
   }
@@ -80,19 +67,10 @@ class CategoryBudgetProvider with ChangeNotifier {
 
   //Category budget lookup
   double getCategoryBudget(String categoryId, String month, String year) {
-    return _categoryBudgets
-        .firstWhere(
-          (cat) =>
-              cat.categoryId == categoryId &&
-              cat.month == month &&
-              cat.year == year,
-          orElse: () => CategoryBudget(
-            month: month,
-            year: year,
-            budgetAmount: 0,
-            categoryId: categoryId,
-          ),
-        )
-        .budgetAmount;
+    final key = '${categoryId}_$month/_$year';
+
+    final budget = _categoryBudgetBox.get(key);
+
+    return budget?.budgetAmount ?? 0.0;
   }
 }

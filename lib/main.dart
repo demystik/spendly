@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
+import 'package:spendly/models/category_budget_model.dart';
 import 'package:spendly/models/expense_model.dart';
 import 'package:spendly/models/income_model.dart';
 import 'package:spendly/models/monthly_budget_model.dart';
@@ -29,6 +30,8 @@ void main() async {
   await Hive.openBox<MonthlyBudgetModel>('budgetBox');
   Hive.registerAdapter(IncomeModelAdapter());
   await Hive.openBox<IncomeModel>('incomeBox');
+  Hive.registerAdapter(CategoryBudgetAdapter());
+  await Hive.openBox<CategoryBudget>('categoryBudgetBox');
 
   runApp(
     MultiProvider(
