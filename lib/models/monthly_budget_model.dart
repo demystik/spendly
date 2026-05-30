@@ -1,4 +1,7 @@
 import 'package:hive_flutter/adapters.dart';
+
+part 'monthly_budget_model.g.dart';
+
 // class MonthlyBudgetModel {
 //   double monthlyBudgetAmount;
 //   DateTime dateUpdated;
