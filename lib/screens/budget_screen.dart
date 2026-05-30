@@ -182,7 +182,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
                     keyboardType: TextInputType.numberWithOptions(
                       decimal: true,
                     ),
-                    label: "0.00",
+                    label: context.read<BudgetProvider>().budgetAmount.toString(),
                     errorText: errorText,
                     onChanged: (_) {
                       if (errorText != null) {

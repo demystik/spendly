@@ -17,7 +17,7 @@ class BudgetProvider with ChangeNotifier{
     final year = DateFormat('y').format(now);
     final newbudget = MonthlyBudgetModel(monthlyBudgetAmount: amount, dateUpdated: now, month: month, year: year);
 
-    _budgetBox.deleteAt(0);
+    // _budgetBox.deleteAt(0);
     // _budgetBox.values.removeWhere((element) =>
     //   element.month == month && element.year == year
     // );
