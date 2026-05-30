@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
+import 'package:spendly/models/expense_model.dart';
 import 'package:spendly/providers/amount_range_provider.dart';
 import 'package:spendly/providers/budget_provider.dart';
 import 'package:spendly/providers/category_budget_provider.dart';
@@ -19,6 +20,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Hive.initFlutter();
+
+  Hive.registerAdapter(ExpenseAdapter());
+  await Hive.openBox<Expense>('expensesBox');
 
   runApp(
     MultiProvider(
