@@ -12,7 +12,12 @@
           "package_name": "com.example.spendly"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "347676736104-shj2m8qm5ml2utlrdhtdo6nbtrbbhll3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDLWPiJdchUCw6KwbdWyUjHdvw9C7C_GpY"
@@ -20,7 +25,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "347676736104-shj2m8qm5ml2utlrdhtdo6nbtrbbhll3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
