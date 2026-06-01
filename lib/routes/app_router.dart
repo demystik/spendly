@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spendly/bottom_navbar.dart';
 import 'package:spendly/models/expense_model.dart';
@@ -12,9 +13,28 @@ import 'package:spendly/screens/profile_screen.dart';
 import 'package:spendly/screens/search_and_filter_screen.dart';
 import 'package:spendly/screens/onboarding/second_splash_screen.dart';
 import 'package:spendly/screens/onboarding/third_splash_screen.dart';
+import 'package:spendly/providers/auth_provider.dart' as auth;
 
+final authProvider = auth.AuthProvider();
 final GoRouter appRouter = GoRouter(
-  initialLocation: '/homescreen',
+
+  refreshListenable: authProvider,
+
+  redirect: (context, state) {
+    final isLoggedIn = FirebaseAuth.instance.currentUser != null;
+
+    final isLoginRoute = state.matchedLocation == '/login';
+
+    if(!isLoggedIn && !isLoginRoute){
+      return '/login';
+    }
+
+    if(isLoggedIn && isLoginRoute){
+      return ('/homescreen');
+    }
+
+    return null;
+  },
 
   routes: [
     StatefulShellRoute.indexedStack(
@@ -65,8 +85,6 @@ final GoRouter appRouter = GoRouter(
       ],
     ),
 
-
-
     //Other screens_________________________________________________
     GoRoute(
       path: "/add_expense_screen",
@@ -86,18 +104,18 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: "/first_splash_screen",
       builder: (context, index) => const FirstSplashScreen(),
-      ),
+    ),
     GoRoute(
       path: "/second_splash_screen",
       builder: (context, index) => const SecondSplashScreen(),
-      ),
+    ),
     GoRoute(
       path: "/third_splash_screen",
       builder: (context, index) => const ThirdSplashScreen(),
-      ),
+    ),
     GoRoute(
       path: "/income_onboarding_screen",
       builder: (context, index) => const IncomeOnboardingScreen(),
-      ),
+    ),
   ],
 );
