@@ -6,6 +6,7 @@ import 'package:spendly/models/region_model.dart';
 import 'package:spendly/providers/income_provider.dart';
 import 'package:spendly/providers/theme_mode_provider.dart';
 import 'package:spendly/providers/user_region_provider.dart';
+import 'package:spendly/services/auth_service.dart';
 import 'package:spendly/shared/section_label.dart';
 import 'package:spendly/themes/app_spacing.dart';
 import 'package:spendly/themes/app_text_styles.dart';
@@ -281,7 +282,9 @@ class LogOutButton extends StatelessWidget {
           ),
         ),
       ),
-      onPressed: () {},
+      onPressed: () async {
+        await AuthService().signOut();
+      },
       child: Container(
         alignment: Alignment.center,
         decoration: BoxDecoration(
