@@ -19,22 +19,35 @@ class FirstSplashScreen extends StatelessWidget {
           padding: const EdgeInsets.all(AppSpacing.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
+              //Skip button__________________________
               Align(
                 alignment: AlignmentGeometry.centerRight,
                 child: AppChip(
                   onTap: () => context.go("/login"),
-                  label: "Skip"),
+                  label: "Skip",
+                ),
               ),
               SizedBox(height: AppSpacing.lg),
+              //Image__________________________________
               SizedBox(
                 width: screenSize.width * 0.6,
                 height: screenSize.width * 0.6,
-                child: SvgPicture.asset("assets/animations/online-banking.svg"),
+                child: SvgPicture.asset(
+                  "assets/animations/undraw_budget-adjustments_7fj9.svg",
+                ),
               ),
-              Spacer(),
-              Text("Track expenses easily", style: AppTextStyles.displayLarge.copyWith(color: Theme.of(context).colorScheme.primary)),
+
+               //Main Text________________________________
+              Text(
+                "Track expenses easily",
+                style: AppTextStyles.displayLarge.copyWith(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
               SizedBox(height: AppSpacing.md),
+              //sub Text________________________________
               Opacity(
                 opacity: 0.7,
                 child: Text(
@@ -45,7 +58,8 @@ class FirstSplashScreen extends StatelessWidget {
                 ),
               ),
 
-              Spacer(),
+
+              //Splash buttons___________________________
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 spacing: 5,
@@ -65,14 +79,14 @@ class FirstSplashScreen extends StatelessWidget {
                 ],
               ),
 
-              SizedBox(height: AppSpacing.md),
+              // SizedBox(height: AppSpacing.md),
+              //Next buttons__________________________
               AppButton(
                 label: "Continue >",
                 onPressed: () {
                   context.push("/second_splash_screen");
                 },
               ),
-
               SizedBox(height: AppSpacing.md),
             ],
           ),
