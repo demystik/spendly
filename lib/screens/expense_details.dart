@@ -5,6 +5,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:spendly/models/expense_model.dart';
 import 'package:spendly/providers/expense_provider.dart';
+import 'package:spendly/providers/user_region_provider.dart';
 import 'package:spendly/themes/app_spacing.dart';
 import 'package:spendly/themes/app_text_styles.dart';
 import 'package:spendly/widgets/app_chip.dart';
@@ -25,7 +26,7 @@ class ExpenseDetailsScreen extends StatelessWidget {
             SizedBox(
               width: screenSize.width * 0.3,
               height: screenSize.width * 0.3,
-              child: SvgPicture.asset("assets/animations/online-banking.svg"),
+              child: SvgPicture.asset("assets/animations/undraw_budgeting_klon.svg"),
             ),
             Column(
               children: [
@@ -37,10 +38,8 @@ class ExpenseDetailsScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      LucideIcons.dollarSign400,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
+                    Consumer<UserRegionProvider>(
+                      builder: (context, value, child) =>  Text(value.selectedRegion.currency, style: AppTextStyles.displayLarge,)),
                     Text(
                       expense.amount.toStringAsFixed(2),
                       style: AppTextStyles.displayLarge.copyWith(fontWeight: FontWeight.bold),
@@ -78,7 +77,7 @@ class ExpenseDetailsScreen extends StatelessWidget {
                         BatchCard(
                           icon: LucideIcons.clock,
                           type: "Time",
-                          value: "02:51 PM",
+                          value: DateFormat("h:mm a").format(expense.date),
                         ),
                       ],
                     ),
