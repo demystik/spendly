@@ -44,5 +44,10 @@ class AppAuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  //Getters for user Infos
+  String get username => user?.displayName ?? "Spendly user";
+  String get email => user?.email ?? "No Email";
+  String? get photoUrl => user?.photoURL;
+
   bool get isLoggedIn => user != null;
 }
