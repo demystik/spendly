@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:spendly/models/region_model.dart';
+import 'package:spendly/providers/auth_provider.dart';
 import 'package:spendly/providers/income_provider.dart';
 import 'package:spendly/providers/theme_mode_provider.dart';
 import 'package:spendly/providers/user_region_provider.dart';
@@ -278,19 +279,28 @@ class LogOutButton extends StatelessWidget {
       style: ButtonStyle(
         shape: WidgetStateProperty.all(
           RoundedRectangleBorder(
-            borderRadius: BorderRadiusGeometry.circular(AppRadius.lg),
+            borderRadius: BorderRadius.circular(AppRadius.lg),
           ),
         ),
       ),
       onPressed: () async {
-        await AuthService().signOut();
+        final shouldLogout = await showDialog<bool>(
+          context: context,
+          builder: (context) {
+            return ConfirmLogOut();
+          },
+        );
+
+        if (shouldLogout == true) {
+          await AuthService().signOut();
+        }
       },
       child: Container(
         alignment: Alignment.center,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(AppRadius.md),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 10,
+          vertical: 15,
         ),
-        padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 15.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -314,65 +324,101 @@ class LogOutButton extends StatelessWidget {
   }
 }
 
+class ConfirmLogOut extends StatelessWidget {
+  const ConfirmLogOut({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+      ),
+      title: const Text("Log out?"),
+      content: const Text(
+        "You'll need to sign in again to access your account.",
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context, false);
+          },
+          child: const Text("Cancel"),
+        ),
+    
+        FilledButton(
+          onPressed: () {
+            Navigator.pop(context, true);
+          },
+          child: const Text("Log out"),
+        ),
+      ],
+    );
+  }
+}
+
 class HeaderSection extends StatelessWidget {
   const HeaderSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Stack(
-          children: [
-            Container(
-              width: 100,
-              height: 100,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.grey,
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: AssetImage("assets/images/profile_male.png"),
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: 0,
-              right: 0,
-              child: Container(
-                width: 30,
-                height: 30,
-                padding: EdgeInsets.all(6),
+    return Consumer<AppAuthProvider>(
+      builder: (context, auth, child) => Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Stack(
+            children: [
+              Container(
+                width: 100,
+                height: 100,
                 decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(color: Colors.white, spreadRadius: 1.0),
-                  ],
-                  color: Colors.blue.shade200,
                   shape: BoxShape.circle,
+                  color: Colors.grey,
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: auth.photoUrl != null ? NetworkImage(auth.photoUrl!) : AssetImage("assets/images/profile_male.png"),
+                  ),
                 ),
-                child: Image.asset("assets/logos/spendly_logo1.png"),
               ),
-            ),
-          ],
-        ),
-
-        const SizedBox(height: AppSpacing.md),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("Henry Revira", style: AppTextStyles.titleLarge),
-            const SizedBox(width: AppSpacing.sm),
-            Icon(
-              LucideIcons.shieldCheck,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-          ],
-        ),
-        Text("henry.revira@gmail.com", style: AppTextStyles.bodyMedium),
-        const SizedBox(height: AppSpacing.md),
-        AppChip(label: "PRO MEMBER"),
-        const SizedBox(height: AppSpacing.xl),
-      ],
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: Container(
+                  width: 30,
+                  height: 30,
+                  padding: EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(color: Colors.white, spreadRadius: 1.0),
+                    ],
+                    color: Colors.blue.shade200,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Image.asset("assets/logos/spendly_logo1.png"),
+                ),
+              ),
+            ],
+          ),
+      
+          const SizedBox(height: AppSpacing.md),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(auth.username, style: AppTextStyles.titleLarge),
+              const SizedBox(width: AppSpacing.sm),
+              Icon(
+                LucideIcons.shieldCheck,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ],
+          ),
+          Text(auth.email, style: AppTextStyles.bodyMedium),
+          const SizedBox(height: AppSpacing.md),
+          AppChip(label: "PRO MEMBER"),
+          const SizedBox(height: AppSpacing.xl),
+        ],
+      ),
     );
   }
 }
