@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:spendly/models/expense_model.dart';
+import 'package:spendly/providers/auth_provider.dart';
 import 'package:spendly/providers/budget_provider.dart';
 import 'package:spendly/providers/datetime_provider.dart';
 import 'package:spendly/providers/expense_provider.dart';
@@ -13,7 +14,6 @@ import 'package:spendly/shared/no_expense.dart';
 import 'package:spendly/shared/transaction_list_tiles.dart';
 import 'package:spendly/themes/app_spacing.dart';
 import 'package:spendly/themes/app_text_styles.dart';
-import 'package:spendly/widgets/app_button.dart';
 import 'package:spendly/widgets/app_card.dart';
 import 'package:provider/provider.dart';
 
@@ -45,7 +45,8 @@ class HomeScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(height: AppSpacing.sm),
-                    Text("Hello Yinka!", style: AppTextStyles.displayMedium),
+                    Consumer<AppAuthProvider>(
+                      builder: (context, auth, child) => Text("Hello ${auth.username}!", style: AppTextStyles.titleLarge)),
                     Consumer<DatetimeProvider>(
                       builder: (context, value, child) => Text(
                         "Here is your financial summary for ${value.currentMonth}",
@@ -133,20 +134,18 @@ class HomeScreen extends StatelessWidget {
                     SizedBox(height: AppSpacing.md),
 
                     //___Recent Transactions List_______________________________________________________
+                   
                     context.watch<ExpenseProvider>().expenseBox.isEmpty
                         ? NoExpense()
                         : ListView.builder(
                             scrollDirection: Axis.vertical,
                             physics: NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
-                            itemCount: context
-                                .watch<ExpenseProvider>()
-                                .expenseBox
-                                .length,
+                            itemCount: context.watch<ExpenseProvider>().recentExpense.length,
                             itemBuilder: (context, index) {
                               Expense recentTrans = context
                                   .watch<ExpenseProvider>()
-                                  .expenseBox[index];
+                                  .recentExpense[index];
                               return RecentTransactionListTiles(
                                 recentTrans: recentTrans,
                                 isSearchScreen: false,
@@ -154,13 +153,7 @@ class HomeScreen extends StatelessWidget {
                             },
                           ),
 
-                    SizedBox(height: AppSpacing.md),
-                    AppButton(
-                      variant: AppButtonVariant.outlined,
-                      label: "See Detailed Analytics",
-                      onPressed: () {},
-                    ),
-                    SizedBox(height: AppSpacing.xxxl),
+                    SizedBox(height: AppSpacing.lg),
                   ],
                 ),
               ),
@@ -404,17 +397,14 @@ class HeaderPart extends StatelessWidget {
 
           Row(
             children: [
-              IconButton(
-                onPressed: () {
-                  context.push("/income_onboarding_screen");
-                },
-                icon: Icon(LucideIcons.bell400, size: 28),
-              ),
+              Icon(LucideIcons.bell400, size: 28,),
+              
               SizedBox(width: 10),
               CircleAvatar(
                 radius: 15,
                 foregroundImage: AssetImage("assets/images/profile_male.png"),
               ),
+              SizedBox(width: 10),
             ],
           ),
         ],
