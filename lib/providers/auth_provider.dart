@@ -32,7 +32,12 @@ class AppAuthProvider extends ChangeNotifier {
         .doc(user.uid)
         .get();
 
-    incomeSet = doc.data()?['incomeSet'] ?? false;
+
+    if(!doc.exists){
+      incomeSet = false;
+    } else{
+     incomeSet = doc.data()?['incomeSet'] ?? false;
+    }
 
     status = incomeSet ? AppStatus.authenticated : AppStatus.needsIncome;
 
