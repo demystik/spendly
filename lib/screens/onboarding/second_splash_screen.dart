@@ -48,8 +48,10 @@ class _SecondSplashScreenState extends State<SecondSplashScreen> with SingleTick
           child: AnimatedBuilder(
             animation: ctrl,
                     builder: (context, child) => Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                //Skip button__________________________
                 Align(
                   alignment: AlignmentGeometry.centerRight,
                   child: AppChip(
@@ -57,12 +59,15 @@ class _SecondSplashScreenState extends State<SecondSplashScreen> with SingleTick
                     label: "Skip"),
                 ),
                 SizedBox(height: AppSpacing.lg),
+                
+                //Image__________________________________
                 SizedBox(
                   width: screenSize.width * 0.6,
                   height: screenSize.width * 0.6,
-                  child: SvgPicture.asset("assets/animations/online-banking.svg"),
+                  child: SvgPicture.asset("assets/animations/undraw_personal-finance_xpqg.svg"),
                 ),
-                Spacer(),
+
+                //Main Text________________________________
                 SlideTransition(
                   position: slider,
                   child: RichText(
@@ -84,6 +89,8 @@ class _SecondSplashScreenState extends State<SecondSplashScreen> with SingleTick
                   ),
                 ),
                 SizedBox(height: AppSpacing.md),
+                
+                //sub Text________________________________
                 Opacity(
                   opacity: 0.7,
                   child: Text(
@@ -95,7 +102,8 @@ class _SecondSplashScreenState extends State<SecondSplashScreen> with SingleTick
                   ),
                 ),
             
-                Spacer(),
+                
+                //Splash buttons___________________________
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   spacing: 5,
@@ -116,7 +124,7 @@ class _SecondSplashScreenState extends State<SecondSplashScreen> with SingleTick
                   ],
                 ),
             
-                SizedBox(height: AppSpacing.md),
+               //Next buttons__________________________
                 AppButton(
                   label: "Continue >",
                   onPressed: () {
