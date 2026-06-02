@@ -34,7 +34,7 @@ class LoginScreen extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.all(AppSpacing.md),
+                    padding: EdgeInsets.all(AppSpacing.sm),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppRadius.md),
                     )
