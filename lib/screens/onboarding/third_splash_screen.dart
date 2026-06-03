@@ -28,17 +28,23 @@ class _ThirdSplashScreenState extends State<ThirdSplashScreen>
       duration: Duration(milliseconds: 700),
     );
 
-    size = Tween<double>(begin: 10, end: 30,).animate(
-      CurvedAnimation(parent: ctrl, curve: Curves.easeIn),
-    );
-    
-    slider = Tween<Offset>(begin: Offset(1.0, 0.0), end: Offset.zero).animate(CurvedAnimation(parent: ctrl, curve: Curves.easeIn),);
+    size = Tween<double>(
+      begin: 10,
+      end: 30,
+    ).animate(CurvedAnimation(parent: ctrl, curve: Curves.easeIn));
 
-    secondSlider = Tween<Offset>(begin: Offset(-1.0, 0.0), end: Offset.zero).animate(CurvedAnimation(parent: ctrl, curve: Curves.easeIn),);
-    
+    slider = Tween<Offset>(
+      begin: Offset(1.0, 0.0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: ctrl, curve: Curves.easeIn));
+
+    secondSlider = Tween<Offset>(
+      begin: Offset(-1.0, 0.0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: ctrl, curve: Curves.easeIn));
+
     ctrl.forward();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -50,38 +56,45 @@ class _ThirdSplashScreenState extends State<ThirdSplashScreen>
           padding: const EdgeInsets.all(AppSpacing.md),
           child: AnimatedBuilder(
             animation: ctrl,
-            builder: (context, child) =>  Column(
+            builder: (context, child) => Column(
               crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 SizedBox(height: AppSpacing.lg),
+                //Image__________________________________
                 SizedBox(
                   width: screenSize.width * 0.6,
                   height: screenSize.width * 0.6,
-                  child: SvgPicture.asset("assets/animations/online-banking.svg"),
+                  child: SvgPicture.asset(
+                    "assets/animations/undraw_financial-data_lbci.svg",
+                  ),
                 ),
-                Spacer(),
+                //Main Text________________________________
                 SlideTransition(
-                    position: slider,
-                    child: RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: "Visualize Spending",
-                            style: AppTextStyles.displayLarge.copyWith(color: screenColorScheme.onSurface),
+                  position: slider,
+                  child: RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "Visualize Spending",
+                          style: AppTextStyles.displayLarge.copyWith(
+                            color: screenColorScheme.onSurface,
                           ),
-                          TextSpan(
-                            text: "\ninsights & trends",
-                            style: AppTextStyles.displayLarge.copyWith(
-                              color: screenColorScheme.primary,
-                            ),
+                        ),
+                        TextSpan(
+                          text: "\ninsights & trends",
+                          style: AppTextStyles.displayLarge.copyWith(
+                            color: screenColorScheme.primary,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                
+                ),
+
                 SizedBox(height: AppSpacing.md),
+                //sub Text________________________________
                 SlideTransition(
                   position: secondSlider,
                   child: Opacity(
@@ -95,8 +108,8 @@ class _ThirdSplashScreenState extends State<ThirdSplashScreen>
                     ),
                   ),
                 ),
-            
-                Spacer(),
+
+                //Splash buttons___________________________
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   spacing: 5,
@@ -109,23 +122,22 @@ class _ThirdSplashScreenState extends State<ThirdSplashScreen>
                       screenColorScheme: screenColorScheme,
                       main: false,
                     ),
-                     SplashButton(
-                        screenColorScheme: screenColorScheme,
-                        main: true,
-                        size: size.value,
-                      ),
-                    
+                    SplashButton(
+                      screenColorScheme: screenColorScheme,
+                      main: true,
+                      size: size.value,
+                    ),
                   ],
                 ),
-            
-                SizedBox(height: AppSpacing.md),
+
+                //Next buttons__________________________
                 AppButton(
                   label: "Get Started >",
                   onPressed: () {
                     context.go("/login");
                   },
                 ),
-            
+
                 SizedBox(height: AppSpacing.md),
               ],
             ),
