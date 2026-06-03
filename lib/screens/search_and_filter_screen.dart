@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:spendly/models/category_model.dart';
 import 'package:spendly/models/expense_model.dart';
 import 'package:spendly/providers/amount_range_provider.dart';
+import 'package:spendly/providers/budget_provider.dart';
 import 'package:spendly/providers/category_provider.dart';
 import 'package:spendly/providers/expense_provider.dart';
 import 'package:spendly/shared/no_search_found.dart';
@@ -261,29 +262,32 @@ class AmountRangeSlider extends StatelessWidget {
             color: Theme.of(context).colorScheme.surfaceContainerHighest,
           ),
         ),
-        child: Column(
-          children: [
-            Slider(
-              min: 0,
-              max: 2000,
-              thumbColor: Theme.of(context).colorScheme.onSecondary,
-              value: context.watch<AmountRangeProvider>().amountValue,
-              onChanged: (newValue) {
-                context.read<AmountRangeProvider>().changeValue(newValue);
-                context.read<ExpenseProvider>().setMaxAmount(newValue);
-              },
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("\$0", style: AppTextStyles.bodySmall),
-                  Text("\$2,000+", style: AppTextStyles.bodySmall),
-                ],
+        child: Consumer<BudgetProvider>(
+          builder: (context, budgetProvider, child) => Column(
+            children: [
+                 Slider(
+                  min: 0,
+                  max: budgetProvider.budgetAmount,
+                  thumbColor: Theme.of(context).colorScheme.onSecondary,
+                  value: context.watch<AmountRangeProvider>().amountValue,
+                  onChanged: (newValue) {
+                    context.read<AmountRangeProvider>().changeValue(newValue);
+                    context.read<ExpenseProvider>().setMaxAmount(newValue);
+                  },
+                ),
+
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("0", style: AppTextStyles.bodySmall),
+                    Text("${budgetProvider.budgetAmount}+", style: AppTextStyles.bodySmall),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -29,8 +29,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
-
+  
   Hive.registerAdapter(ExpenseAdapter());
   await Hive.openBox<Expense>('expensesBox');
   Hive.registerAdapter(MonthlyBudgetModelAdapter());
@@ -65,7 +64,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
