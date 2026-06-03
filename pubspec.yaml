@@ -26,6 +26,7 @@ dependencies:
   firebase_auth: ^6.5.1
   cloud_firestore: ^6.4.1
   google_sign_in: 6.2.1
+  flutter_native_splash: 2.4.7
 
 dev_dependencies:
   flutter_test:
@@ -58,3 +59,17 @@ flutter:
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
 
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: assets/logos/spendly_logo2.png
+
+  color_dark: "#121212"
+  image_dark: assets/logos/spendly_logo2.png
+
+  android: true
+  ios: true
+
+  android_12:
+    color: "#FFFFFF"
+    image: assets/logos/spendly_logo2.png
+    
