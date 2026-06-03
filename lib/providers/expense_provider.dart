@@ -14,6 +14,14 @@ class ExpenseProvider with ChangeNotifier {
   //getter for expense list
   // final List<Expense> expenses => _expenses;
   List<Expense> get expenseBox => _expenseBox.values.toList().reversed.toList();
+  
+  List<Expense> get recentExpense {
+    final recent = _expenseBox.values.toList();
+    recent.sort(
+      (a, b) => b.date.compareTo(a.date)
+    );
+    return recent.take(5).toList();
+  } 
 
   //add new expense
   void addExpense  (double amount, String title, DateTime date, String note, 
