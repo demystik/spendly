@@ -10,6 +10,8 @@ import 'package:spendly/screens/onboarding/app_splash_screen.dart';
 import 'package:spendly/screens/onboarding/first_splash_screen.dart';
 import 'package:spendly/screens/home_screen.dart';
 import 'package:spendly/screens/onboarding/income_screen.dart';
+import 'package:spendly/screens/onboarding/privacy_policy_screen.dart';
+import 'package:spendly/screens/onboarding/term_of_services.dart';
 import 'package:spendly/screens/profile_screen.dart';
 import 'package:spendly/screens/search_and_filter_screen.dart';
 import 'package:spendly/screens/onboarding/second_splash_screen.dart';
@@ -142,5 +144,7 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(path: "/login", builder: (context, index) => const LoginScreen()),
     GoRoute(path: "/", builder: (context, index) => const AppSplashScreen()),
+    GoRoute(path: "/terms_of_services", builder: (context, index) => const TermsOfServices()),
+    GoRoute(path: "/privacy_policy_screen", builder: (context, index) => const PrivacyPolicyScreen()),
   ],
 );
