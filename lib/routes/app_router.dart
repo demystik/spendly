@@ -6,6 +6,7 @@ import 'package:spendly/screens/analytics_screen.dart';
 import 'package:spendly/screens/auth/login_screen.dart';
 import 'package:spendly/screens/budget_screen.dart';
 import 'package:spendly/screens/expense_details.dart';
+import 'package:spendly/screens/onboarding/app_splash_screen.dart';
 import 'package:spendly/screens/onboarding/first_splash_screen.dart';
 import 'package:spendly/screens/home_screen.dart';
 import 'package:spendly/screens/onboarding/income_screen.dart';
@@ -26,13 +27,13 @@ final splashRoutes = {
 final GoRouter appRouter = GoRouter(
   refreshListenable: authProvider,
 
-  initialLocation: '/first_splash_screen',
+  initialLocation: '/',
 
   redirect: (context, state) {
     final loc = state.uri.path;
     final status = authProvider.status;
 
-    if (status == AppStatus.loading) return null;
+    if (status == AppStatus.loading) return '/';
 
     // NOT logged in → onboarding + login allowed
     if (status == AppStatus.unauthenticated) {
@@ -140,5 +141,6 @@ final GoRouter appRouter = GoRouter(
       builder: (context, index) => const IncomeOnboardingScreen(),
     ),
     GoRoute(path: "/login", builder: (context, index) => const LoginScreen()),
+    GoRoute(path: "/", builder: (context, index) => const AppSplashScreen()),
   ],
 );
