@@ -45,7 +45,7 @@ final GoRouter appRouter = GoRouter(
 
     // logged in but no income
     if (status == AppStatus.needsIncome) {
-      if (loc == '/income_onboarding_screen') return null;
+      if (loc == '/income_onboarding_screen' || loc == '/homescreen') return null;
       return '/income_onboarding_screen';
     }
 

@@ -19,10 +19,8 @@ class AppAuthProvider extends ChangeNotifier {
   }
 
   void setIncomeDone(){
-    print("markIncomeAsSet called");
     incomeSet = true;
     status = AppStatus.authenticated;
-    print("status $status");
     notifyListeners();
   }
 
