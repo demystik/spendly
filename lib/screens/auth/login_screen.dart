@@ -1,4 +1,8 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+// import 'package:go_router/go_router.dart';
+import 'package:spendly/screens/onboarding/privacy_policy_screen.dart';
+import 'package:spendly/screens/onboarding/term_of_services.dart';
 import 'package:spendly/services/auth_service.dart';
 import 'package:spendly/themes/app_spacing.dart';
 import 'package:spendly/themes/app_text_styles.dart';
@@ -18,8 +22,7 @@ class LoginScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-
-              Image.asset("assets/logos/spendly_logo2.png", width: 100,),
+              Image.asset("assets/logos/spendly_logo2.png", width: 100),
               SizedBox(height: screenSize.height * 0.04),
 
               Text("Get started", style: AppTextStyles.displayMedium),
@@ -37,27 +40,53 @@ class LoginScreen extends StatelessWidget {
                     padding: EdgeInsets.all(AppSpacing.sm),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppRadius.md),
-                    )
+                    ),
                   ),
                   onPressed: () async {
                     await AuthService().signInWithGoogle();
                     // force router reevaluation
                     authProvider.refresh();
                   },
-                
-                  icon: const Icon(Icons.g_mobiledata, size: 35,),
-                
-                  label: const Text('Continue with Google', style: AppTextStyles.bodyLarge,),
+
+                  icon: const Icon(Icons.g_mobiledata, size: 35),
+
+                  label: const Text(
+                    'Continue with Google',
+                    style: AppTextStyles.bodyLarge,
+                  ),
                 ),
               ),
               SizedBox(height: screenSize.height * 0.04),
-              Opacity(
-                opacity: 0.7,
-                child: Text(
-                  "By continuing, you agree with our Terms of Service and Privacy Policy.",
-                  textAlign: TextAlign.center,
-                  maxLines: 3,
+              Text.rich(
+                textAlign: TextAlign.center,
+                TextSpan(
                   style: AppTextStyles.bodySmall,
+                  children: [
+                    TextSpan(text: "By continuing, you agree with our "),
+                    TextSpan(
+                      text: "Terms of Service",
+                      style: const TextStyle(
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline,
+                      ),
+                      recognizer: TapGestureRecognizer()..onTap = (){
+                      // context.push('/terms_of_services');
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => const TermsOfServices()));
+                      }
+                    ),
+                    TextSpan(text: " and "),
+                    TextSpan(
+                      text: "Privacy Policy",
+                      style: const TextStyle(
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline,
+                      ),
+                      recognizer: TapGestureRecognizer()..onTap = (){
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => const PrivacyPolicyScreen()));
+                        // context.push('/privacy_policy_screen');
+                      }
+                    ),
+                  ],
                 ),
               ),
             ],

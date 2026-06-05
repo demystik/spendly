@@ -2,8 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:spendly/providers/auth_provider.dart';
 import 'package:spendly/providers/income_provider.dart';
 import 'package:spendly/themes/app_spacing.dart';
 import 'package:spendly/themes/app_text_styles.dart';
@@ -60,6 +62,8 @@ class _IncomeOnboardingScreenState extends State<IncomeOnboardingScreen> {
 
       if (!mounted) return;
       context.read<IncomeProvider>().setIncome(income);
+      context.read<AppAuthProvider>().setIncomeDone();
+      context.go('/homescreen');
 
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

@@ -8,6 +8,7 @@ import 'package:spendly/providers/income_provider.dart';
 import 'package:spendly/providers/theme_mode_provider.dart';
 import 'package:spendly/providers/user_region_provider.dart';
 import 'package:spendly/services/auth_service.dart';
+import 'package:spendly/services/delete_account.dart';
 import 'package:spendly/shared/section_label.dart';
 import 'package:spendly/themes/app_spacing.dart';
 import 'package:spendly/themes/app_text_styles.dart';
@@ -111,9 +112,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ],
               ),
             ),
-            //LOG OUT_____________________________________________
+            //ACCOUNT MANAGEMENT _____________________________________________
             const SizedBox(height: AppSpacing.xl),
-            LogOutButton(),
+            SectionLabel(
+              actualLabel: "ACCOUNT MANAGEMENT",
+              textStyle: AppTextStyles.bodyMedium.copyWith(
+                color: colorsScheme.onSurfaceVariant,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.8,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            AppCard(
+              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+              border: Border.all(color: colorsScheme.surfaceContainerHighest),
+              child: Column(children: [
+              LogOutButton(),
+               Divider(color: Theme.of(context).colorScheme.surfaceContainerHighest),
+               DeleteAccountButton(),
+               ]
+              ),
+            ),
             const SizedBox(height: AppSpacing.xl),
             //note_____________________________________________
             Column(
@@ -275,10 +294,11 @@ class LogOutButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return OutlinedButton(
+    return TextButton(
       style: ButtonStyle(
         shape: WidgetStateProperty.all(
           RoundedRectangleBorder(
+            side: BorderSide.none,
             borderRadius: BorderRadius.circular(AppRadius.lg),
           ),
         ),
@@ -297,12 +317,9 @@ class LogOutButton extends StatelessWidget {
       },
       child: Container(
         alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(
-          horizontal: 10,
-          vertical: 15,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          // mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               LucideIcons.logOut,
@@ -324,10 +341,108 @@ class LogOutButton extends StatelessWidget {
   }
 }
 
+class DeleteAccountButton extends StatelessWidget {
+  const DeleteAccountButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      style: ButtonStyle(
+        shape: WidgetStateProperty.all(
+          RoundedRectangleBorder(
+            side: BorderSide.none,
+            borderRadius: BorderRadius.circular(AppRadius.lg),
+          ),
+        ),
+      ),
+      onPressed: () async {
+        final shouldDelete = await showDialog<bool>(
+          context: context,
+          builder: (context) {
+            return ConfirmDeleteAccount();
+          },
+        );
+
+        if (shouldDelete == true) {
+          if(!context.mounted) return;
+          await deleteAccount(context);
+        }
+      },
+      child: Container(
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+        child: Row(
+          // mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              LucideIcons.trash2,
+              size: 22,
+              color: Theme.of(context).colorScheme.error,
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Delete Account",
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: Theme.of(context).colorScheme.error,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  "Irreversible Action",
+                  style: AppTextStyles.labelMedium.copyWith(
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ConfirmDeleteAccount extends StatelessWidget {
+  const ConfirmDeleteAccount({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+      ),
+      title: const Text("Delete Account?"),
+      content: const Text(
+        "This will permanently remove your Spendly account and associated data. This action cannot be undone.",
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context, false);
+          },
+          child: const Text("Cancel"),
+        ),
+
+        FilledButton(
+          style: FilledButton.styleFrom(
+            backgroundColor: Theme.of(context).colorScheme.error
+          ),
+          onPressed: () {
+            Navigator.pop(context, true);
+          },
+          child: const Text("Delete!"),
+        ),
+      ],
+    );
+  }
+}
+
 class ConfirmLogOut extends StatelessWidget {
-  const ConfirmLogOut({
-    super.key,
-  });
+  const ConfirmLogOut({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -346,7 +461,7 @@ class ConfirmLogOut extends StatelessWidget {
           },
           child: const Text("Cancel"),
         ),
-    
+
         FilledButton(
           onPressed: () {
             Navigator.pop(context, true);
@@ -377,7 +492,9 @@ class HeaderSection extends StatelessWidget {
                   color: Colors.grey,
                   image: DecorationImage(
                     fit: BoxFit.cover,
-                    image: auth.photoUrl != null ? NetworkImage(auth.photoUrl!) : AssetImage("assets/images/profile_male.png"),
+                    image: auth.photoUrl != null
+                        ? NetworkImage(auth.photoUrl!)
+                        : AssetImage("assets/images/profile_male.png"),
                   ),
                 ),
               ),
@@ -400,7 +517,7 @@ class HeaderSection extends StatelessWidget {
               ),
             ],
           ),
-      
+
           const SizedBox(height: AppSpacing.md),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -502,7 +619,6 @@ class NotificationSwitcher extends StatefulWidget {
 }
 
 class _NotificationSwitcherState extends State<NotificationSwitcher> {
-
   bool notif = false;
 
   @override

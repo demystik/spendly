@@ -18,6 +18,14 @@ class AppAuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setIncomeDone(){
+    print("markIncomeAsSet called");
+    incomeSet = true;
+    status = AppStatus.authenticated;
+    print("status $status");
+    notifyListeners();
+  }
+
   Future<void> _onAuthChanged(User? user) async {
     this.user = user;
 
