@@ -32,9 +32,6 @@ final GoRouter appRouter = GoRouter(
   initialLocation: '/',
 
   redirect: (context, state) {
-  print("Redirect running");
-  print("Current location: ${state.uri.path}");
-  print("Current status: ${authProvider.status}");
     final loc = state.uri.path;
     final status = authProvider.status;
 
