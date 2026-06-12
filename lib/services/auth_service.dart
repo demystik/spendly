@@ -58,6 +58,7 @@ class AuthService {
         'uid': uid,
         'email': email,
         'name': name,
+        'incomeSet': false,
         'joinedAt': FieldValue.serverTimestamp(),
       });
     }
