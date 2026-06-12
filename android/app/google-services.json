@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "347676736104-ait2sho3tqb7k3mv7m3b37un46m04ub3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.demystik.spendly",
+            "certificate_hash": "e4b2f07501befcf127f14c6a1175e4851aa9e80d"
+          }
+        },
+        {
           "client_id": "347676736104-hp5v1irb9doot2p1c30q6n2oobcu0p7c.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
