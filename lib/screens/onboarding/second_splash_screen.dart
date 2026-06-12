@@ -126,7 +126,7 @@ class _SecondSplashScreenState extends State<SecondSplashScreen> with SingleTick
             
                //Next buttons__________________________
                 AppButton(
-                  label: "Continue >",
+                  label: "Continue",
                   onPressed: () {
                     context.push("/third_splash_screen");
                   },
