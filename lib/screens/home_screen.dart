@@ -395,14 +395,18 @@ class HeaderPart extends StatelessWidget {
             fit: BoxFit.contain,
           ),
 
-          GestureDetector(
-            onTap: () => context.go('/profilescreen'),
-            child: CircleAvatar(
-                  radius: 15,
-                  foregroundImage: AssetImage("assets/images/profile_male.png"),
-                ),
-          ),
+          Row(
+            children: [
+              GestureDetector(
+                onTap: () => context.go('/profilescreen'),
+                child: CircleAvatar(
+                      radius: 15,
+                      foregroundImage: AssetImage("assets/images/profile_male.png"),
+                    ),
+              ),
               SizedBox(width: AppSpacing.md,),
+            ],
+          ),
         ],
       ),
     );
