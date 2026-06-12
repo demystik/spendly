@@ -82,7 +82,7 @@ class FirstSplashScreen extends StatelessWidget {
               // SizedBox(height: AppSpacing.md),
               //Next buttons__________________________
               AppButton(
-                label: "Continue >",
+                label: "Continue",
                 onPressed: () {
                   context.push("/second_splash_screen");
                 },
