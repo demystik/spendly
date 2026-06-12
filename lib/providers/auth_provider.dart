@@ -14,13 +14,20 @@ class AppAuthProvider extends ChangeNotifier {
     FirebaseAuth.instance.authStateChanges().listen(_onAuthChanged);
   }
 
-  void refresh(){
+  void refresh() {
     notifyListeners();
   }
 
-  void setIncomeDone(){
+  Future<void> setIncomeDone() async {
+    if (user == null) return;
+
+    await FirebaseFirestore.instance.collection('users').doc(user!.uid).update({
+      'incomeSet': true,
+    });
+
     incomeSet = true;
     status = AppStatus.authenticated;
+
     notifyListeners();
   }
 
@@ -38,11 +45,10 @@ class AppAuthProvider extends ChangeNotifier {
         .doc(user.uid)
         .get();
 
-
-    if(!doc.exists){
+    if (!doc.exists) {
       incomeSet = false;
-    } else{
-     incomeSet = doc.data()?['incomeSet'] ?? false;
+    } else {
+      incomeSet = doc.data()?['incomeSet'] ?? false;
     }
 
     status = incomeSet ? AppStatus.authenticated : AppStatus.needsIncome;
