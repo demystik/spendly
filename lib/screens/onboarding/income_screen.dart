@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:spendly/providers/auth_provider.dart';
@@ -38,41 +37,45 @@ class _IncomeOnboardingScreenState extends State<IncomeOnboardingScreen> {
 
   final _formatter = NumberFormat('#,##0');
 
-  void saveIncome() async {
-    final input = incomeController.text.replaceAll(',', '');
-    final income = double.tryParse(input);
+ void saveIncome() async {
+  final input = incomeController.text.replaceAll(',', '');
+  final income = double.tryParse(input);
 
-    if (income == null || income <= 0) {
-      setState(() {
-        errorText = "Enter a valid income";
-      });
-      return;
-    }
-
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) return;
-
-    setState(() => _isSaving = true);
-
-    try {
-      await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
-        'incomeSet': true,
-        'income': income,
-      }, SetOptions(merge: true));
-
-      if (!mounted) return;
-      context.read<IncomeProvider>().setIncome(income);
-      context.read<AppAuthProvider>().setIncomeDone();
-      context.go('/homescreen');
-
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Failed to save income. Check internet.")),
-      );
-    } finally {
-      if (mounted) setState(() => _isSaving = false);
-    }
+  if (income == null || income <= 0) {
+    setState(() => errorText = "Enter a valid income");
+    return;
   }
+
+  final user = FirebaseAuth.instance.currentUser;
+  if (user == null) return;
+
+  setState(() => _isSaving = true);
+
+  try {
+    // Write income data to Firestore
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .set({
+          'incomeSet': true,
+          'income': income,
+        }, SetOptions(merge: true));
+
+    if (!mounted) return;
+
+    context.read<IncomeProvider>().setIncome(income);
+
+    await context.read<AppAuthProvider>().setIncomeDone();
+
+  } catch (e) {
+    if (!mounted) return; // ✅ guard before using context in catch too
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Failed to save income. Check internet.")),
+    );
+  } finally {
+    if (mounted) setState(() => _isSaving = false);
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -82,8 +85,6 @@ class _IncomeOnboardingScreenState extends State<IncomeOnboardingScreen> {
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: ListView(
-            // crossAxisAlignment: CrossAxisAlignment.center,
-            // mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               SizedBox(
                 width: screenSize.width * 0.6,
