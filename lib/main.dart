@@ -43,7 +43,8 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AppAuthProvider()),
+        ChangeNotifierProvider<AppAuthProvider>.value(value: authProvider),
+        // ChangeNotifierProvider(create: (_) => AppAuthProvider()),
         ChangeNotifierProvider(create: (_) => PaymentProvider()),
         ChangeNotifierProvider(create: (_) => ExpenseProvider()),
         ChangeNotifierProvider(create: (_) => CategoryProvider()),
