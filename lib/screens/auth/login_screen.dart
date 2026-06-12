@@ -8,8 +8,15 @@ import 'package:spendly/themes/app_spacing.dart';
 import 'package:spendly/themes/app_text_styles.dart';
 import '../../routes/app_router.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  bool _isSigningIn = false;
 
   @override
   Widget build(BuildContext context) {
@@ -42,18 +49,43 @@ class LoginScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(AppRadius.md),
                     ),
                   ),
-                  onPressed: () async {
-                    await AuthService().signInWithGoogle();
-                    // force router reevaluation
-                    authProvider.refresh();
-                  },
+                  onPressed: _isSigningIn
+                      ? null
+                      : () async {
+                          setState(() {
+                            _isSigningIn = true;
+                          });
+
+                          try {
+                            await AuthService().signInWithGoogle();
+                            authProvider.refresh();
+                          } catch (e) {
+                            if (!mounted) return;
+                            // ignore: use_build_context_synchronously
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(e.toString())),
+                            );
+                          } finally {
+                            if (mounted) {
+                              setState(() {
+                                _isSigningIn = false;
+                              });
+                            }
+                          }
+                        },
 
                   icon: const Icon(Icons.g_mobiledata, size: 35),
 
-                  label: const Text(
-                    'Continue with Google',
-                    style: AppTextStyles.bodyLarge,
-                  ),
+                  label: _isSigningIn
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Text(
+                          "Continue with Google",
+                          style: AppTextStyles.bodyLarge,
+                        ),
                 ),
               ),
               SizedBox(height: screenSize.height * 0.04),
@@ -69,10 +101,16 @@ class LoginScreen extends StatelessWidget {
                         color: Colors.blue,
                         decoration: TextDecoration.underline,
                       ),
-                      recognizer: TapGestureRecognizer()..onTap = (){
-                      // context.push('/terms_of_services');
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => const TermsOfServices()));
-                      }
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          // context.push('/terms_of_services');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const TermsOfServices(),
+                            ),
+                          );
+                        },
                     ),
                     TextSpan(text: " and "),
                     TextSpan(
@@ -81,10 +119,16 @@ class LoginScreen extends StatelessWidget {
                         color: Colors.blue,
                         decoration: TextDecoration.underline,
                       ),
-                      recognizer: TapGestureRecognizer()..onTap = (){
-                        Navigator.push(context, MaterialPageRoute(builder: (_) => const PrivacyPolicyScreen()));
-                        // context.push('/privacy_policy_screen');
-                      }
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const PrivacyPolicyScreen(),
+                            ),
+                          );
+                          // context.push('/privacy_policy_screen');
+                        },
                     ),
                   ],
                 ),
