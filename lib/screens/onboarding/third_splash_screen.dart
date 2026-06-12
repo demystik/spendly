@@ -132,7 +132,7 @@ class _ThirdSplashScreenState extends State<ThirdSplashScreen>
 
                 //Next buttons__________________________
                 AppButton(
-                  label: "Get Started >",
+                  label: "Get Started",
                   onPressed: () {
                     context.go("/login");
                   },
